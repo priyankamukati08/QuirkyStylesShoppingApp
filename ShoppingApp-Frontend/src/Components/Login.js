@@ -6,6 +6,7 @@ import styled from "styled-components";
 import "@aws-amplify/ui-react/styles.css";
 import { Hub } from "aws-amplify/utils";
 import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
+import { fetchUserAttributes } from "aws-amplify/auth";
 
 Amplify.configure(awsconfig);
 
@@ -38,15 +39,25 @@ function Login() {
     return () => {};
   }, []);
 
-  // Function to handle successful login and redirect to homepage
-  const handleLoginSuccess = () => {
-    // Redirect to the homepage
+  
+  const handleLoginSuccess = async () => {
+    const userAttributes = await fetchUserAttributes();
+
     navigate("/homepage");
   };
 
   return (
     <Container>
-      <Authenticator>
+      <Authenticator
+        signUpAttributes={[
+          "name",
+          "email",
+          "address",
+          "birthdate",
+          "phone_number",
+          "gender",
+        ]}
+      >
         {({ signOut, user }) => (
           <div className="App">
             <p>Hey {user.username}, welcome to my channel, with auth!</p>
