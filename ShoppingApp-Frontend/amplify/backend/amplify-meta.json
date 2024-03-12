@@ -1,19 +1,19 @@
 {
   "providers": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-shoppingappfrontend-dev-172139-authRole",
-      "UnauthRoleArn": "arn:aws:iam::381996088334:role/amplify-shoppingappfrontend-dev-172139-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::381996088334:role/amplify-shoppingappfrontend-dev-172139-authRole",
+      "AuthRoleName": "amplify-quirkystylesapp-dev-114028-authRole",
+      "UnauthRoleArn": "arn:aws:iam::381996088334:role/amplify-quirkystylesapp-dev-114028-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::381996088334:role/amplify-quirkystylesapp-dev-114028-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-shoppingappfrontend-dev-172139-deployment",
-      "UnauthRoleName": "amplify-shoppingappfrontend-dev-172139-unauthRole",
-      "StackName": "amplify-shoppingappfrontend-dev-172139",
-      "StackId": "arn:aws:cloudformation:us-east-1:381996088334:stack/amplify-shoppingappfrontend-dev-172139/556007e0-df3d-11ee-ad65-0ea528053a33",
-      "AmplifyAppId": "d2s9glswb6eak"
+      "DeploymentBucketName": "amplify-quirkystylesapp-dev-114028-deployment",
+      "UnauthRoleName": "amplify-quirkystylesapp-dev-114028-unauthRole",
+      "StackName": "amplify-quirkystylesapp-dev-114028",
+      "StackId": "arn:aws:cloudformation:us-east-1:381996088334:stack/amplify-quirkystylesapp-dev-114028/008cca00-e0a0-11ee-b0e4-0e2dc1c286ef",
+      "AmplifyAppId": "d27djwm7w9bn7b"
     }
   },
   "auth": {
-    "shoppingappfrontend1743ed58": {
+    "quirkystylesapp34de1efe": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -39,20 +39,20 @@
         ]
       },
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-shoppingappfrontend-dev-172139-deployment/amplify-cfn-templates/auth/shoppingappfrontend1743ed58-cloudformation-template.json",
-        "logicalId": "authshoppingappfrontend1743ed58"
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-quirkystylesapp-dev-114028-deployment/amplify-cfn-templates/auth/quirkystylesapp34de1efe-cloudformation-template.json",
+        "logicalId": "authquirkystylesapp34de1efe"
       },
-      "lastPushTimeStamp": "2024-03-11T00:26:02.929Z",
+      "lastPushTimeStamp": "2024-03-12T18:49:16.831Z",
       "output": {
-        "UserPoolId": "us-east-1_8mDsW6n81",
-        "AppClientIDWeb": "gbdv3dargnrcgtp4lbcd94g8o",
-        "AppClientID": "18v5hdt3778a6ofgvbsiquk1gn",
-        "IdentityPoolId": "us-east-1:ca765eff-00ac-4f2c-89be-ae0c032cd65e",
-        "UserPoolArn": "arn:aws:cognito-idp:us-east-1:381996088334:userpool/us-east-1_8mDsW6n81",
-        "IdentityPoolName": "shoppingappfrontend1743ed58_identitypool_1743ed58__dev",
-        "UserPoolName": "shoppingappfrontend1743ed58_userpool_1743ed58"
+        "UserPoolId": "us-east-1_fUiqJgHsS",
+        "AppClientIDWeb": "271jj59rerb96326iu2ehtnd3r",
+        "AppClientID": "2ka4b44ar9l06dsdsvmk751nji",
+        "IdentityPoolId": "us-east-1:1e2bb4fa-da46-4e30-a4b9-9de4e1b8a5b4",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-1:381996088334:userpool/us-east-1_fUiqJgHsS",
+        "IdentityPoolName": "quirkystylesapp34de1efe_identitypool_34de1efe__dev",
+        "UserPoolName": "quirkystylesapp34de1efe_userpool_34de1efe"
       },
-      "lastPushDirHash": "8sGMPbNbjpInwVFv2gXJ0zRMTd8="
+      "lastPushDirHash": "mYHkFt83rOl3VJ3XBtVapwLtLCg="
     }
   }
 }

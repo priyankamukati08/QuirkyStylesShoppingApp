@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "shoppingappfrontend1743ed58_identitypool_1743ed58",
+    "identityPoolName": "quirkystylesapp34de1efe_identitypool_34de1efe",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "shoppi1743ed58",
-    "userPoolName": "shoppingappfrontend1743ed58_userpool_1743ed58",
+    "resourceNameTruncated": "quirky34de1efe",
+    "userPoolName": "quirkystylesapp34de1efe_userpool_34de1efe",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -31,10 +31,10 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "shoppi1743ed58_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "quirky34de1efe_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "1743ed58",
-    "resourceName": "shoppingappfrontend1743ed58",
+    "sharedId": "34de1efe",
+    "resourceName": "quirkystylesapp34de1efe",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "default",
     "usernameAttributes": [

@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-shoppingappfrontend-dev-172139-authRole",
-      "UnauthRoleArn": "arn:aws:iam::381996088334:role/amplify-shoppingappfrontend-dev-172139-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::381996088334:role/amplify-shoppingappfrontend-dev-172139-authRole",
+      "AuthRoleName": "amplify-quirkystylesapp-dev-114028-authRole",
+      "UnauthRoleArn": "arn:aws:iam::381996088334:role/amplify-quirkystylesapp-dev-114028-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::381996088334:role/amplify-quirkystylesapp-dev-114028-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-shoppingappfrontend-dev-172139-deployment",
-      "UnauthRoleName": "amplify-shoppingappfrontend-dev-172139-unauthRole",
-      "StackName": "amplify-shoppingappfrontend-dev-172139",
-      "StackId": "arn:aws:cloudformation:us-east-1:381996088334:stack/amplify-shoppingappfrontend-dev-172139/556007e0-df3d-11ee-ad65-0ea528053a33",
-      "AmplifyAppId": "d2s9glswb6eak"
+      "DeploymentBucketName": "amplify-quirkystylesapp-dev-114028-deployment",
+      "UnauthRoleName": "amplify-quirkystylesapp-dev-114028-unauthRole",
+      "StackName": "amplify-quirkystylesapp-dev-114028",
+      "StackId": "arn:aws:cloudformation:us-east-1:381996088334:stack/amplify-quirkystylesapp-dev-114028/008cca00-e0a0-11ee-b0e4-0e2dc1c286ef",
+      "AmplifyAppId": "d27djwm7w9bn7b"
     },
     "categories": {
       "auth": {
-        "shoppingappfrontend1743ed58": {}
+        "quirkystylesapp34de1efe": {}
       }
     }
   }

@@ -196,7 +196,7 @@
         "UserPoolId": {
           "Ref": "UserPool"
         },
-        "ClientName": "shoppi1743ed58_app_clientWeb",
+        "ClientName": "quirky34de1efe_app_clientWeb",
         "RefreshTokenValidity": {
           "Ref": "userpoolClientRefreshTokenValidity"
         },
@@ -214,7 +214,7 @@
         "UserPoolId": {
           "Ref": "UserPool"
         },
-        "ClientName": "shoppi1743ed58_app_client",
+        "ClientName": "quirky34de1efe_app_client",
         "GenerateSecret": {
           "Ref": "userpoolClientGenerateSecret"
         },
@@ -254,7 +254,7 @@
               "Fn::Join": [
                 "",
                 [
-                  "upClientLambdaRole1743ed58",
+                  "upClientLambdaRole34de1efe",
                   {
                     "Fn::Select": [
                       3,
@@ -326,12 +326,12 @@
         "IdentityPoolName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "shoppingappfrontend1743ed58_identitypool_1743ed58",
+            "quirkystylesapp34de1efe_identitypool_34de1efe",
             {
               "Fn::Join": [
                 "",
                 [
-                  "shoppingappfrontend1743ed58_identitypool_1743ed58__",
+                  "quirkystylesapp34de1efe_identitypool_34de1efe__",
                   {
                     "Ref": "env"
                   }
