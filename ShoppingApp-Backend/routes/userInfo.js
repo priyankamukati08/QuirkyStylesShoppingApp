@@ -1,9 +1,10 @@
 const express = require("express");
-const homepageController = require("../controllers/homepageController");
+const userInfoController = require("../controllers/userInfoController");
 const router = express.Router();
+router.use(express.json());
 
-
-
-router.route("/products").get(homepageController.getAllProducts);
+//router.route("/").get(homepageController.getAllProducts);
+//router.route("/").get(userInfoController.createUser);
+router.route("/").post(userInfoController.createUser);
 
 module.exports = router;
