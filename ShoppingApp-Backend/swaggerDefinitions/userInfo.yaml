@@ -1,0 +1,66 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "User Info API"
+  description: "API for managing user information"
+paths:
+  /user-info:
+    get:
+      summary: Get user's information
+      tags:
+        - User's Info
+      responses:
+        200:
+          description: User's details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/UserInfo"
+
+definitions:
+  UserInfo:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      fullName:
+        type: string
+        example: "John Doe"
+      email:
+        type: string
+        example: "john@example.com"
+      phoneNumber:
+        type: string
+        example: "1234567890"
+      age:
+        type: integer
+        example: 30
+      gender:
+        type: string
+        example: "male"
+      shippingAddress:
+        type: string
+        example: "123 Main St, City, Country"
+      billingAddress:
+        type: string
+        example: "456 Secondary St, City, Country"
+      profilePictureURL:
+        type: string
+        example: "https://example.com/profile.jpg"
+      cashBalance:
+        type: number
+        format: float
+        example: 100.00
+      createDate:
+        type: string
+        format: date-time
+        example: "2023-07-25T05:36:24.983Z"
+      updateDate:
+        type: string
+        format: date-time
+        example: "2023-08-15T10:20:30.456Z"
+
