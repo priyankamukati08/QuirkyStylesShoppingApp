@@ -152,15 +152,15 @@
         }
       }
     },
-    "authshoppingappfrontend1743ed58": {
+    "authquirkystylesapp34de1efe": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-shoppingappfrontend-dev-172139-deployment/amplify-cfn-templates/auth/shoppingappfrontend1743ed58-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-quirkystylesapp-dev-114028-deployment/amplify-cfn-templates/auth/quirkystylesapp34de1efe-cloudformation-template.json",
         "Parameters": {
-          "identityPoolName": "shoppingappfrontend1743ed58_identitypool_1743ed58",
+          "identityPoolName": "quirkystylesapp34de1efe_identitypool_34de1efe",
           "allowUnauthenticatedIdentities": false,
-          "resourceNameTruncated": "shoppi1743ed58",
-          "userPoolName": "shoppingappfrontend1743ed58_userpool_1743ed58",
+          "resourceNameTruncated": "quirky34de1efe",
+          "userPoolName": "quirkystylesapp34de1efe_userpool_34de1efe",
           "autoVerifiedAttributes": "email",
           "mfaConfiguration": "OFF",
           "mfaTypes": "SMS Text Message",
@@ -177,10 +177,10 @@
           "userpoolClientRefreshTokenValidity": 30,
           "userpoolClientWriteAttributes": "email",
           "userpoolClientReadAttributes": "email",
-          "userpoolClientLambdaRole": "shoppi1743ed58_userpoolclient_lambda_role",
+          "userpoolClientLambdaRole": "quirky34de1efe_userpoolclient_lambda_role",
           "userpoolClientSetAttributes": false,
-          "sharedId": "1743ed58",
-          "resourceName": "shoppingappfrontend1743ed58",
+          "sharedId": "34de1efe",
+          "resourceName": "quirkystylesapp34de1efe",
           "authSelections": "identityPoolAndUserPool",
           "useDefault": "default",
           "usernameAttributes": "email",
@@ -210,7 +210,7 @@
       "DependsOn": [
         "AuthRole",
         "UnauthRole",
-        "authshoppingappfrontend1743ed58"
+        "authquirkystylesapp34de1efe"
       ],
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -320,7 +320,7 @@
         },
         "idpId": {
           "Fn::GetAtt": [
-            "authshoppingappfrontend1743ed58",
+            "authquirkystylesapp34de1efe",
             "Outputs.IdentityPoolId"
           ]
         },
