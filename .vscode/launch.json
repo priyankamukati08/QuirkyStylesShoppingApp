@@ -1,0 +1,22 @@
+// .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Backend",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/ShoppingApp-Backend/server.js"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Frontend",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/ShoppingApp-Frontend"
+        }
+    ]
+}

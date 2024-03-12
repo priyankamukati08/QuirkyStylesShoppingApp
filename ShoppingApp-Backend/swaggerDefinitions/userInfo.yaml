@@ -4,20 +4,37 @@ info:
   title: "User Info API"
   description: "API for managing user information"
 paths:
-  /user-info:
+  /userInfo:
     get:
-      summary: Get user's information
+      summary: Get all user information
       tags:
         - User's Info
       responses:
         200:
-          description: User's details
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/definitions/UserInfo"
+          description: User information retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserInfo"
+        500:
+          description: Internal Server Error
+    post:
+      summary: Create a new user information
+      tags:
+        - User's Info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UserInfo"
+      responses:
+        201:
+          description: User's information created successfully
+        400:
+          description: Bad request - Invalid input
+        500:
+          description: Internal Server Error
 
 definitions:
   UserInfo:
@@ -27,40 +44,39 @@ definitions:
         type: integer
         format: int64
         example: 1
-      fullName:
+      user_full_name:
         type: string
         example: "John Doe"
-      email:
+      user_email:
         type: string
         example: "john@example.com"
-      phoneNumber:
+      user_phone_number:
         type: string
         example: "1234567890"
-      age:
+      user_age:
         type: integer
         example: 30
-      gender:
+      user_gender:
         type: string
         example: "male"
-      shippingAddress:
+      user_shipping_address:
         type: string
         example: "123 Main St, City, Country"
-      billingAddress:
+      user_billing_address:
         type: string
         example: "456 Secondary St, City, Country"
-      profilePictureURL:
+      user_profile_picture_url:
         type: string
         example: "https://example.com/profile.jpg"
-      cashBalance:
+      cash_balance:
         type: number
         format: float
         example: 100.00
-      createDate:
+      create_date:
         type: string
         format: date-time
         example: "2023-07-25T05:36:24.983Z"
-      updateDate:
+      update_date:
         type: string
         format: date-time
         example: "2023-08-15T10:20:30.456Z"
-
