@@ -5,6 +5,7 @@ import { getProductById } from "../store/actions/productActions";
 import styled from "styled-components";
 import NavigationBar from "./NavigationBar";
 import { addProductToUserCart } from "../store/actions/userCartActions";
+import Cookies from "js-cookie"; // Import js-cookie library
 
 const Container = styled.div`
   display: flex;
@@ -152,6 +153,9 @@ const ProductDetailsPage = () => {
   const [bagItemCount, setBagItemCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Get userID from cookies
+  const userID = Cookies.get("userID");
+
   useEffect(() => {
     dispatch(getProductById(productId));
   }, [dispatch, productId]);
@@ -161,36 +165,26 @@ const ProductDetailsPage = () => {
   };
 
   const handleAddToBag = () => {
-
-
     if (!selectedSize) {
-
       alert("Please select a size");
       return;
     }
 
-    // Dispatch action to add product to cart via API
-    dispatch(addProductToUserCart(1, productId, 1, selectedSize))
+    dispatch(addProductToUserCart(userID, productId, 1, selectedSize))
       .then(() => {
-        // Increment bag item count
         setBagItemCount(bagItemCount + 1);
-        // Reset selectedSize after dispatching action
         setSelectedSize("");
-        // Show added to bag message
         setErrorMessage("Added to bag");
-        // Clear added to bag message after 3 seconds
         setTimeout(() => {
           setErrorMessage("");
         }, 3000);
       })
       .catch((error) => {
-
         setErrorMessage("Failed to add product to bag");
       });
   };
 
   const handleAddToWishlist = () => {
-    // Implement adding to wishlist functionality here
     console.log("Product added to wishlist:", product);
   };
 
@@ -202,7 +196,6 @@ const ProductDetailsPage = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Define product sizes manually if not provided by API
   const sizes = ["S", "M", "L", "XL", "XXL"];
 
   const baseURL = "http://localhost:3001";
