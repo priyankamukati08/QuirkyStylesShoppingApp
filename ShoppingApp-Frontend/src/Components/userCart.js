@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "./NavigationBar";
 import { getCartByUserId } from "../store/actions/userCartActions";
+import Cookies from "js-cookie";
 
 const Container = styled.div`
   display: flex;
@@ -17,10 +17,12 @@ const ShoppingCartHeading = styled.h1`
 `;
 
 const CartItemContainer = styled.div`
-  width: 80%;
+  display: flex;
   margin-top: 20px;
   border: 1px solid #ccc;
   padding: 20px;
+  width: 50%;
+  margin-right: 650px;
 `;
 
 const CartItem = styled.div`
@@ -44,6 +46,10 @@ const ProductTitle = styled.h3`
   font-size: 18px;
   margin-bottom: 5px;
 `;
+const ProductDescription = styled.p`
+  font-size: 18px;
+  margin-bottom: 5px;
+`;
 
 const ProductPrice = styled.p`
   font-size: 16px;
@@ -54,9 +60,14 @@ const ProductQuantity = styled.p`
   font-size: 16px;
 `;
 
+const PriceDetailsContainer = styled.div`
+  position: fixed; /* Position the container fixed to the viewport */
+  top: 200px; /* Adjust the top position */
+  right: 200px; /* Adjust the right position */
+  width: 25%;
+`;
+
 const PriceDetails = styled.div`
-  width: 80%;
-  margin-top: 20px;
   border: 1px solid #ccc;
   padding: 20px;
 `;
@@ -81,14 +92,28 @@ const TotalAmount = styled.p`
   font-weight: bold;
 `;
 
+const PlaceOrderButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  background-color: #f04878;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: bold;
+`;
+
 const CartPage = () => {
-  const { userId } = useParams();
   const dispatch = useDispatch();
   const { loading, cartItems, error } = useSelector((state) => state.userCart);
+  const userID = Cookies.get("userID");
 
   useEffect(() => {
-    dispatch(getCartByUserId(userId));
-  }, [dispatch, userId]);
+    if (userID) {
+      dispatch(getCartByUserId(userID));
+    }
+  }, [dispatch, userID]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -98,16 +123,15 @@ const CartPage = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Calculate total price
+  // Calculate total price, shipping fee, platform fee, and total amount
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.product_price * item.product_quantity,
     0
   );
-
-  // Sample shipping and platform fees
   const shippingFee = 10.0;
   const platformFee = 5.0;
   const totalAmount = totalPrice + shippingFee + platformFee;
+
   const baseURL = "http://localhost:3001";
   return (
     <>
@@ -123,6 +147,9 @@ const CartPage = () => {
               />
               <ProductInfo>
                 <ProductTitle>{item.product_brand_name}</ProductTitle>
+                <ProductDescription>
+                  {item.product_description}
+                </ProductDescription>
                 <ProductPrice>Price: ${item.product_price}</ProductPrice>
                 <ProductQuantity>
                   Quantity: {item.product_quantity}
@@ -131,12 +158,15 @@ const CartPage = () => {
             </CartItem>
           </CartItemContainer>
         ))}
-        <PriceDetails>
-          <TotalPrice>Total Price: ${totalPrice.toFixed(2)}</TotalPrice>
-          <ShippingFee>Shipping Fee: ${shippingFee.toFixed(2)}</ShippingFee>
-          <PlatformFee>Platform Fee: ${platformFee.toFixed(2)}</PlatformFee>
-          <TotalAmount>Total Amount: ${totalAmount.toFixed(2)}</TotalAmount>
-        </PriceDetails>
+        <PriceDetailsContainer>
+          <PriceDetails>
+            <TotalPrice>Total Price: ${totalPrice.toFixed(2)}</TotalPrice>
+            <ShippingFee>Shipping Fee: ${shippingFee.toFixed(2)}</ShippingFee>
+            <PlatformFee>Platform Fee: ${platformFee.toFixed(2)}</PlatformFee>
+            <TotalAmount>Total Amount: ${totalAmount.toFixed(2)}</TotalAmount>
+            <PlaceOrderButton>Place Order</PlaceOrderButton>
+          </PriceDetails>
+        </PriceDetailsContainer>
       </Container>
     </>
   );

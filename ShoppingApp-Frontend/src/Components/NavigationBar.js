@@ -334,7 +334,7 @@ export const NavigationBar = () => {
         <NavItem>
           <BagContent>
             <IconImage src="/bagiconimg.png"></IconImage>
-            <BiggerNavLinks to="/bag">Bag</BiggerNavLinks>
+            <BiggerNavLinks to="/userCart">Bag</BiggerNavLinks>
           </BagContent>
         </NavItem>
       </NavMenu>

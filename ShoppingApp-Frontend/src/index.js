@@ -36,7 +36,7 @@ root.render(
           <Route path="/Kids" element={<Kids />} />
           <Route path="/Home&Living" element={<HomeandLiving />} />
           <Route path="/Beauty" element={<Beauty />} />
-          <Route path="/userCart/:userId" element={<CartPage />} />
+          <Route path="/userCart" element={<CartPage />} />
           <Route
             path="/Mens/:brand/:productId"
             element={<ProductDetailsPage />}
