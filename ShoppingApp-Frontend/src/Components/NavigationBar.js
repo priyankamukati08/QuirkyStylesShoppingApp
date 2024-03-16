@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const NavbarContainer = styled.nav`
   padding: 1.2rem;
@@ -21,8 +20,8 @@ const LogoContainer = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 80%;
-  height: 100%;
+  width: 1000%;
+  height: 199%;
 `;
 
 const NavMenu = styled.ul`
@@ -224,7 +223,7 @@ export const NavigationBar = () => {
   return (
     <NavbarContainer>
       <LogoContainer>
-        <LogoImage src="/logo.svg" alt="Logo" onClick={routeChange} />
+        <LogoImage src="/Mainlogo.png" alt="Logo" onClick={routeChange} />
       </LogoContainer>
       <NavMenu>
         <NavItem
@@ -244,9 +243,9 @@ export const NavigationBar = () => {
           onMouseEnter={() => setWomenDropdownVisible(true)}
           onMouseLeave={() => setWomenDropdownVisible(false)}
         >
-          <NavLinks to="/Womens">WOMEN</NavLinks>
+          <NavLinks to="/Women">WOMEN</NavLinks>
           <DropdownContent visible={womenDropdownVisible}>
-            <DropdownLink to="/Womens" category="women">
+            <DropdownLink category="women">
               Clothes
             </DropdownLink>
             <DropdownLink category="women">Footwear</DropdownLink>

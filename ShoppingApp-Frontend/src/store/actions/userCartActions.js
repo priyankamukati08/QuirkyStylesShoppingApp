@@ -1,11 +1,10 @@
 import axios from "axios";
 
-// Define action types
+
 const GET_USERCART_LOADING = "GET_USERCART_LOADING";
 const GET_USERCART_SUCCESS = "GET_USERCART_SUCCESS";
 const GET_USERCART_FAILURE = "GET_USERCART_FAILURE";
 
-// Action creator for fetching user's cart items
 export const getCartByUserId = (userID) => async (dispatch) => {
   dispatch({ type: GET_USERCART_LOADING });
   try {

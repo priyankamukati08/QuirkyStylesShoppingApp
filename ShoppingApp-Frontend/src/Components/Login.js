@@ -25,7 +25,7 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Define the debounce function
+  
   const debounce = (func, delay) => {
     let timer;
     return function (...args) {
@@ -37,7 +37,6 @@ function Login() {
     };
   };
 
-  // Define the handleLoginSuccess function
   const handleLoginSuccess = async (userData) => {
     try {
       const userAttributes = await fetchUserAttributes();
@@ -49,7 +48,7 @@ function Login() {
     }
   };
 
-  // Debounce the handleLoginSuccess function with a delay of 1000ms
+ 
   const debouncedHandleLoginSuccess = debounce(handleLoginSuccess, 1000);
 
   useEffect(() => {
@@ -57,7 +56,6 @@ function Login() {
       switch (event) {
         case "signedIn":
           console.log("User signed in", data);
-          // Invoke the debounced handleLoginSuccess function
           debouncedHandleLoginSuccess(data);
           break;
         case "signedOut":

@@ -5,7 +5,7 @@ import { getProductById } from "../store/actions/productActions";
 import styled from "styled-components";
 import NavigationBar from "./NavigationBar";
 import { addProductToUserCart } from "../store/actions/userCartActions";
-import Cookies from "js-cookie"; // Import js-cookie library
+import Cookies from "js-cookie"; 
 
 const Container = styled.div`
   display: flex;
@@ -122,15 +122,6 @@ const BagIcon = styled.span`
   margin-right: 10px;
 `;
 
-const Badge = styled.span`
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  padding: 5px;
-`;
 
 const Message = styled.div`
   background-color: #f04878;
@@ -153,7 +144,7 @@ const ProductDetailsPage = () => {
   const [bagItemCount, setBagItemCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Get userID from cookies
+
   const userID = Cookies.get("userID");
 
   useEffect(() => {

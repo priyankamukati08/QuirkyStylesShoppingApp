@@ -1,6 +1,6 @@
 import axios from "axios";
-import Cookies from "js-cookie"; // Import js-cookie library
-// Action types
+import Cookies from "js-cookie"; 
+
 const FETCH_USERINFO_LOADING = "FETCH_USERINFO_LOADING";
 const FETCH_USERINFO_SUCCESS = "FETCH_USERINFO_SUCCESS";
 const FETCH_USERINFO_FAILURE = "FETCH_USERINFO_FAILURE";
@@ -19,9 +19,9 @@ const DELETE_USERINFO_LOADING = "DELETE_USERINFO_LOADING";
 const DELETE_USERINFO_SUCCESS = "DELETE_USERINFO_SUCCESS";
 const DELETE_USERINFO_FAILURE = "DELETE_USERINFO_FAILURE";
 
-// Action creators for fetching userinfo
+
 export const fetchUserInfo = (userId) => async (dispatch) => {
-  dispatch({ type: FETCH_USERINFO_LOADING }); // Dispatch loading action
+  dispatch({ type: FETCH_USERINFO_LOADING }); 
 
   try {
     const response = await axios.get(
@@ -29,10 +29,10 @@ export const fetchUserInfo = (userId) => async (dispatch) => {
     );
     dispatch({
       type: FETCH_USERINFO_SUCCESS,
-      payload: response.data, // Dispatch success action with response data
+      payload: response.data, 
     });
   } catch (error) {
-    // If an error occurs during the request, dispatch a failure action with the error message
+  
     dispatch({
       type: FETCH_USERINFO_FAILURE,
       payload: error.message,
@@ -40,9 +40,9 @@ export const fetchUserInfo = (userId) => async (dispatch) => {
   }
 };
 
-// Action creator for adding userinfo
+
 export const addUserInfo = (userInfo) => async (dispatch) => {
-  dispatch({ type: ADD_USERINFO_LOADING }); // Dispatch loading action
+  dispatch({ type: ADD_USERINFO_LOADING }); 
 
   try {
     const response = await axios.post(
@@ -51,11 +51,11 @@ export const addUserInfo = (userInfo) => async (dispatch) => {
     );
     dispatch({
       type: ADD_USERINFO_SUCCESS,
-      payload: response.data, // Dispatch success action with response data
+      payload: response.data, 
     });
     Cookies.set("userID", response.data.id);
   } catch (error) {
-    // If an error occurs during the request, dispatch a failure action with the error message
+  
     dispatch({
       type: ADD_USERINFO_FAILURE,
       payload: error.message,
@@ -63,9 +63,9 @@ export const addUserInfo = (userInfo) => async (dispatch) => {
   }
 };
 
-// Action creators for updating userinfo
+
 export const updateUserInfo = (userId, updatedInfo) => async (dispatch) => {
-  dispatch({ type: UPDATE_USERINFO_LOADING }); // Dispatch loading action
+  dispatch({ type: UPDATE_USERINFO_LOADING }); 
 
   try {
     const response = await axios.put(
@@ -74,10 +74,10 @@ export const updateUserInfo = (userId, updatedInfo) => async (dispatch) => {
     );
     dispatch({
       type: UPDATE_USERINFO_SUCCESS,
-      payload: response.data, // Dispatch success action with response data
+      payload: response.data,
     });
   } catch (error) {
-    // If an error occurs during the request, dispatch a failure action with the error message
+ 
     dispatch({
       type: UPDATE_USERINFO_FAILURE,
       payload: error.message,
@@ -85,15 +85,15 @@ export const updateUserInfo = (userId, updatedInfo) => async (dispatch) => {
   }
 };
 
-// Action creators for deleting userinfo
+
 export const deleteUserInfo = (userId) => async (dispatch) => {
-  dispatch({ type: DELETE_USERINFO_LOADING }); // Dispatch loading action
+  dispatch({ type: DELETE_USERINFO_LOADING }); 
 
   try {
     await axios.delete(`http://localhost:3001/userinfo/${userId}`);
-    dispatch({ type: DELETE_USERINFO_SUCCESS }); // Dispatch success action
+    dispatch({ type: DELETE_USERINFO_SUCCESS }); 
   } catch (error) {
-    // If an error occurs during the request, dispatch a failure action with the error message
+  
     dispatch({
       type: DELETE_USERINFO_FAILURE,
       payload: error.message,

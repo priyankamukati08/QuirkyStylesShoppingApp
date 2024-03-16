@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Define action types
+
 const GET_PRODUCT_LOADING = "GET_PRODUCT_LOADING";
 const GET_PRODUCT_SUCCESS = "GET_PRODUCT_SUCCESS";
 const GET_PRODUCT_FAILURE = "GET_PRODUCT_FAILURE";
@@ -9,7 +9,7 @@ const GET_PRODUCT_BY_ID_LOADING = "GET_PRODUCT_BY_ID_LOADING";
 const GET_PRODUCT_BY_ID_SUCCESS = "GET_PRODUCT_BY_ID_SUCCESS";
 const GET_PRODUCT_BY_ID_FAILURE = "GET_PRODUCT_BY_ID_FAILURE";
 
-// Action creator for fetching all products
+
 export const getProducts = () => async (dispatch) => {
   dispatch({ type: GET_PRODUCT_LOADING });
   try {
@@ -19,8 +19,6 @@ export const getProducts = () => async (dispatch) => {
     dispatch({ type: GET_PRODUCT_FAILURE, payload: error.message });
   }
 };
-
-// Action creator for fetching a product by ID
 
 // a thunk is a function that is returned from another function (getProductById).
 //a thunk function takes dispatch (and getState) as parameters.

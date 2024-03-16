@@ -1,6 +1,5 @@
-import React, { useState } from "react";
 import { styled } from "styled-components";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const BagContainer = styled.div`
@@ -44,7 +43,7 @@ const Badge = styled.span`
 
 const BagItemsBar = () => {
   const navigate = useNavigate();
-  const { bagItemCount } = useSelector((state) => state.userCart); // Assuming the bag item count is stored in the Redux state
+  const { bagItemCount } = useSelector((state) => state.userCart); 
 
   const handleBagClick = () => {
     navigate(`/userCart/:userId`);

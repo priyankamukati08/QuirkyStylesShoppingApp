@@ -1,44 +1,87 @@
 const pool = require("../db");
 
-const createUser = async (req, res) => {
+const addUserInfo = async (req, res) => {
   try {
-    const {
-      user_full_name,
-      user_email,
-      user_phone_number,
-      user_age,
-      user_gender,
-      user_shipping_address,
-      user_billing_address,
-      user_profile_picture_url,
+    let {
+      name,
+      email,
+      phone_number,
+      birthdate,
+      age,
+      gender,
+      shipping_address,
+      billing_address,
+      profile_picture_url,
       cash_balance,
     } = req.body;
 
-    const client = await pool.connect();
-    const result = await client.query(
-      "INSERT INTO user_info (user_full_name, user_email, user_phone_number, user_age, user_gender, user_shipping_address, user_billing_address, user_profile_picture_url, cash_balance) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *;",
-      [
-        user_full_name,
-        user_email,
-        user_phone_number,
-        user_age,
-        user_gender,
-        user_shipping_address,
-        user_billing_address,
-        user_profile_picture_url,
-        cash_balance,
-      ]
+    name = name ? name : null;
+    phone_number = phone_number ? phone_number : null;
+    birthdate = birthdate ? birthdate : null;
+    age = age ? age : null;
+    gender = gender ? gender : null;
+    shipping_address = shipping_address ? shipping_address : null;
+    billing_address = billing_address ? billing_address : null;
+    profile_picture_url = profile_picture_url ? profile_picture_url : null;
+    cash_balance = cash_balance ? cash_balance : null;
+
+    const existingUserInfo = await pool.query(
+      `SELECT
+        id,         
+        name,
+        email,
+        phone_number,
+        birthdate,
+        age,
+        gender,
+        shipping_address,
+        billing_address,
+        profile_picture_url,
+        cash_balance 
+        FROM public.user_info WHERE email = $1`,
+      [email]
     );
 
-    const newUser = result.rows[0];
-    client.release();
-    res.status(201).json(newUser);
-  } catch (err) {
-    console.error("Error executing query", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    if (existingUserInfo.rows.length > 0) {
+      res.status(201).json(existingUserInfo.rows[0]);
+      return;
+    }
+
+    const query = `
+      INSERT INTO public.user_info (
+        name,
+        email,
+        phone_number,
+        birthdate,
+        age,
+        gender,
+        shipping_address,
+        billing_address,
+        profile_picture_url,
+        cash_balance
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING id, name, email, phone_number, birthdate, age, gender, shipping_address, billing_address, profile_picture_url, cash_balance;`; // Include all columns in the RETURNING clause
+
+    const result = await pool.query(query, [
+      name,
+      email,
+      phone_number,
+      birthdate,
+      age,
+      gender,
+      shipping_address,
+      billing_address,
+      profile_picture_url,
+      cash_balance,
+    ]);
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error inserting user info:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 module.exports = {
-  createUser,
+  addUserInfo,
 };
