@@ -16,7 +16,7 @@ const getAllProducts = async (req, res) => {
 
 const addNewProduct = async (req, res) => {
   try {
-    // Extract product data from the request body
+
     const {
       product_brand_name,
       product_description,
@@ -27,7 +27,7 @@ const addNewProduct = async (req, res) => {
       product_image_url,
     } = req.body;
 
-    // Construct the SQL query to insert the product into the database
+
     const query = `
       INSERT INTO public.products (
         product_brand_name, product_description, product_category,
@@ -35,7 +35,7 @@ const addNewProduct = async (req, res) => {
       ) VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;`;
 
-    // Execute the SQL query with the provided product data
+
     const result = await pool.query(query, [
       product_brand_name,
       product_description,
@@ -46,10 +46,9 @@ const addNewProduct = async (req, res) => {
       product_image_url,
     ]);
 
-    // Send a success response with the inserted product data
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    // Send an error response if something goes wrong
+ 
     console.error("Error inserting product:", error);
     res.status(500).json({ error: "Internal server error" });
   }

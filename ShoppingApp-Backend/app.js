@@ -19,7 +19,7 @@ app.use(
 );
 //app.use(helmet());
 
-// Serve static files from the productImages directory
+
 const productImagesPath = path.join(__dirname, "productImages");
 app.use("/productImages", express.static(productImagesPath));
 

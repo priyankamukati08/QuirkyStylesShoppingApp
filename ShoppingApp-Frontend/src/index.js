@@ -41,6 +41,10 @@ root.render(
             path="/Mens/:brand/:productId"
             element={<ProductDetailsPage />}
           />
+          <Route
+            path="/Women/:brand/:productId"
+            element={<ProductDetailsPage />}
+          />
           <Route path="/Profile" element={<Profile />} />
           <Route path="/Login" element={<Login />} />
         </Routes>

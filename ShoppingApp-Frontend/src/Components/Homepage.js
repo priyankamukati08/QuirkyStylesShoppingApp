@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import ImageSlider from "./ImageSlider";
 import FooterContainer from "./Footer";
 import NavigationBar from "./NavigationBar";
@@ -16,9 +15,9 @@ function Homepage() {
   return (
     <>
       <NavigationBar />
-      <div style={{ marginTop: "50px" }} /> {/* Create a gap */}
+      <div style={{ marginTop: "50px" }} /> 
       <ImageSlider imagePairs={imagePairs} />
-      <div style={{ marginTop: "200px" }} /> {/* Create a gap */}
+      <div style={{ marginTop: "200px" }} /> 
       <div
         style={{ textAlign: "center", fontSize: "24px", fontWeight: "bold" }}
       >

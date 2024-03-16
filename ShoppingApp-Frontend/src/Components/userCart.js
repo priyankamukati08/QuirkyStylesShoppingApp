@@ -16,35 +16,40 @@ const ShoppingCartHeading = styled.h1`
   margin-bottom: 20px;
 `;
 
+const PriceDetailsHeading = styled.h2`
+  font-size: 18px;
+  margin-bottom: 10px;
+`;
+
 const CartItemContainer = styled.div`
   display: flex;
   margin-top: 20px;
   border: 1px solid #ccc;
   padding: 20px;
-  width: 50%;
-  margin-right: 650px;
+  width: 45%;
+  margin-right: 350px;
 `;
 
 const CartItem = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 const ProductImage = styled.img`
-  width: 120px;
-  height: 150px;
+  width: 200px;
+  height: 300px;
   object-fit: contain;
   margin-right: 20px;
 `;
 
 const ProductInfo = styled.div`
   flex: 1;
+  margin-top: 1px;
 `;
 
 const ProductTitle = styled.h3`
-  font-size: 18px;
-  margin-bottom: 5px;
+  font-size: 22px;
 `;
 const ProductDescription = styled.p`
   font-size: 18px;
@@ -52,19 +57,19 @@ const ProductDescription = styled.p`
 `;
 
 const ProductPrice = styled.p`
-  font-size: 16px;
+  font-size: 20px;
   margin-bottom: 5px;
 `;
 
 const ProductQuantity = styled.p`
-  font-size: 16px;
+  font-size: 18px;
 `;
 
 const PriceDetailsContainer = styled.div`
   position: fixed; /* Position the container fixed to the viewport */
-  top: 200px; /* Adjust the top position */
-  right: 200px; /* Adjust the right position */
-  width: 25%;
+  top: 210px; /* Adjust the top position */
+  right: 150px; /* Adjust the right position */
+  width: 26%;
 `;
 
 const PriceDetails = styled.div`
@@ -75,21 +80,33 @@ const PriceDetails = styled.div`
 const TotalPrice = styled.p`
   font-size: 18px;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const ShippingFee = styled.p`
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const PlatformFee = styled.p`
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const TotalAmount = styled.p`
   font-size: 20px;
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const PlaceOrderButton = styled.button`
@@ -99,8 +116,7 @@ const PlaceOrderButton = styled.button`
   color: #fff;
   border: none;
   cursor: pointer;
-  margin-top: 20px;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
@@ -123,7 +139,6 @@ const CartPage = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Calculate total price, shipping fee, platform fee, and total amount
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.product_price * item.product_quantity,
     0
@@ -133,6 +148,7 @@ const CartPage = () => {
   const totalAmount = totalPrice + shippingFee + platformFee;
 
   const baseURL = "http://localhost:3001";
+
   return (
     <>
       <NavigationBar />
@@ -160,11 +176,23 @@ const CartPage = () => {
         ))}
         <PriceDetailsContainer>
           <PriceDetails>
-            <TotalPrice>Total Price: ${totalPrice.toFixed(2)}</TotalPrice>
-            <ShippingFee>Shipping Fee: ${shippingFee.toFixed(2)}</ShippingFee>
-            <PlatformFee>Platform Fee: ${platformFee.toFixed(2)}</PlatformFee>
-            <TotalAmount>Total Amount: ${totalAmount.toFixed(2)}</TotalAmount>
-            <PlaceOrderButton>Place Order</PlaceOrderButton>
+            <PriceDetailsHeading>
+              PRICE DETAILS ({cartItems.length} Items)
+            </PriceDetailsHeading>
+            <TotalPrice>
+              <span>Total Price:</span> ${totalPrice.toFixed(2)}
+            </TotalPrice>
+            <ShippingFee>
+              <span>Shipping Fee:</span> ${shippingFee.toFixed(2)}
+            </ShippingFee>
+            <PlatformFee>
+              <span>Platform Fee:</span> ${platformFee.toFixed(2)}
+            </PlatformFee>
+            <hr />
+            <TotalAmount>
+              <span>Total Amount:</span> ${totalAmount.toFixed(2)}
+            </TotalAmount>
+            <PlaceOrderButton>PLACE ORDER</PlaceOrderButton>
           </PriceDetails>
         </PriceDetailsContainer>
       </Container>
