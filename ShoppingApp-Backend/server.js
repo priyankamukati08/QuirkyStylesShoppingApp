@@ -22,7 +22,7 @@ const options = {
     ],
   },
   apis: ["ShoppingApp-Backend/swaggerDefinitions/*.yaml"],
-  apis: ["./swaggerDefinitions/*.yaml"],
+  //apis: ["./swaggerDefinitions/*.yaml"],
 };
 const specs = swaggerJsDoc(options);
 const app = require("./app");

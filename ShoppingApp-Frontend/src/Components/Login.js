@@ -9,6 +9,8 @@ import { Hub } from "aws-amplify/utils";
 import { useNavigate } from "react-router-dom";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import { addUserInfo } from "../store/actions/userInfoActions";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 
 Amplify.configure(awsconfig);
@@ -24,6 +26,7 @@ const Container = styled.div`
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.addUserInfo);
 
   
   const debounce = (func, delay) => {
@@ -42,11 +45,23 @@ function Login() {
       const userAttributes = await fetchUserAttributes();
       dispatch(addUserInfo(userAttributes));
 
-      navigate("/homepage");
+     
     } catch (error) {
       console.error("Error handling login success:", error);
     }
   };
+
+  useEffect(() => {
+    if (userInfo.addUserInfo) {
+      Cookies.set("userID", userInfo.addUserInfo.id);
+      Cookies.set("userName", userInfo.addUserInfo.name);
+      Cookies.set("userPhoneNumber", userInfo.addUserInfo.phone_number);
+      navigate("/homepage");
+    } else if (userInfo.error) {
+      alert("User Authenication Failed");
+    } else {
+    }
+  }, [userInfo, navigate]);
 
  
   const debouncedHandleLoginSuccess = debounce(handleLoginSuccess, 1000);
@@ -81,12 +96,10 @@ function Login() {
           "gender",
         ]}
       >
-        {({ signOut, user }) => (
+        {/* {({ signOut, user }) => (
           <div className="App">
-            <p>Hey {user.username}, welcome to my channel, with auth!</p>
-            <button onClick={signOut}>Sign out</button>
           </div>
-        )}
+        )} */}
       </Authenticator>
     </Container>
   );

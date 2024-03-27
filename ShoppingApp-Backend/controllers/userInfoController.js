@@ -9,8 +9,6 @@ const addUserInfo = async (req, res) => {
       birthdate,
       age,
       gender,
-      shipping_address,
-      billing_address,
       profile_picture_url,
       cash_balance,
     } = req.body;
@@ -20,8 +18,6 @@ const addUserInfo = async (req, res) => {
     birthdate = birthdate ? birthdate : null;
     age = age ? age : null;
     gender = gender ? gender : null;
-    shipping_address = shipping_address ? shipping_address : null;
-    billing_address = billing_address ? billing_address : null;
     profile_picture_url = profile_picture_url ? profile_picture_url : null;
     cash_balance = cash_balance ? cash_balance : null;
 
@@ -34,8 +30,7 @@ const addUserInfo = async (req, res) => {
         birthdate,
         age,
         gender,
-        shipping_address,
-        billing_address,
+
         profile_picture_url,
         cash_balance 
         FROM public.user_info WHERE email = $1`,
@@ -55,12 +50,10 @@ const addUserInfo = async (req, res) => {
         birthdate,
         age,
         gender,
-        shipping_address,
-        billing_address,
         profile_picture_url,
         cash_balance
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING id, name, email, phone_number, birthdate, age, gender, shipping_address, billing_address, profile_picture_url, cash_balance;`; // Include all columns in the RETURNING clause
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING id, name, email, phone_number, birthdate, age, gender, profile_picture_url, cash_balance;`; // Include all columns in the RETURNING clause
 
     const result = await pool.query(query, [
       name,
@@ -69,8 +62,6 @@ const addUserInfo = async (req, res) => {
       birthdate,
       age,
       gender,
-      shipping_address,
-      billing_address,
       profile_picture_url,
       cash_balance,
     ]);

@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProductById } from "../store/actions/productActions";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NavigationBar from "./NavigationBar";
 import { addProductToUserCart } from "../store/actions/userCartActions";
-import Cookies from "js-cookie"; 
+import Cookies from "js-cookie";
+import {
+  addProductsToUserWishlist,
+  fetchUserWishlist,
+} from "../store/actions/userWishlistActions";
+import { getCartByUserId } from "../store/actions/userCartActions";
+import "react-toastify/dist/ReactToastify.css";
+import CustomToast from "./ToastMessage";
 
 const Container = styled.div`
   display: flex;
@@ -65,7 +72,7 @@ const StarIcon = styled.span`
 `;
 
 const Button = styled.button`
-  padding: 20px 150px;
+  padding: 20px 140px;
   background-color: #f04878;
   color: #fff;
   border: none;
@@ -76,6 +83,13 @@ const Button = styled.button`
   font-size: 20px;
   font-weight: bold;
   position: relative;
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      background-color: #555555;
+      cursor: not-allowed;
+    `}
 `;
 
 const SizeSelect = styled.div`
@@ -117,23 +131,22 @@ const SizeText = styled.span`
   font-size: 20px;
 `;
 
-const BagIcon = styled.span`
+const BagIcon1 = styled.span`
   font-size: 24px;
-  margin-right: 10px;
+  margin-right: 15px;
 `;
 
-
 const Message = styled.div`
-  background-color: #f04878;
+  background-color: #000; /* Black background color */
   color: white;
   padding: 10px;
   border-radius: 5px;
-  margin-top: 20px;
   font-weight: bold;
   position: absolute;
-  top: 20px;
+  top: calc(100% + 100px); /* Position it below the bag icon */
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(10px); /* Offset it downward */
+  z-index: 10; /* Ensure it's above other content */
 `;
 
 const ProductDetailsPage = () => {
@@ -143,41 +156,121 @@ const ProductDetailsPage = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [bagItemCount, setBagItemCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
-
-
   const userID = Cookies.get("userID");
+  const { wishlistItems } = useSelector((state) => state.userWishlist);
+  const addProductsToUserWishlistState = useSelector(
+    (state) => state.addProductsToUserWishlist
+  );
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isInUserCart, setIsInUserCart] = useState(false);
+  const { cartItems } = useSelector((state) => state.userCart);
+  const addProductToUserCartState = useSelector(
+    (state) => state.addProductToUserCart
+  );
+  const [toastMessage, setToastMessage] = useState("");
 
-  useEffect(() => {
-    dispatch(getProductById(productId));
-  }, [dispatch, productId]);
+  const showToast = (message) => {
+    setToastMessage(message); // Set the toast message
+  };
 
   const handleSizeChange = (size) => {
     setSelectedSize(size);
   };
 
-  const handleAddToBag = () => {
-    if (!selectedSize) {
-      alert("Please select a size");
+  useEffect(() => {
+    const parsedProductId = parseInt(productId, 10);
+    dispatch(getProductById(parsedProductId));
+    dispatch(fetchUserWishlist(userID));
+    dispatch(getCartByUserId(userID));
+  }, [dispatch, productId, userID]);
+
+  useEffect(() => {
+    if (addProductToUserCartState.addProductToUserCart) {
+      dispatch(getCartByUserId(userID));
+    }
+  }, [addProductToUserCartState, dispatch, userID]);
+
+  useEffect(() => {
+    if (addProductsToUserWishlistState.addProductsToUserWishlist) {
+      dispatch(fetchUserWishlist(userID));
+    }
+  }, [addProductsToUserWishlistState, dispatch, userID]);
+
+  useEffect(() => {
+    const isInWishlist = wishlistItems.some(
+      (item) => String(item.product_id) === productId
+    );
+    setIsInWishlist(isInWishlist);
+  }, [wishlistItems, productId]);
+
+  useEffect(() => {
+    const isInUserCart = cartItems.some(
+      (item) =>
+        String(item.product_id) === productId &&
+        item.product_size === selectedSize
+    );
+    setIsInUserCart(isInUserCart);
+  }, [cartItems, productId, selectedSize]);
+
+  const handleAddToBag = useCallback(() => {
+    const existingProduct = cartItems.find(
+      (item) =>
+        String(item.product_id) === productId &&
+        item.product_size === selectedSize
+    );
+
+    if (existingProduct) {
+      const updatedCart = cartItems.map((item) =>
+        item.product_id === productId && item.product_size === selectedSize
+          ? { ...item, product_quantity: item.product_quantity + 1 }
+          : item
+      );
+
+      dispatch(addProductToUserCart(updatedCart));
+      showToast(
+        "You have this item in your bag and we have increased the quantity by 1"
+      );
+    } else {
+      dispatch(addProductToUserCart(userID, productId, 1, selectedSize))
+        .then(() => {
+          dispatch(getCartByUserId(userID));
+          setBagItemCount(bagItemCount + 1);
+          setSelectedSize("");
+          showToast("Added to bag");
+          setIsInUserCart(true);
+        })
+        .catch((error) => {
+          setErrorMessage("Failed to add product to bag");
+        });
+    }
+  }, [cartItems, selectedSize, userID, productId, bagItemCount, dispatch]);
+
+  const handleAddToWishlist = useCallback(() => {
+    const isInWishlist = wishlistItems.some(
+      (item) => String(item.product_id) === productId
+    );
+
+    setIsInWishlist(isInWishlist);
+
+    if (isInWishlist) {
+      setErrorMessage("Product is already in the wishlist");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
       return;
     }
-
-    dispatch(addProductToUserCart(userID, productId, 1, selectedSize))
+    dispatch(addProductsToUserWishlist(userID, productId))
       .then(() => {
-        setBagItemCount(bagItemCount + 1);
-        setSelectedSize("");
-        setErrorMessage("Added to bag");
+        setErrorMessage("Added to wishlist");
         setTimeout(() => {
           setErrorMessage("");
         }, 3000);
       })
       .catch((error) => {
-        setErrorMessage("Failed to add product to bag");
+        console.error("Failed to add product to wishlist:", error);
+        setErrorMessage("Failed to add product to wishlist");
       });
-  };
-
-  const handleAddToWishlist = () => {
-    console.log("Product added to wishlist:", product);
-  };
+  }, [wishlistItems, userID, productId, dispatch]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -186,6 +279,10 @@ const ProductDetailsPage = () => {
   if (error || !product) {
     return <div>Error: {error}</div>;
   }
+
+  const BagIcon = ({ icon }) => (
+    <span style={{ margin: "10px" }}> {icon} </span>
+  );
 
   const sizes = ["S", "M", "L", "XL", "XXL"];
 
@@ -196,6 +293,14 @@ const ProductDetailsPage = () => {
       <NavigationBar bagItemCount={bagItemCount}></NavigationBar>
       {errorMessage && <Message>{errorMessage}</Message>}
       <Container>
+        <CustomToast
+          message={toastMessage}
+          productImage={
+            toastMessage === "Added to bag"
+              ? `${baseURL}${product.product_image_url}`
+              : null
+          }
+        />
         <ImageContainer>
           <ProductImage
             src={`${baseURL}${product.product_image_url}`}
@@ -237,11 +342,13 @@ const ProductDetailsPage = () => {
                 }
               }}
             >
-              <BagIcon>🛍️</BagIcon>Add to Cart
+              <BagIcon1>🛍️</BagIcon1>
+              {isInUserCart ? "Go to Bag" : "Add to Cart"}
             </Button>
 
-            <Button disabled={!selectedSize} onClick={handleAddToWishlist}>
-              <BagIcon>🤍</BagIcon>Wishlist
+            <Button onClick={handleAddToWishlist} disabled={isInWishlist}>
+              <BagIcon icon={isInWishlist ? "❤️" : "🤍"} />
+              {isInWishlist ? "Wishlisted" : "Wishlist"}
             </Button>
           </div>
         </DetailsContainer>

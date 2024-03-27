@@ -19,10 +19,15 @@ import ProductDetailsPage from "./Components/ProductDetailsPage";
 import Profile from "./Components/Profile";
 import CartPage from "./Components/userCart";
 import Login from "./Components/Login";
+import CheckoutPage from "./Components/CheckoutPage";
+import OrderSuccessPage from "./Components/OrderSuccessPage";
+import WishlistPage from "./Components/Wishlist";
+import UserOrdersPage from "./Components/UserOrdersPage";
 
 Amplify.configure(awsconfig);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <Provider store={store}>
     <React.StrictMode>
@@ -31,12 +36,7 @@ root.render(
           <Route path="/" element={<Landing />} />
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/app" element={<App />} />
-          <Route path="/Mens" element={<Men />} />
-          <Route path="/Women" element={<Women />} />
-          <Route path="/Kids" element={<Kids />} />
-          <Route path="/Home&Living" element={<HomeandLiving />} />
-          <Route path="/Beauty" element={<Beauty />} />
-          <Route path="/userCart" element={<CartPage />} />
+
           <Route
             path="/Mens/:brand/:productId"
             element={<ProductDetailsPage />}
@@ -45,8 +45,23 @@ root.render(
             path="/Women/:brand/:productId"
             element={<ProductDetailsPage />}
           />
+          <Route
+            path="/Kids/:brand/:productId"
+            element={<ProductDetailsPage />}
+          />
+          <Route path="/Mens" element={<Men />} />
+          <Route path="/Women" element={<Women />} />
+
+          <Route path="/Kids" element={<Kids />} />
+          <Route path="/Home&Living" element={<HomeandLiving />} />
+          <Route path="/Beauty" element={<Beauty />} />
+          <Route path="/userCart" element={<CartPage />} />
           <Route path="/Profile" element={<Profile />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/Checkout" element={<CheckoutPage />} />
+          <Route path="/Order-Success" element={<OrderSuccessPage />} />
+          <Route path="/WishlistPage" element={<WishlistPage />} />
+          <Route path="/Ordersdetails" element={<UserOrdersPage />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

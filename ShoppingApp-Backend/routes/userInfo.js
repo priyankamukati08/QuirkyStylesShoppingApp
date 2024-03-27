@@ -4,7 +4,8 @@ const router = express.Router();
 router.use(express.json());
 
 //router.route("/").get(homepageController.getAllProducts);
-//router.route("/").get(userInfoController.createUser);
+
 router.route("/").post(userInfoController.addUserInfo);
+
 
 module.exports = router;

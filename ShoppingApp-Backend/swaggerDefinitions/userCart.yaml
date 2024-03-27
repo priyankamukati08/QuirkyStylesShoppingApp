@@ -48,7 +48,7 @@ paths:
           description: Forbidden. You do not have permission to access this resource.
         500:
           description: Internal server error. Please try again later or contact support.
-  /carts/{id}:
+  /cart/{id}:
     get:
       summary: Get a specific item in the user's cart by ID
       tags:
