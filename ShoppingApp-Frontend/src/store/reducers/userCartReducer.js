@@ -12,6 +12,14 @@ const userCartReducer = (state = initialState, action) => {
       return { ...state, loading: false, cartItems: action.payload };
     case "GET_USERCART_FAILURE":
       return { ...state, loading: false, error: action.payload };
+    case "UPDATE_USERCART":
+      return {
+        ...state,
+        cartItems: action.payload,
+      };
+    case "CLEAR_CART":
+      return { ...state, cartItems: [] };
+
     default:
       return state;
   }

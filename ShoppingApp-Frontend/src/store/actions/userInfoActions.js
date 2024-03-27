@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookies from "js-cookie"; 
 
 const FETCH_USERINFO_LOADING = "FETCH_USERINFO_LOADING";
 const FETCH_USERINFO_SUCCESS = "FETCH_USERINFO_SUCCESS";
@@ -9,6 +8,8 @@ const FETCH_USERINFO_FAILURE = "FETCH_USERINFO_FAILURE";
 const ADD_USERINFO_LOADING = "ADD_USERINFO_LOADING";
 const ADD_USERINFO_SUCCESS = "ADD_USERINFO_SUCCESS";
 const ADD_USERINFO_FAILURE = "ADD_USERINFO_FAILURE";
+
+
 
 
 const UPDATE_USERINFO_LOADING = "UPDATE_USERINFO_LOADING";
@@ -53,7 +54,7 @@ export const addUserInfo = (userInfo) => async (dispatch) => {
       type: ADD_USERINFO_SUCCESS,
       payload: response.data, 
     });
-    Cookies.set("userID", response.data.id);
+    
   } catch (error) {
   
     dispatch({
@@ -100,5 +101,7 @@ export const deleteUserInfo = (userId) => async (dispatch) => {
     });
   }
 };
+
+
 
 

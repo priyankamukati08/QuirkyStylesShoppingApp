@@ -4,6 +4,7 @@ import styled from "styled-components";
 import NavigationBar from "./NavigationBar";
 import { getCartByUserId } from "../store/actions/userCartActions";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Container = styled.div`
   display: flex;
@@ -16,9 +17,16 @@ const ShoppingCartHeading = styled.h1`
   margin-bottom: 20px;
 `;
 
-const PriceDetailsHeading = styled.h2`
-  font-size: 18px;
-  margin-bottom: 10px;
+const ShoppingCartHeadingWhenEmpty = styled.h1`
+  font-size: 24px;
+  margin-bottom: 20px;
+  margin-left: 950px;
+`;
+const ShoppingCartHeadingWhenEmpty1 = styled.h1`
+  font-size: 26px;
+  margin-top: 50px;
+  margin-left: 810px;
+  color: #e60026;
 `;
 
 const CartItemContainer = styled.div`
@@ -28,12 +36,6 @@ const CartItemContainer = styled.div`
   padding: 20px;
   width: 45%;
   margin-right: 350px;
-`;
-
-const CartItem = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
 `;
 
 const ProductImage = styled.img`
@@ -51,6 +53,7 @@ const ProductInfo = styled.div`
 const ProductTitle = styled.h3`
   font-size: 22px;
 `;
+
 const ProductDescription = styled.p`
   font-size: 18px;
   margin-bottom: 5px;
@@ -65,16 +68,32 @@ const ProductQuantity = styled.p`
   font-size: 18px;
 `;
 
+const PlaceOrderButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  background-color: #f04878;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+`;
+
 const PriceDetailsContainer = styled.div`
-  position: fixed; /* Position the container fixed to the viewport */
-  top: 210px; /* Adjust the top position */
-  right: 150px; /* Adjust the right position */
+  position: fixed;
+  top: 210px;
+  right: 150px;
   width: 26%;
 `;
 
 const PriceDetails = styled.div`
   border: 1px solid #ccc;
   padding: 20px;
+`;
+
+const PriceDetailsHeading = styled.h2`
+  font-size: 18px;
+  margin-bottom: 10px;
 `;
 
 const TotalPrice = styled.p`
@@ -109,21 +128,11 @@ const TotalAmount = styled.p`
   align-items: center;
 `;
 
-const PlaceOrderButton = styled.button`
-  width: 100%;
-  padding: 10px;
-  background-color: #f04878;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  font-weight: bold;
-`;
-
 const CartPage = () => {
   const dispatch = useDispatch();
   const { loading, cartItems, error } = useSelector((state) => state.userCart);
   const userID = Cookies.get("userID");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     if (userID) {
@@ -139,6 +148,20 @@ const CartPage = () => {
     return <div>Error: {error}</div>;
   }
 
+  if (!cartItems || cartItems.length === 0) {
+    return (
+      <>
+        <NavigationBar></NavigationBar>
+        <ShoppingCartHeadingWhenEmpty>
+          Shopping Bag
+        </ShoppingCartHeadingWhenEmpty>
+        <ShoppingCartHeadingWhenEmpty1>
+          Your cart is empty. Start shopping now!
+        </ShoppingCartHeadingWhenEmpty1>
+      </>
+    );
+  }
+
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.product_price * item.product_quantity,
     0
@@ -147,31 +170,34 @@ const CartPage = () => {
   const platformFee = 5.0;
   const totalAmount = totalPrice + shippingFee + platformFee;
 
+  const placeOrder = () => {
+    navigate("/checkout", { state: { cartItems: cartItems } });
+  };
+
   const baseURL = "http://localhost:3001";
 
   return (
     <>
-      <NavigationBar />
+      <NavigationBar userAuthRequired={true} />
       <Container>
         <ShoppingCartHeading>Shopping Bag</ShoppingCartHeading>
         {cartItems.map((item) => (
           <CartItemContainer key={item.id}>
-            <CartItem>
-              <ProductImage
-                src={`${baseURL}${item.product_image_url}`}
-                alt={item.product_name}
-              />
-              <ProductInfo>
-                <ProductTitle>{item.product_brand_name}</ProductTitle>
-                <ProductDescription>
-                  {item.product_description}
-                </ProductDescription>
-                <ProductPrice>Price: ${item.product_price}</ProductPrice>
-                <ProductQuantity>
-                  Quantity: {item.product_quantity}
-                </ProductQuantity>
-              </ProductInfo>
-            </CartItem>
+            <ProductImage
+              src={`${baseURL}${item.product_image_url}`}
+              alt={item.product_name}
+            />
+            <ProductInfo>
+              <ProductTitle>{item.product_brand_name}</ProductTitle>
+              <ProductDescription>
+                {item.product_description}
+              </ProductDescription>
+              <ProductPrice>Price: ${item.product_price}</ProductPrice>
+              <ProductPrice>Size: {item.product_size}</ProductPrice>
+              <ProductQuantity>
+                Quantity: {item.product_quantity}
+              </ProductQuantity>
+            </ProductInfo>
           </CartItemContainer>
         ))}
         <PriceDetailsContainer>
@@ -192,7 +218,9 @@ const CartPage = () => {
             <TotalAmount>
               <span>Total Amount:</span> ${totalAmount.toFixed(2)}
             </TotalAmount>
-            <PlaceOrderButton>PLACE ORDER</PlaceOrderButton>
+            <PlaceOrderButton onClick={placeOrder}>
+              Proceed to Checkout
+            </PlaceOrderButton>
           </PriceDetails>
         </PriceDetailsContainer>
       </Container>

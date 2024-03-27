@@ -2,72 +2,86 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Wishlist API"
-  description: "API for managing user wishlists"
+  description: "API for managing user wishlist items"
 paths:
-  /wishlist:
-    get:
-      summary: Get user's wishlist items
+  /userWishlist:
+    post:
+      summary: Create a new wishlist item
       tags:
-        - User's Wishlist
+        - Wishlist
+      parameters:
+        - in: body
+          name: wishlistItem
+          description: Wishlist item object to be created
+          required: true
+          schema:
+            $ref: "#/definitions/WishlistItemInput"
+      responses:
+        201:
+          description: Wishlist item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/WishlistItem"
+        400:
+          description: Bad request
+  /userWishlist/{user_id}:
+    get:
+      summary: Get wishlist items by user ID
+      tags:
+        - Wishlist
+      parameters:
+        - in: path
+          name: user_id
+          description: ID of the user whose wishlist items to retrieve
+          required: true
+          type: integer
       responses:
         200:
-          description: A list of user's wishlist items
+          description: A list of wishlist items for the specified user
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/definitions/Wishlist'
-    post:
-      summary: Add product to wishlist
-      tags:
-        - User's Wishlist
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/definitions/Wishlist'
-      responses:
-        '200':
-          description: Product added to wishlist successfully
-    put:
-      summary: Update product in wishlist
-      tags:
-        - User's Wishlist
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/definitions/Wishlist'
-      responses:
-        '200':
-          description: Product in wishlist updated successfully
+                  $ref: "#/definitions/WishlistItem"
+        404:
+          description: Wishlist items not found for the specified user
     delete:
-      summary: Remove product from wishlist
+      summary: Delete a wishlist item
       tags:
-        - User's Wishlist
+        - Wishlist
+      parameters:
+        - in: path
+          name: user_id
+          description: ID of the wishlist item to be deleted
+          required: true
+          type: integer
       responses:
-        '200':
-          description: Product removed from wishlist successfully
-
+        204:
+          description: Wishlist item deleted successfully
+        404:
+          description: Wishlist item not found
 definitions:
-  Wishlist:
+  WishlistItem:
     type: object
     properties:
       id:
         type: integer
         format: int64
         example: 1
-      user_id:
-        type: string
-        example: "123abc"
       product_id:
         type: integer
         example: 123
-      date_added:
-        type: string
-        format: date-time
-        example: "2023-07-25T05:36:24.983Z"
-
+      user_id:
+        type: integer
+        example: 456
+  WishlistItemInput:
+    type: object
+    properties:
+      product_id:
+        type: integer
+        example: 123
+      user_id:
+        type: integer
+        example: 456

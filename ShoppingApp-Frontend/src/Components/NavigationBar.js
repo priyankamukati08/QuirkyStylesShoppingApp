@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import { NavLink, Link, useNavigate } from "react-router-dom";
+import { fetchAuthSession, signOut } from "aws-amplify/auth";
+import Cookies from "js-cookie";
 
 const NavbarContainer = styled.nav`
   padding: 1.2rem;
@@ -20,8 +22,8 @@ const LogoContainer = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 1000%;
-  height: 199%;
+  width: 400%;
+  height: 180%;
 `;
 
 const NavMenu = styled.ul`
@@ -74,10 +76,26 @@ const DropdownContent1 = styled.div`
   position: absolute;
   right: 0;
   top: 100%;
-  padding: 15px;
+  padding: 20px;
   background-color: white;
   z-index: 1;
   font-size: 15px;
+  text-transform: capitalize;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.9);
+  transition: opacity 0.3s ease-in-out; /* Add transition effect */
+  opacity: ${(props) => (props.visible ? "1" : "0")}; /* Set initial opacity */
+`;
+
+const DropdownContent2 = styled.div`
+  display: ${(props) => (props.visible ? "block" : "none")};
+  position: absolute;
+  right: 0;
+  top: 100%;
+  height: 370px;
+  padding: 30px;
+  background-color: white;
+  z-index: 1;
+  font-size: 18px;
   text-transform: capitalize;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.9);
   transition: opacity 0.3s ease-in-out; /* Add transition effect */
@@ -160,10 +178,22 @@ const IconImage = styled.img`
   width: 2rem;
   height: 2rem;
 `;
-const BagContent = styled(WishlistContent)``;
-
+const BagContent = styled(WishlistContent)`
+  cursor: ${(props) => (props.authenticated ? "pointer" : "not-allowed")};
+`;
 const ProfilePopupText = styled.div`
-  font-size: 14px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  text-align: left;
+`;
+const ProfilePopupText2 = styled.div`
+  font-size: 20px;
+  margin-bottom: 10px;
+  text-align: left;
+  color: #ff0090;
+`;
+const ProfilePopupText1 = styled.div`
+  font-size: 18px;
   margin-bottom: 10px;
   text-align: left;
 `;
@@ -200,30 +230,109 @@ const ProfilePopupLink1 = styled.a`
   }
 `;
 
-export const NavigationBar = () => {
+export const NavigationBar = (props) => {
+  const { userAuthRequired } = props;
   const [menDropdownVisible, setMenDropdownVisible] = useState(false);
   const [womenDropdownVisible, setWomenDropdownVisible] = useState(false);
   const [kidsDropdownVisible, setKidsDropdownVisible] = useState(false);
   const [homeAndLivingsDropdownVisible, setHomeAndLivingsDropdownVisible] =
     useState(false);
   const [beautyDropdownVisible, setBeautyDropdownVisible] = useState(false);
-  //const { bagItemCount } = useSelector((state) => state.userCart);
   const [profilePopupVisible, setProfilePopupVisible] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const userName = Cookies.get("userName");
+  const userPhoneNumber = Cookies.get("userPhoneNumber");
 
   let navigate = useNavigate();
-  const handleBagClick = () => {
-    navigate(`/userCart/:userId`);
-  };
 
   const routeChange = () => {
     let path = `/homepage`;
     navigate(path);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await checkAuthStatus();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (userAuthRequired && isAuthenticated === false) {
+      let path = `/Login`;
+      navigate(path);
+    }
+  }, [isAuthenticated, navigate, userAuthRequired]);
+
+  const checkAuthStatus = async () => {
+    try {
+      await fetchAuthSession();
+      setIsAuthenticated(true);
+    } catch (error) {
+      setIsAuthenticated(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      setIsAuthenticated(false);
+      console.log("logout");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  const handleLogoutClick = (event) => {
+    event.preventDefault();
+    handleLogout();
+  };
+
+  const renderProfileDropdown = () => {
+    if (isAuthenticated) {
+      return (
+        <DropdownContent2 visible={profilePopupVisible}>
+          <ProfilePopupText2>Hello {userName}</ProfilePopupText2>
+          <ProfilePopupText1>{userPhoneNumber}</ProfilePopupText1>
+          <hr />
+          <ProfilePopupLink1 href="/Ordersdetails">Orders</ProfilePopupLink1>
+          <ProfilePopupLink1 href="/WishlistPage">Wishlist</ProfilePopupLink1>
+          <ProfilePopupLink1 href="/contact-us">Contact Us</ProfilePopupLink1>
+          <hr />
+          <ProfilePopupLink1 href="/profile">Edit Profile</ProfilePopupLink1>
+          <ProfilePopupLink1 href="/homepage" onClick={handleLogoutClick}>
+            Logout
+          </ProfilePopupLink1>
+        </DropdownContent2>
+      );
+    } else {
+      return (
+        <DropdownContent1 visible={profilePopupVisible}>
+          <ProfilePopupText>Welcome</ProfilePopupText>
+          <ProfilePopupText>
+            To access account and manage orders
+          </ProfilePopupText>
+          <ProfilePopupLink href="/login" isButton>
+            LOGIN / SIGNUP
+          </ProfilePopupLink>
+          <hr />
+          <ProfilePopupLink1 href="/Ordersdetails">Orders</ProfilePopupLink1>
+          <ProfilePopupLink1 href="/WishlistPage">Wishlist</ProfilePopupLink1>
+          <ProfilePopupLink1 href="/contact-us">Contact Us</ProfilePopupLink1>
+        </DropdownContent1>
+      );
+    }
+  };
+
   return (
     <NavbarContainer>
       <LogoContainer>
-        <LogoImage src="/Mainlogo.png" alt="Logo" onClick={routeChange} />
+        <LogoImage src="/Mainlogo.svg" alt="Logo" onClick={routeChange} />
       </LogoContainer>
       <NavMenu>
         <NavItem
@@ -245,7 +354,7 @@ export const NavigationBar = () => {
         >
           <NavLinks to="/Women">WOMEN</NavLinks>
           <DropdownContent visible={womenDropdownVisible}>
-            <DropdownLink category="women">
+            <DropdownLink to="/Womens" category="women">
               Clothes
             </DropdownLink>
             <DropdownLink category="women">Footwear</DropdownLink>
@@ -310,35 +419,49 @@ export const NavigationBar = () => {
             <IconImage src="/profileiconimg.png"></IconImage>
             <ProfileText>Profile</ProfileText>
           </ProfileContent>
-          <DropdownContent1 visible={profilePopupVisible}>
-            <ProfilePopupText>Welcome</ProfilePopupText>
-            <ProfilePopupText>
-              To access account and manage orders
-            </ProfilePopupText>
-            <ProfilePopupLink href="/login" isButton>
-              LOGIN / SIGNUP
-            </ProfilePopupLink>
-            <hr />
-            <ProfilePopupLink1 href="/orders">Orders</ProfilePopupLink1>
-            <ProfilePopupLink1 href="/wishlist">Wishlist</ProfilePopupLink1>
-            <ProfilePopupLink1 href="/contact-us">Contact Us</ProfilePopupLink1>
-          </DropdownContent1>
+          {renderProfileDropdown()}
         </NavItem>
         <NavItem>
-          <WishlistContent>
+          <WishlistContent
+            authenticated={isAuthenticated}
+            onClick={() => {
+              if (!isAuthenticated) {
+                navigate("/login");
+              }
+            }}
+          >
             <IconImage src="/wishlisticonimg.png"></IconImage>
-            <BiggerNavLinks to="/Wishlist">Wishlist</BiggerNavLinks>
+            {isAuthenticated ? (
+              <BiggerNavLinks to="/WishlistPage">Wishlist</BiggerNavLinks>
+            ) : (
+              <BiggerNavLinks>Wishlist</BiggerNavLinks>
+            )}
           </WishlistContent>
         </NavItem>
         <NavItem>
-          <BagContent>
+          <BagContent
+            authenticated={isAuthenticated}
+            onClick={() => {
+              if (!isAuthenticated) {
+                navigate("/login");
+              }
+            }}
+          >
             <IconImage src="/bagiconimg.png"></IconImage>
-            <BiggerNavLinks to="/userCart">Bag</BiggerNavLinks>
+            {isAuthenticated ? (
+              <BiggerNavLinks to="/userCart">Bag</BiggerNavLinks>
+            ) : (
+              <BiggerNavLinks>Bag</BiggerNavLinks>
+            )}
           </BagContent>
         </NavItem>
       </NavMenu>
     </NavbarContainer>
   );
+};
+
+NavigationBar.defaultProps = {
+  userAuthRequired: false, // Default value for name prop
 };
 
 export default NavigationBar;

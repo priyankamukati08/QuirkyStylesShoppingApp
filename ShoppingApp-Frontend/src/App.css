@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+.Toastify__toast-container {
+  margin-top: 100px;
+  /* Add margin-top */
+}

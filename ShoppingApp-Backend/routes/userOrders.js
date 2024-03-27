@@ -1,7 +1,11 @@
 const express = require("express");
-const homepageController = require("../controllers/homepageController");
+const userOrdersController = require("../controllers/userOrdersController");
 const router = express.Router();
+router.use(express.json());
 
-router.route("/products").get(homepageController.getAllProducts);
+router.route("/:userid").get(userOrdersController.getAllUserOrders);
+router.route("/").post(userOrdersController.createUserOrder);
+router.route("/:id").put(userOrdersController.updateUserOrder);
+router.route("/:id").delete(userOrdersController.deleteUserOrder);
 
 module.exports = router;

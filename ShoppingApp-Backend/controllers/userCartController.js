@@ -1,17 +1,43 @@
 const pool = require("../db");
 
+// addToCart function in your backend API
+
 const addToCart = async (req, res) => {
   const { user_id, product_id, product_quantity, product_size } = req.body;
 
   try {
     const client = await pool.connect();
-    const result = await client.query(
-      "INSERT INTO carts (user_id, product_id, product_quantity, product_size) VALUES ($1, $2, $3, $4) RETURNING *",
-      [user_id, product_id, product_quantity, product_size]
+
+    // Check if the product with the same ID and size already exists in the cart
+    const existingProduct = await client.query(
+      "SELECT * FROM carts WHERE user_id = $1 AND product_id = $2 AND product_size = $3",
+      [user_id, product_id, product_size]
     );
-    const addedItem = result.rows[0];
+
+    if (existingProduct.rows.length > 0) {
+      // If the product exists, update its quantity
+
+      const updatedQuantity =
+        parseFloat(existingProduct.rows[0].product_quantity) +
+        parseFloat(product_quantity);
+
+      const result = await client.query(
+        "UPDATE carts SET product_quantity = $1 WHERE user_id = $2 AND product_id = $3 AND product_size = $4 RETURNING *",
+        [updatedQuantity, user_id, product_id, product_size]
+      );
+      const updatedItem = result.rows[0];
+      res.status(200).json(updatedItem);
+    } else {
+      // If the product doesn't exist, add a new entry to the cart
+      const result = await client.query(
+        "INSERT INTO carts (user_id, product_id, product_quantity, product_size) VALUES ($1, $2, $3, $4) RETURNING *",
+        [user_id, product_id, product_quantity, product_size]
+      );
+      const addedItem = result.rows[0];
+      res.status(201).json(addedItem);
+    }
+
     client.release();
-    res.status(201).json(addedItem);
   } catch (err) {
     console.error("Error executing query", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -39,5 +65,18 @@ const getCartByUserId = async (req, res) => {
   }
 };
 
+const deleteCartByUserId = async (req, res) => {
+  const userId = req.params.userid;
 
-module.exports = { getCartByUserId, addToCart };
+  try {
+    const client = await pool.connect();
+    await client.query("DELETE FROM carts WHERE user_id = $1", [userId]);
+    client.release();
+    res.sendStatus(204); // No content response
+  } catch (err) {
+    console.error("Error executing query", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { getCartByUserId, addToCart, deleteCartByUserId };

@@ -1,5 +1,7 @@
+
+
 const initialState = {
-  addUserInfo: [],
+  addUserInfo: null,
   loading: false,
   error: null,
 };
@@ -16,4 +18,5 @@ const addUserInfoReducer = (state = initialState, action) => {
       return state;
   }
 };
+
 export default addUserInfoReducer;
