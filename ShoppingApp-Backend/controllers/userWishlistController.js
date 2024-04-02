@@ -2,9 +2,10 @@ const pool = require("../db");
 
 // GET all wishlist items for a user
 const getWishlistItemsByUserId = async (req, res) => {
-  const userId = req. params.userid;
+  const userId = req.params.userid;
+  let client;
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
     const result = await client.query(
       `SELECT w.*, p.product_brand_name, p.product_image_url, p.product_price,p.product_description
        FROM wishlist w
@@ -13,11 +14,15 @@ const getWishlistItemsByUserId = async (req, res) => {
       [userId]
     );
     const wishlistItems = result.rows;
-    client.release();
+  
     res.json(wishlistItems);
   } catch (err) {
     console.error("Error fetching wishlist items:", err);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    if (client) {
+      client.release();
+    }
   }
 };
 

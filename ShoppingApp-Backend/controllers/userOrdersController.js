@@ -22,6 +22,7 @@ const getAllUserOrders = async (req, res) => {
         user_order.payment_status, 
         user_order.delivery_status, 
         user_order.order_notes, 
+        user_order.create_date, 
         order_details.product_id, 
         order_details.product_price, 
         order_details.product_quantity,

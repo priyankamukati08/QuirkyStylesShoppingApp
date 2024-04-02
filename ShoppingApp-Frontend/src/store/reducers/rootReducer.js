@@ -10,8 +10,7 @@ import addProductsToUserWishlist from "./addProductsToUserWishlistReducer";
 import userWishlistReducer from "./userWishlistReducer";
 import addUserAddressReducer from "./addUserAddressReducer";
 import userAddressReducer from "./userAddressReducer";
- 
-
+import productQuantityReducer from "./productQuantityReducer";
 
 const rootReducer = combineReducers({
   products: productReducer,
@@ -25,6 +24,7 @@ const rootReducer = combineReducers({
   userWishlist: userWishlistReducer,
   addUserAddress: addUserAddressReducer,
   userAddress: userAddressReducer,
+  productQuantity: productQuantityReducer,
 });
 
 export default rootReducer;

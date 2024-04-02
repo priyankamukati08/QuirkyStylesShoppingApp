@@ -5,9 +5,15 @@ import { addUserOrders } from "../store/actions/userOrdersActions";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import NavigationBarforcheckoutpage from "./Navigationbarforcheckout";
-import Modal from "./ModalMessageForAddress"; // Import the Modal component
+import Modal from "./ModalMessageForAddress";
 import { addUserAddress } from "../store/actions/userAddressActions";
-import { fetchUserAddress } from "../store/actions/userAddressActions";
+import {
+  fetchUserAddress,
+  updateUserAddress,
+  deleteUserAddress,
+} from "../store/actions/userAddressActions";
+import { getCartByUserId } from "../store/actions/userCartActions";
+import UpdateModal from "./ModalMessagToUpdateAddress";
 
 const Container = styled.div`
   display: flex;
@@ -24,14 +30,16 @@ const ItemContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const ItemDescription = styled.p`
-  font-size: 16px;
+const ItemDescription1 = styled.p`
+  font-size: 18px;
+  margin-left: -15px;
 `;
 
 const OrderSummaryContainer = styled.div`
   border: 1px solid #ccc;
   padding: 20px;
-  width: 80%;
+  width: 90%;
+  box-shadow: 5px 10px 8px #888888;
 `;
 
 const OrderSummaryItem = styled.div`
@@ -39,29 +47,77 @@ const OrderSummaryItem = styled.div`
   justify-content: space-between;
   margin-top: 20px;
   margin-bottom: 20px;
+  font-size: 18px;
+`;
+
+const OrderSummaryItem1 = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 17px;
+  font-weight: bold;
 `;
 
 const ProductImage = styled.img`
-  width: 200px;
-  height: 300px;
+  width: 150px;
+  height: 200px;
   object-fit: contain;
-  margin-right: 20px;
+  margin-left: -25px;
 `;
 
 const Form = styled.form`
   display: flex;
+  font-size: 20px;
+  width: 90%;
   flex-direction: column;
+  margin-bottom: 40px;
+  margin-top: 40px;
+  textarea {
+    box-shadow: 5px 10px 8px #888888;
+    /* Add any other styles you want for the textarea */
+  }
+
+  select {
+    box-shadow: 5px 10px 8px #888888;
+    /* Add any other styles you want for the select element */
+  }
+
+  label {
+    font-weight: bold; /* Make the label text bold */
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
 `;
 
 const Button = styled.button`
-  background-color: #007bff;
+  background-color: #f04878;
   color: #fff;
+  font-size: 15px;
+  font-weight: bold;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
+  margin-bottom: 20px;
   margin-left: 40px; /* Set margin-bottom to 0 */
+  box-shadow: 5px 10px 8px #888888;
+`;
+
+const Button2 = styled.button`
+  background-color: #f04878;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  padding: 15px 80px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-left: 100px; /* Set margin-bottom to 0 */
+  margin-bottom: 200px;
+  box-shadow: 5px 10px 8px #888888;
 `;
 
 const TitleContainer = styled.div`
@@ -73,23 +129,39 @@ const TitleContainer = styled.div`
 
 const SectionTitle = styled.h2`
   font-size: 24px;
-  margin-top: 100px;
+  margin-top: 20px;
+`;
+
+const SectionTitle1 = styled.h2`
+  font-size: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+const SectionTitle2 = styled.h2`
+  font-size: 15px;
+  margin-top: 30px;
+  margin-bottom: 5px;
 `;
 
 const Button1 = styled.button`
-  background-color: #007bff;
+  background-color: #f04878;
   color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 100px;
+  font-size: 15px;
+  font-weight: bold;
+  box-shadow: 5px 10px 8px #888888;
+  margin-top: 10px;
 `;
 
 const LeftSection = styled.div`
   flex: 7;
   padding-right: 20px;
   margin-left: 400px;
+
   border-right: 1px solid #ccc; /* Add border to create a vertical line */
 `;
 
@@ -103,7 +175,22 @@ const AddressBox = styled.div`
   align-items: center; /* Align items vertically */
   border: 1px solid #ccc;
   padding: 20px;
-  margin-bottom: 20px;
+  width: 900px;
+  height: 350px;
+  margin-bottom: 40px;
+  box-shadow: 5px 10px 8px #888888;
+  font-size: 20px;
+`;
+
+const AddressBox1 = styled.div`
+  display: flex;
+  align-items: center; /* Align items vertically */
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 900px;
+  margin-top: -10px;
+  box-shadow: 5px 10px 8px #888888;
+  font-size: 20px;
 `;
 
 const RadioLabel = styled.label`
@@ -117,11 +204,22 @@ const RadioLabel1 = styled.label`
 const AddressContent = styled.div`
   flex: 1; /* Take remaining space */
   margin-top: 10px;
+  font-size: 18px;
 `;
 
 const RadioInput = styled.input`
-  margin-right: 10px;
-  margin-bottom: 70px;
+  margin-right: 15px;
+  margin-bottom: 130px;
+  transform: scale(1.5);
+`;
+
+const RadioInput1 = styled.input`
+  margin-right: 15px;
+  margin-bottom: 90px;
+  transform: scale(1.5);
+  &:checked {
+    background-color: red; /* Set the background color to pink when checked */
+  }
 `;
 const EditRemoveContainer = styled.div`
   display: flex;
@@ -147,15 +245,10 @@ const EditRadioLabel2 = styled.div`
 
 const CheckoutPage = () => {
   const dispatch = useDispatch();
-  const [shippingAddress, setShippingAddress] = useState({
-    name: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    country: "",
-  });
+
   const [selectedAddressId, setSelectedAddressId] = useState(null); // State to store the selected address ID
+  const [shippingAddressFull, setShippingAddressFull] = useState("");
+  const [billingAddressFull, setBillingAddressFull] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
   const { cartItems } = useSelector((state) => state.userCart);
@@ -164,11 +257,13 @@ const CheckoutPage = () => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const user_id = Cookies.get("userID");
   const navigate = useNavigate();
-
-  const defaultAddress = userAddress
+  const [editAddressData, setEditAddressData] = useState(null); // State to hold the initial address data for editing
+  const [showEditAddressModal, setShowEditAddressModal] = useState(false); // State to manage the visibility of the edit address modal
+  const [orderNotes, setOrderNotes] = useState("");
+  const defaultAddress = Array.isArray(userAddress)
     ? userAddress.find((address) => address.is_default)
     : null;
-  const otherAddresses = userAddress
+  const otherAddresses = Array.isArray(userAddress)
     ? userAddress.filter((address) => !address.is_default)
     : [];
 
@@ -186,9 +281,16 @@ const CheckoutPage = () => {
         product_quantity: item.product_quantity,
         product_size: item.product_size,
       })),
-      shippingAddress,
+      shipping_address: shippingAddressFull,
+      billing_address: billingAddressFull,
       paymentMethod,
       user_id,
+      total_price: totalPrice.toFixed(2), // Add total price to order details
+      status: "Pending", // Add status to order details
+      order_payment_type: paymentMethod, // Add payment type to order details
+      payment_status: "Paid", // Add payment status to order details
+      delivery_status: "Pending", // Add delivery status to order details
+      order_notes: orderNotes, // Add order notes if needed
       products: cartItems,
     };
 
@@ -204,15 +306,18 @@ const CheckoutPage = () => {
       });
   };
 
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.product_price * item.product_quantity,
-    0
-  );
+  useEffect(() => {
+    if (user_id) {
+      dispatch(getCartByUserId(user_id));
+    }
+  }, [dispatch, user_id]);
+
   const baseURL = "http://localhost:3001";
 
   const handleAddAddress = (formData) => {
     dispatch(addUserAddress(formData, user_id))
       .then(() => {
+        dispatch(fetchUserAddress(user_id));
         setShowAddressModal(false);
       })
       .catch((error) => {
@@ -222,18 +327,56 @@ const CheckoutPage = () => {
 
   const handleSelectAddress = (addressId) => {
     setSelectedAddressId(addressId);
+
+    const selectedAddress = userAddress.find(
+      (address) => address.id === addressId
+    );
+    if (selectedAddress) {
+      const fullAddress = `${selectedAddress.fullname}, ${selectedAddress.address}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.zip}`;
+      setShippingAddressFull(fullAddress);
+    }
   };
+
   const handleUseAsBilling = (addressId) => {
-    // Logic to handle selecting an address as the billing address
-    // You might want to update the state to keep track of the selected billing address
+    const selectedAddress = userAddress.find(
+      (address) => address.id === addressId
+    );
+
+    if (selectedAddress) {
+      const fullBillingAddress = `${selectedAddress.fullname}, ${selectedAddress.address}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.zip}`;
+
+      setBillingAddressFull(fullBillingAddress);
+    }
   };
-  const handleEditAddress = (addressId) => {
-    // Logic to handle editing address
+  const handleOpenEditModal = (addressData) => {
+    setEditAddressData(addressData);
+    setSelectedAddressId(addressData.id);
+    setShowEditAddressModal(true);
+  };
+
+  const handleEditAddress = (addressId, updatedAddressData) => {
+    dispatch(updateUserAddress(user_id, addressId, updatedAddressData)).then(
+      () => {
+        dispatch(fetchUserAddress(user_id));
+        setShowEditAddressModal(false);
+      }
+    );
   };
 
   const handleRemoveAddress = (addressId) => {
-    // Logic to handle removing address
+    dispatch(deleteUserAddress(user_id, addressId)).then(() => {
+      dispatch(fetchUserAddress(user_id));
+      setShowAddressModal(false);
+    });
   };
+
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.product_price * item.product_quantity,
+    0
+  );
+  const shippingFee = 10.0;
+  const platformFee = 5.0;
+  const totalAmount = totalPrice + shippingFee + platformFee;
 
   return (
     <>
@@ -248,7 +391,7 @@ const CheckoutPage = () => {
               </Button1>
             </TitleContainer>
             <ItemContainer>
-              <h3>Default Address:</h3>
+              <SectionTitle1>DEFAULT ADDRESS</SectionTitle1>
               {defaultAddress && (
                 <AddressBox key={defaultAddress.id}>
                   <div style={{ display: "flex", flexDirection: "column" }}>
@@ -260,7 +403,7 @@ const CheckoutPage = () => {
                           id={defaultAddress.id}
                           checked={selectedAddressId === defaultAddress.id}
                           onChange={() =>
-                            setSelectedAddressId(defaultAddress.id)
+                            handleSelectAddress(defaultAddress.id)
                           }
                         />
                       </RadioLabel>
@@ -271,12 +414,13 @@ const CheckoutPage = () => {
                           {defaultAddress.city}, {defaultAddress.state},{" "}
                           {defaultAddress.zip}
                         </p>
+                        <p>{defaultAddress.mobilenumber}</p>
                       </AddressContent>
                     </div>
                     <EditRemoveContainer>
                       <EditRemoveButtons>
                         <Button
-                          onClick={() => handleEditAddress(defaultAddress.id)}
+                          onClick={() => handleOpenEditModal(defaultAddress)} // Pass the default address data to the editing modal
                           style={{ marginRight: "10px" }}
                         >
                           Edit
@@ -294,7 +438,7 @@ const CheckoutPage = () => {
                               type="checkbox"
                               onChange={() =>
                                 handleUseAsBilling(defaultAddress.id)
-                              }
+                              } // Call handleUseAsBilling with the address ID
                             />
                             Use this address as billing address
                           </RadioLabel1>
@@ -305,20 +449,20 @@ const CheckoutPage = () => {
                 </AddressBox>
               )}
 
+              <SectionTitle1>OTHER ADDRESS</SectionTitle1>
               {otherAddresses.length > 0 && (
                 <div>
-                  <h3>Other Addresses:</h3>
                   {otherAddresses.map((address) => (
-                    <AddressBox key={address.id}>
+                    <AddressBox1 key={address.id}>
                       <div style={{ display: "flex", flexDirection: "column" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <RadioLabel>
-                            <RadioInput
+                            <RadioInput1
                               type="radio"
                               name="address"
                               id={address.id}
                               checked={selectedAddressId === address.id}
-                              onChange={() => setSelectedAddressId(address.id)}
+                              onChange={() => handleSelectAddress(address.id)} // Call handleSelectAddress with the address ID
                             />
                           </RadioLabel>
                           <AddressContent>
@@ -333,7 +477,7 @@ const CheckoutPage = () => {
                           <EditRemoveContainer>
                             <EditRemoveButtons>
                               <Button
-                                onClick={() => handleEditAddress(address.id)}
+                                onClick={() => handleOpenEditModal(address)} // Pass the address data to the editing modal
                                 style={{ marginRight: "10px" }}
                               >
                                 Edit
@@ -351,7 +495,7 @@ const CheckoutPage = () => {
                                     type="checkbox"
                                     onChange={() =>
                                       handleUseAsBilling(address.id)
-                                    }
+                                    } // Call handleUseAsBilling with the address ID
                                   />
                                   Use this address as billing address
                                 </RadioLabel>
@@ -360,16 +504,24 @@ const CheckoutPage = () => {
                           </EditRemoveContainer>
                         )}
                       </div>
-                    </AddressBox>
+                    </AddressBox1>
                   ))}
                 </div>
               )}
             </ItemContainer>
           </Section>
+          <Modal
+            isOpen={showEditAddressModal}
+            onClose={() => setShowEditAddressModal(false)}
+            onSubmit={(updatedAddressData) =>
+              handleEditAddress(editAddressData.id, updatedAddressData)
+            }
+            initialData={editAddressData}
+          />
         </LeftSection>
         <RightSection>
           <Section>
-            <SectionTitle>Review Items and Shipping</SectionTitle>
+            <SectionTitle2>DELIVERY ESTIMATES</SectionTitle2>
             <ItemContainer>
               {cartItems.map((item, index) => (
                 <div key={index}>
@@ -377,15 +529,7 @@ const CheckoutPage = () => {
                     src={`${baseURL}${item.product_image_url}`}
                     alt={item.product_name}
                   />
-                  <ItemDescription>Estimated delivery by:</ItemDescription>
-
-                  <ItemDescription>
-                    Price: ${item.product_price}
-                  </ItemDescription>
-                  <ItemDescription>
-                    Quantity: {item.product_quantity}
-                  </ItemDescription>
-                  <ItemDescription>Size: {item.product_size}</ItemDescription>
+                  <ItemDescription1>Estimated delivery by</ItemDescription1>
                 </div>
               ))}
             </ItemContainer>
@@ -393,18 +537,26 @@ const CheckoutPage = () => {
           <Section>
             <SectionTitle>Order Summary</SectionTitle>
             <OrderSummaryContainer>
+              <OrderSummaryItem1>
+                PRICE DETAILS ({cartItems.length} Items)
+              </OrderSummaryItem1>
               <OrderSummaryItem>
-                <span>Items:</span>
-                <span>{cartItems.length}</span>
+                <span>Total Price</span> ${totalPrice.toFixed(2)}
               </OrderSummaryItem>
               <OrderSummaryItem>
-                <span>Total Price:</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>Shipping Fee</span> ${shippingFee.toFixed(2)}
+              </OrderSummaryItem>
+              <OrderSummaryItem>
+                <span>Platform Fee</span> ${platformFee.toFixed(2)}
+              </OrderSummaryItem>
+              <hr />
+              <OrderSummaryItem>
+                <span>Total Amount</span> ${totalAmount.toFixed(2)}
               </OrderSummaryItem>
             </OrderSummaryContainer>
           </Section>
           <Form>
-            <label htmlFor="paymentMethod">Payment Method:</label>
+            <label htmlFor="paymentMethod">Payment Method</label>
             <select
               id="paymentMethod"
               value={paymentMethod}
@@ -427,16 +579,37 @@ const CheckoutPage = () => {
               <option value="Gift Cards/Vouchers">Gift Cards/Vouchers</option>
             </select>
           </Form>
-          <Button onClick={handlePlaceOrder} disabled={loading}>
+          <Form>
+            <label htmlFor="orderNotes">Order Notes</label>
+            <textarea
+              id="orderNotes"
+              value={orderNotes}
+              onChange={(e) => setOrderNotes(e.target.value)}
+              rows={4}
+              cols={50}
+              placeholder="Add any special notes or instructions for your order..."
+            />
+          </Form>
+          <Button2 onClick={handlePlaceOrder} disabled={loading}>
             {loading ? "Placing Order..." : "Place Your Order"}
-          </Button>
+          </Button2>
           {error && <p>Error: {error}</p>}
         </RightSection>
       </Container>
+
       <Modal
         isOpen={showAddressModal}
         onClose={() => setShowAddressModal(false)}
         onSubmit={handleAddAddress}
+      />
+
+      <UpdateModal
+        isOpen={showEditAddressModal}
+        onClose={() => setShowEditAddressModal(false)}
+        onSubmit={(updatedAddressData) =>
+          handleEditAddress(editAddressData.id, updatedAddressData)
+        }
+        initialAddress={editAddressData} // Pass the editAddressData
       />
     </>
   );

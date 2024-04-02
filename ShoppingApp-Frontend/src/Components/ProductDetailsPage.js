@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { getProductById } from "../store/actions/productActions";
 import styled, { css } from "styled-components";
 import NavigationBar from "./NavigationBar";
@@ -13,6 +13,9 @@ import {
 import { getCartByUserId } from "../store/actions/userCartActions";
 import "react-toastify/dist/ReactToastify.css";
 import CustomToast from "./ToastMessage";
+import SizeColorQuantity from "./ProductQuantity";
+import { getProductSizeAndColor } from "../store/actions/productQuantityActions";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -83,6 +86,7 @@ const Button = styled.button`
   font-size: 20px;
   font-weight: bold;
   position: relative;
+  box-shadow: 5px 10px 8px #888888;
 
   ${({ disabled }) =>
     disabled &&
@@ -112,6 +116,7 @@ const SizeOptions = styled.div`
 `;
 
 const Circle = styled.div`
+  position: relative; /* Required for absolute positioning of the cross */
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -123,8 +128,28 @@ const Circle = styled.div`
   margin-right: 10px;
   margin-left: 10px;
   margin-top: 10px;
-  cursor: pointer;
+  cursor: ${({ quantity }) => (quantity > 0 ? "pointer" : "not-allowed")};
   ${({ selected }) => selected && "color: hotpink; border-color: hotpink; "}
+  ${({ quantity }) =>
+    quantity === 0 &&
+    css`
+      cursor: not-allowed;
+      opacity: 0.5; /* Reduce opacity for disabled circle */
+      &:before,
+      &:after {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        background-color: red;
+      }
+      &:before {
+        transform: rotate(45deg); /* Diagonal cross line */
+      }
+      &:after {
+        transform: rotate(-45deg); /* Diagonal cross line */
+      }
+    `}
 `;
 
 const SizeText = styled.span`
@@ -153,6 +178,11 @@ const ProductDetailsPage = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const { loading, product, error } = useSelector((state) => state.productbyid);
+  const {
+    productSizeColor,
+    loading: sizeColorLoading,
+    error: sizeColorError,
+  } = useSelector((state) => state.productQuantity);
   const [selectedSize, setSelectedSize] = useState("");
   const [bagItemCount, setBagItemCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
@@ -168,6 +198,9 @@ const ProductDetailsPage = () => {
     (state) => state.addProductToUserCart
   );
   const [toastMessage, setToastMessage] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [addedToBag, setAddedToBag] = useState(false);
+  let navigate = useNavigate();
 
   const showToast = (message) => {
     setToastMessage(message); // Set the toast message
@@ -191,6 +224,14 @@ const ProductDetailsPage = () => {
   }, [addProductToUserCartState, dispatch, userID]);
 
   useEffect(() => {
+    dispatch(getProductById(productId));
+  }, [dispatch, productId]);
+
+  useEffect(() => {
+    dispatch(getProductSizeAndColor(productId));
+  }, [dispatch, productId]);
+
+  useEffect(() => {
     if (addProductsToUserWishlistState.addProductsToUserWishlist) {
       dispatch(fetchUserWishlist(userID));
     }
@@ -203,6 +244,10 @@ const ProductDetailsPage = () => {
     setIsInWishlist(isInWishlist);
   }, [wishlistItems, productId]);
 
+  const handleGoToBag = () => {
+    navigate("/usercart");
+  };
+
   useEffect(() => {
     const isInUserCart = cartItems.some(
       (item) =>
@@ -212,30 +257,52 @@ const ProductDetailsPage = () => {
     setIsInUserCart(isInUserCart);
   }, [cartItems, productId, selectedSize]);
 
+  useEffect(() => {
+    setAddedToBag(false);
+  }, [selectedSize]);
+
   const handleAddToBag = useCallback(() => {
-    const existingProduct = cartItems.find(
+    const existingProductIndex = cartItems.findIndex(
       (item) =>
-        String(item.product_id) === productId &&
+        item.product_id === parseInt(productId, 10) &&
         item.product_size === selectedSize
     );
 
-    if (existingProduct) {
-      const updatedCart = cartItems.map((item) =>
-        item.product_id === productId && item.product_size === selectedSize
-          ? { ...item, product_quantity: item.product_quantity + 1 }
-          : item
-      );
+    if (existingProductIndex !== -1) {
+      // Product with the same ID and size exists in the cart
+      const updatedCart = [...cartItems];
+      const existingProduct = updatedCart[existingProductIndex];
 
-      dispatch(addProductToUserCart(updatedCart));
+      // Create a new object with updated quantity
+      const updatedProduct = {
+        ...existingProduct,
+        product_quantity: parseInt(existingProduct.product_quantity) + 1,
+      };
+
+      // Update the cart with the updated product
+      updatedCart[existingProductIndex] = updatedProduct;
+
+      dispatch(
+        addProductToUserCart(
+          updatedProduct.user_id,
+          updatedProduct.product_id,
+          updatedProduct.product_quantity,
+          updatedProduct.product_size,
+          updatedProduct.Product_Description
+        )
+      ).then(() => {
+        dispatch(getProductById(productId));
+      });
+
       showToast(
         "You have this item in your bag and we have increased the quantity by 1"
       );
     } else {
+      // Product not found in cart, add it as a new item with quantity 1
       dispatch(addProductToUserCart(userID, productId, 1, selectedSize))
         .then(() => {
           dispatch(getCartByUserId(userID));
           setBagItemCount(bagItemCount + 1);
-          setSelectedSize("");
           showToast("Added to bag");
           setIsInUserCart(true);
         })
@@ -243,7 +310,20 @@ const ProductDetailsPage = () => {
           setErrorMessage("Failed to add product to bag");
         });
     }
-  }, [cartItems, selectedSize, userID, productId, bagItemCount, dispatch]);
+    setAddedToBag(true);
+  }, [
+    cartItems,
+    selectedSize,
+    userID,
+    productId,
+    bagItemCount,
+    dispatch,
+    showToast,
+  ]);
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+  };
 
   const handleAddToWishlist = useCallback(() => {
     const isInWishlist = wishlistItems.some(
@@ -284,7 +364,7 @@ const ProductDetailsPage = () => {
     <span style={{ margin: "10px" }}> {icon} </span>
   );
 
-  const sizes = ["S", "M", "L", "XL", "XXL"];
+  const sizes = ["S", "M", "L", "XL", "XXL"]; // Hardcoded sizes
 
   const baseURL = "http://localhost:3001";
 
@@ -320,30 +400,64 @@ const ProductDetailsPage = () => {
 
           <SizeSelect>
             <SizeLabel>Select Size:</SizeLabel>
-            <SizeOptions>
-              {sizes.map((size) => (
-                <Circle
-                  key={size}
-                  selected={size === selectedSize}
-                  onClick={() => handleSizeChange(size)}
-                >
-                  <SizeText>{size}</SizeText>
-                </Circle>
-              ))}
-            </SizeOptions>
+            {sizeColorLoading ? (
+              <div>Loading...</div>
+            ) : (
+              <SizeOptions>
+                {sizes.map((size) => (
+                  <div key={size}>
+                    <Circle
+                      selected={size === selectedSize}
+                      onClick={() => handleSizeChange(size)}
+                      quantity={
+                        (productSizeColor && productSizeColor[size]) || 0
+                      }
+                      disabled={
+                        (productSizeColor && productSizeColor[size]) === 0
+                      }
+                    >
+                      <SizeText>{size}</SizeText>
+                    </Circle>
+                    {(productSizeColor && productSizeColor[size]) >= 1 &&
+                      (productSizeColor && productSizeColor[size]) <= 5 && (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <div style={{ marginBottom: "5px" }}>
+                            {/* Render the circle here */}
+                          </div>
+                          <span style={{ color: "red" }}>
+                            {productSizeColor && productSizeColor[size]} left
+                          </span>
+                        </div>
+                      )}
+                  </div>
+                ))}
+              </SizeOptions>
+            )}
           </SizeSelect>
           <div>
             <Button
               onClick={() => {
+                console.log("Add to bag button clicked");
                 if (!selectedSize) {
                   window.alert("Please select a size");
                 } else {
-                  handleAddToBag();
+                  if (addedToBag) {
+                    handleGoToBag();
+                  } else {
+                    handleAddToBag();
+                  }
                 }
               }}
+              disabled={productSizeColor[selectedSize] === 0}
             >
               <BagIcon1>🛍️</BagIcon1>
-              {isInUserCart ? "Go to Bag" : "Add to Cart"}
+              {addedToBag ? "Go to Bag →" : "Add to Cart"}
             </Button>
 
             <Button onClick={handleAddToWishlist} disabled={isInWishlist}>

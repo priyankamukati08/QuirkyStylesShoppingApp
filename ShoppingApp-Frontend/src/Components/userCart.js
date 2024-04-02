@@ -5,6 +5,7 @@ import NavigationBar from "./NavigationBar";
 import { getCartByUserId } from "../store/actions/userCartActions";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import NavigationBarforcheckoutpage from "./Navigationbarforcheckout";
 
 const Container = styled.div`
   display: flex;
@@ -36,6 +37,7 @@ const CartItemContainer = styled.div`
   padding: 20px;
   width: 45%;
   margin-right: 350px;
+  box-shadow: 5px 10px 8px #888888;
 `;
 
 const ProductImage = styled.img`
@@ -84,6 +86,7 @@ const PriceDetailsContainer = styled.div`
   top: 210px;
   right: 150px;
   width: 26%;
+  box-shadow: 5px 10px 8px #888888;
 `;
 
 const PriceDetails = styled.div`
@@ -178,7 +181,7 @@ const CartPage = () => {
 
   return (
     <>
-      <NavigationBar userAuthRequired={true} />
+      <NavigationBarforcheckoutpage userAuthRequired={true} />
       <Container>
         <ShoppingCartHeading>Shopping Bag</ShoppingCartHeading>
         {cartItems.map((item) => (

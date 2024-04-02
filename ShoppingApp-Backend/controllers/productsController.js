@@ -6,8 +6,7 @@ const getAllProducts = async (req, res) => {
     const result = await client.query("SELECT * FROM products");
     const products = result.rows;
     client.release();
-    res.
-    json(products);
+    res.json(products);
   } catch (err) {
     console.error("Error executing query", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -16,7 +15,6 @@ const getAllProducts = async (req, res) => {
 
 const addNewProduct = async (req, res) => {
   try {
-
     const {
       product_brand_name,
       product_description,
@@ -27,14 +25,12 @@ const addNewProduct = async (req, res) => {
       product_image_url,
     } = req.body;
 
-
     const query = `
       INSERT INTO public.products (
         product_brand_name, product_description, product_category,
         product_price, product_rating, product_total_quantity
       ) VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;`;
-
 
     const result = await pool.query(query, [
       product_brand_name,
@@ -48,7 +44,6 @@ const addNewProduct = async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
- 
     console.error("Error inserting product:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -56,14 +51,14 @@ const addNewProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
   const productId = req.params.id;
-
+  let client;
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
     const result = await client.query("SELECT * FROM products WHERE id = $1", [
       productId,
     ]);
     const product = result.rows[0];
-    client.release();
+
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
@@ -73,6 +68,10 @@ const getProductById = async (req, res) => {
   } catch (error) {
     console.error("Error retrieving product:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    if (client) {
+      client.release();
+    }
   }
 };
 

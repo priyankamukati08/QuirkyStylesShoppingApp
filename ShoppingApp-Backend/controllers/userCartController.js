@@ -17,9 +17,7 @@ const addToCart = async (req, res) => {
     if (existingProduct.rows.length > 0) {
       // If the product exists, update its quantity
 
-      const updatedQuantity =
-        parseFloat(existingProduct.rows[0].product_quantity) +
-        parseFloat(product_quantity);
+      const updatedQuantity = parseFloat(product_quantity);
 
       const result = await client.query(
         "UPDATE carts SET product_quantity = $1 WHERE user_id = $2 AND product_id = $3 AND product_size = $4 RETURNING *",
@@ -46,9 +44,9 @@ const addToCart = async (req, res) => {
 
 const getCartByUserId = async (req, res) => {
   const userId = req.params.userid;
-
+  let client;
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
     const result = await client.query(
       `SELECT c.*, p.product_brand_name, p.product_image_url, p.product_price,p.product_description
        FROM carts c
@@ -57,11 +55,15 @@ const getCartByUserId = async (req, res) => {
       [userId]
     );
     const cartItems = result.rows;
-    client.release();
+
     res.json(cartItems);
   } catch (err) {
     console.error("Error executing query", err);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    if (client) {
+      client.release();
+    }
   }
 };
 

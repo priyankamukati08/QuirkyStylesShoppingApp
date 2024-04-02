@@ -1,58 +1,67 @@
-
 import styled from "styled-components";
 
 export const ProductImage = styled.img`
-  width: 300px;
-  height: 400px;
+  width: 350px; /* Set a fixed width for all images */
+  height: 450px; /* Set a fixed height for all images */
   object-fit: contain;
   margin-bottom: 15px;
   cursor: pointer; /* Add cursor pointer for better UX */
+
+`;
+
+export const Container = styled.div`
+  padding-top: 50px; /* Adjusted padding top */
+  display: flex;
+  justify-content: center; /* Center align items horizontally */
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  margin-left: 100px;
 `;
 
 export const ProductItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 50px;
-  width: calc(20% - 20px); /* 20% width with 20px margin */
+  margin-top: 100px;
+  width: 300px; /* Adjust width to accommodate image width and text */
+  margin-right: 10px; /* Add margin to create space between product items */
+  margin-bottom: 10px; /* Add margin to create space between rows */
 `;
 
 export const ProductItemContent = styled.div`
   text-align: left;
-  margin-left: 60px;
-  padding: 10px;
+
+  margin-top: 15px; /* Add margin between image and text */
 `;
 
 export const RatingText = styled.span`
-  margin-right: 250px;
   text-align: left;
+  margin-left: 22px;
 `;
 
 export const StarIcon = styled.span`
   color: gold;
 `;
 
-export const Container = styled.div`
-  padding-top: 50px; /* Adjusted padding top */
-  display: flex;
-  justify-content: space-between;
-  margin-left: 100px;
-`;
-
-export const Container1 = styled.div`
-  padding-top: 50px; /* Adjusted padding top */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const FilterContainer = styled.div`
+export const LeftSection = styled.div`
+  flex: 0 0 200px; /* Set fixed width for the left section */
   margin-right: 20px;
+  border-right: 1px solid #ccc; /* Add vertical line */
+  padding-right: 20px; /* Add some padding to the right of the vertical line */
+`;
+
+export const RightSection = styled.div`
+  flex: 1; /* Take remaining space */
+  margin-left: 30px;
+  margin-right: 50px;
 `;
 
 export const SortByContainer = styled.div`
-  margin-left: 1900px; /* Aligns to the right side */
-  margin-top: 30px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 150px;
+ 
+  margin-right: 50px; /* Adjust margin as needed */
 `;
 
 export const FilterTitle = styled.h3`
@@ -83,28 +92,32 @@ export const ColorIndicator = styled.span`
 `;
 
 export const Text = styled.div`
-  margin-bottom: 1px;
+  margin-bottom: 5px;
+  margin-left: 20px;
 `;
 
 export const ProductName = styled(Text)`
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 5px;
 `;
 
 export const ProductDescription = styled(Text)`
   font-size: 18px;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  margin-bottom: 5px;
+  margin-bottom: 10px; /* Adjusted margin */
 `;
 
 export const ProductPrice = styled(Text)`
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 10px; /* Adjusted margin */
+`;
+
+export const FilterContainer = styled.div`
+  margin-right: 20px;
+  margin-top: 150px;
+`;
+
+export const ShadeEffect = styled.div`
+  background-color: #f8f9f9; /* Base background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for the shade effect */
 `;

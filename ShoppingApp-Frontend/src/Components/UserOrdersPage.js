@@ -16,11 +16,6 @@ const OrderItem = styled.div`
   margin-bottom: 10px;
 `;
 
-const OrderImage = styled.img`
-  width: 100px; /* Adjust the size as needed */
-  height: auto; /* Maintain aspect ratio */
-`;
-
 const OrderDetails = styled.div`
   margin-bottom: 20px;
 `;
@@ -72,70 +67,77 @@ const OrderPage = () => {
         <h2>Your Orders</h2>
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
-        {Object.values(groupedOrders).map(({ orderDetails, products }) => (
-          <OrderItem key={orderDetails.order_id}>
-            <OrderDetails>
-              <OrderDetailLabel>Order ID:</OrderDetailLabel>
-              {orderDetails.order_id}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Status:</OrderDetailLabel>
-              {orderDetails.status}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Order Date:</OrderDetailLabel>
-              {orderDetails.order_date}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Total Price:</OrderDetailLabel>
-              {orderDetails.total_price}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Shipping Address:</OrderDetailLabel>
-              {orderDetails.shipping_address}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Billing Address:</OrderDetailLabel>
-              {orderDetails.billing_address}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Payment Method:</OrderDetailLabel>
-              {orderDetails.order_payment_type}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Delivery Status:</OrderDetailLabel>
-              {orderDetails.delivery_status}
-            </OrderDetails>
-            <OrderDetails>
-              <OrderDetailLabel>Order Notes:</OrderDetailLabel>
-              {orderDetails.order_notes}
-            </OrderDetails>
-            {products.map((product, index) => (
-              <ProductDetail key={product.product_id}>
-                <ProductImage
-                  src={`${baseURL}${product.product_image_url}`}
-                  alt={product.product_name}
-                />
-                <div>
-                  <strong>Size:</strong> {product.product_size}
-                </div>
-                <div>
-                  <strong>Brand:</strong> {product.product_brand_name}
-                </div>
-                <div>
-                  <strong>Description:</strong> {product.product_description}
-                </div>
-                <div>
-                  <strong>Price:</strong> {product.product_price}
-                </div>
-                <div>
-                  <strong>Quantity:</strong> {product.product_quantity}
-                </div>
-                {index !== products.length - 1 && <hr />} {/* Render the horizontal line if not the last product */}
-              </ProductDetail>
-            ))}
-          </OrderItem>
-        ))}
+        {Object.values(groupedOrders)
+          .sort(
+            (a, b) =>
+              new Date(b.orderDetails.create_date) -
+              new Date(a.orderDetails.create_date)
+          ) 
+          .map(({ orderDetails, products }) => (
+            <OrderItem key={orderDetails.order_id}>
+              <OrderDetails>
+                <OrderDetailLabel>Order ID:</OrderDetailLabel>
+                {orderDetails.order_id}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Status:</OrderDetailLabel>
+                {orderDetails.status}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Order Date:</OrderDetailLabel>
+                {new Date(orderDetails.create_date).toLocaleString()}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Total Price:</OrderDetailLabel>
+                {orderDetails.total_price}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Shipping Address:</OrderDetailLabel>
+                {orderDetails.shipping_address}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Billing Address:</OrderDetailLabel>
+                {orderDetails.billing_address}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Payment Method:</OrderDetailLabel>
+                {orderDetails.order_payment_type}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Delivery Status:</OrderDetailLabel>
+                {orderDetails.delivery_status}
+              </OrderDetails>
+              <OrderDetails>
+                <OrderDetailLabel>Order Notes:</OrderDetailLabel>
+                {orderDetails.order_notes}
+              </OrderDetails>
+              {products.map((product, index) => (
+                <ProductDetail key={product.product_id}>
+                  <ProductImage
+                    src={`${baseURL}${product.product_image_url}`}
+                    alt={product.product_name}
+                  />
+                  <div>
+                    <strong>Size:</strong> {product.product_size}
+                  </div>
+                  <div>
+                    <strong>Brand:</strong> {product.product_brand_name}
+                  </div>
+                  <div>
+                    <strong>Description:</strong> {product.product_description}
+                  </div>
+                  <div>
+                    <strong>Price:</strong> {product.product_price}
+                  </div>
+                  <div>
+                    <strong>Quantity:</strong> {product.product_quantity}
+                  </div>
+                  {index !== products.length - 1 && <hr />}{" "}
+                  {/* Render the horizontal line if not the last product */}
+                </ProductDetail>
+              ))}
+            </OrderItem>
+          ))}
       </OrderPageContainer>
     </>
   );

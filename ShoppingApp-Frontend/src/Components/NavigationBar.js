@@ -11,6 +11,7 @@ const NavbarContainer = styled.nav`
   align-items: center;
   border: 1px solid #ccc;
   height: 10vh;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const LogoContainer = styled.div`

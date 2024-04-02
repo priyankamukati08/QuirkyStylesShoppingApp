@@ -73,39 +73,43 @@ const getUserAddresses = async (req, res) => {
 };
 
 
-
 const updateUserAddress = async (req, res) => {
   try {
-    const { id } = req.params;
+        const user_id = req.params.userId;
+        const id = req.params.addressId;
     const {
       fullname,
       mobilenumber,
       address,
+      localitytown,
       city,
       state,
       zip,
       country,
       is_default,
+
       addresstype,
     } = req.body;
 
     // Update the address in the database
     const query = `
       UPDATE public.user_addresses
-      SET fullname = $1, mobilenumber = $2, address = $3, city = $4, state = $5, zip = $6, country = $7, is_default = $8,localitytown=$9,addresstype=$10
-      WHERE id = $9
+      SET fullname = $1, mobilenumber = $2, address = $3,localitytown = $4, city = $5, state = $6, zip = $7, country = $8, is_default = $9,  addresstype = $10
+      WHERE id = $11
       RETURNING *;`;
 
     const result = await pool.query(query, [
       fullname,
       mobilenumber,
       address,
+      localitytown,
       city,
       state,
       zip,
       country,
       is_default,
-      id,
+      addresstype,
+      id, // Provide the id as the 11th parameter
     ]);
     res.json(result.rows[0]);
   } catch (error) {
@@ -114,16 +118,20 @@ const updateUserAddress = async (req, res) => {
   }
 };
 
+
+
+
 const deleteUserAddress = async (req, res) => {
   try {
-    const { id } = req.params;
+    const user_id = req.params.userId;
+    const id = req.params.addressId;
 
-    // Delete the address from the database
+    // Delete the address from the database based on both userId and addressId
     const query = `
       DELETE FROM public.user_addresses
-      WHERE id = $1;`;
+      WHERE user_id = $1 AND id = $2;`;
 
-    await pool.query(query, [id]);
+    await pool.query(query, [user_id, id]);
     res.json({ message: "Address deleted successfully" });
   } catch (error) {
     console.error("Error deleting user address:", error);

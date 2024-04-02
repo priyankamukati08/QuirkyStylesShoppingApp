@@ -10,7 +10,8 @@ import {
   RatingText,
   StarIcon,
   Container,
-  Container1,
+  LeftSection,
+  RightSection,
   FilterContainer,
   SortByContainer,
   FilterTitle,
@@ -67,10 +68,11 @@ const ProductsGrid = () => {
   };
 
   const handleProductClick = (brandName, productId) => {
-    window.location.href = `http://localhost:3000/Kids/${brandName}/${productId}`;
+    window.location.href = `http://localhost:3000/Mens/${brandName}/${productId}`;
   };
 
   const filteredProducts = products.filter((product) => {
+    // Filter by product category (menCategory)
     if (product.product_category !== "kidsCategory") {
       return false;
     }
@@ -111,103 +113,104 @@ const ProductsGrid = () => {
   return (
     <>
       <NavigationBar />
-      <Container1>
-        <SortByContainer>
-          <FilterTitle>Sort By</FilterTitle>
-          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-            <option value="">None</option>
-            <option value="customerRating">Customer Rating</option>
-            <option value="priceLowToHigh">Price: Low to High</option>
-            <option value="priceHighToLow">Price: High to Low</option>
-          </select>
-        </SortByContainer>
-      </Container1>
       <Container>
-        <FilterContainer>
-          <FilterTitle>Filters</FilterTitle>
-          <FilterTitle>Brand</FilterTitle>
-          {["Biba", "Zara", "H&M", "Reebok"].map((brand) => (
-            <CheckboxLabel key={brand}>
-              <input
-                type="checkbox"
-                checked={selectedBrands.includes(brand)}
-                onChange={(e) =>
-                  handleBrandCheckboxChange(brand, e.target.checked)
+        <LeftSection>
+          <FilterContainer>
+            <FilterTitle>Filters</FilterTitle>
+            <FilterTitle>Brand</FilterTitle>
+            {["Nike", "Adidas", "Puma", "Reebok"].map((brand) => (
+              <CheckboxLabel key={brand}>
+                <input
+                  type="checkbox"
+                  checked={selectedBrands.includes(brand)}
+                  onChange={(e) =>
+                    handleBrandCheckboxChange(brand, e.target.checked)
+                  }
+                />
+                {brand}
+              </CheckboxLabel>
+            ))}
+            <FilterTitle>Color</FilterTitle>
+            {["Red", "Blue", "Green", "Yellow"].map((color) => (
+              <CheckboxLabel key={color}>
+                <ColorCheckbox
+                  type="checkbox"
+                  color={color}
+                  checked={selectedColors.includes(color)}
+                  onChange={(e) =>
+                    handleColorCheckboxChange(color, e.target.checked)
+                  }
+                />
+                <ColorIndicator color={color} />
+                {color}
+              </CheckboxLabel>
+            ))}
+            <FilterTitle>Price Range</FilterTitle>
+            <input
+              type="number"
+              name="min"
+              value={priceRange.min}
+              onChange={handlePriceRangeChange}
+              placeholder="Min"
+            />
+            <input
+              type="number"
+              name="max"
+              value={priceRange.max}
+              onChange={handlePriceRangeChange}
+              placeholder="Max"
+            />
+          </FilterContainer>
+        </LeftSection>
+        <RightSection>
+          <SortByContainer>
+            <FilterTitle>Sort By</FilterTitle>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <option value="">None</option>
+              <option value="customerRating">Customer Rating</option>
+              <option value="priceLowToHigh">Price: Low to High</option>
+              <option value="priceHighToLow">Price: High to Low</option>
+            </select>
+          </SortByContainer>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+            }}
+          >
+            {filteredProducts.map((product, index) => (
+              <ProductItemContainer
+                key={product.id}
+                className="product-item"
+                style={{ marginRight: index % 5 === 4 ? 0 : "20px" }}
+                onClick={() =>
+                  handleProductClick(
+                    product.product_brand_name.toLowerCase(),
+                    product.id
+                  )
                 }
-              />
-              {brand}
-            </CheckboxLabel>
-          ))}
-          <FilterTitle>Color</FilterTitle>
-          {["Red", "Blue", "Green", "Yellow"].map((color) => (
-            <CheckboxLabel key={color}>
-              <ColorCheckbox
-                type="checkbox"
-                color={color}
-                checked={selectedColors.includes(color)}
-                onChange={(e) =>
-                  handleColorCheckboxChange(color, e.target.checked)
-                }
-              />
-              <ColorIndicator color={color} />
-              {color}
-            </CheckboxLabel>
-          ))}
-          <FilterTitle>Price Range</FilterTitle>
-          <input
-            type="number"
-            name="min"
-            value={priceRange.min}
-            onChange={handlePriceRangeChange}
-            placeholder="Min"
-          />
-          <input
-            type="number"
-            name="max"
-            value={priceRange.max}
-            onChange={handlePriceRangeChange}
-            placeholder="Max"
-          />
-        </FilterContainer>
+              >
+                <ProductImage
+                  src={`${baseURL}${product.product_image_url}`}
+                  alt={product.product_brand_name}
+                />
+                <ProductItemContent>
+                  <ProductName>{product.product_brand_name}</ProductName>
+                  <ProductDescription>
+                    {truncateDescription(product.product_description, 40)}
+                  </ProductDescription>
+                  <ProductPrice>${product.product_price}</ProductPrice>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-          }}
-        >
-          {filteredProducts.map((product, index) => (
-            <ProductItemContainer
-              key={product.id}
-              className="product-item"
-              style={{ marginRight: index % 5 === 4 ? 0 : "20px" }}
-              onClick={() =>
-                handleProductClick(
-                  product.product_brand_name.toLowerCase(),
-                  product.id
-                )
-              }
-            >
-              <ProductImage
-                src={`${baseURL}${product.product_image_url}`}
-                alt={product.product_brand_name}
-              />
-              <ProductItemContent>
-                <ProductName>{product.product_brand_name}</ProductName>
-                <ProductDescription>
-                  {truncateDescription(product.product_description, 40)}
-                </ProductDescription>
-                <ProductPrice>${product.product_price}</ProductPrice>
-
-                <RatingText>
-                  {product.product_rating}
-                  <StarIcon>&#9733;</StarIcon>
-                </RatingText>
-              </ProductItemContent>
-            </ProductItemContainer>
-          ))}
-        </div>
+                  <RatingText>
+                    {product.product_rating}
+                    <StarIcon>&#9733;</StarIcon>
+                  </RatingText>
+                </ProductItemContent>
+              </ProductItemContainer>
+            ))}
+          </div>
+        </RightSection>
       </Container>
     </>
   );

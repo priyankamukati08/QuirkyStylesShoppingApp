@@ -9,6 +9,7 @@ const userWishlistRouter = require("./routes/userWishlist");
 const userInfoRouter = require("./routes/userInfo");
 const userOrdersRouter = require("./routes/userOrders");
 const userAddressRouter = require("./routes/userAddress");
+const productQuantitysRouter = require("./routes/productQuantity");
 
 const app = express();
 
@@ -31,5 +32,6 @@ app.use("/userWishlist", userWishlistRouter);
 app.use("/userInfo", userInfoRouter);
 app.use("/userAddress", userAddressRouter);
 app.use("/userOrders", userOrdersRouter);
+app.use("/productQuantity", productQuantitysRouter);
 
 module.exports = app;
