@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "../api";
 
 
 const FETCH_USERORDERS_LOADING = "FETCH_USERORDERS_LOADING";
@@ -17,11 +18,18 @@ const DELETE_USERORDERS_LOADING = "DELETE_USERORDERS_LOADING";
 const DELETE_USERORDERS_SUCCESS = "DELETE_USERORDERS_SUCCESS";
 const DELETE_USERORDERS_FAILURE = "DELETE_USERORDERS_FAILURE";
 
+const FETCH_USERORDERS_BY_ORDERID_LOADING =
+  "FETCH_USERORDERS_BY_ORDERID_LOADING";
+const FETCH_USERORDERS_BY_ORDERID_SUCCESS =
+  "FETCH_USERORDERS_BY_ORDERID_SUCCESS";
+const FETCH_USERORDERS_BY_ORDERID_FAILURE =
+  "FETCH_USERORDERS_BY_ORDERID_FAILURE";
+
 export const fetchUserOrders = (userId) => async (dispatch) => {
   dispatch({ type: FETCH_USERORDERS_LOADING });
 
   try {
-    const response = await axios.get(
+    const response = await api.get(
       `http://localhost:3001/userOrders/${userId}`
     );
     dispatch({
@@ -36,11 +44,31 @@ export const fetchUserOrders = (userId) => async (dispatch) => {
   }
 };
 
+export const fetchUserOrdersByOrderId =
+  (userId, orderId) => async (dispatch) => {
+    dispatch({ type: FETCH_USERORDERS_BY_ORDERID_LOADING });
+
+    try {
+      const response = await api.get(
+        `http://localhost:3001/userOrders/${userId}/${orderId}`
+      );
+      dispatch({
+        type: FETCH_USERORDERS_BY_ORDERID_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_USERORDERS_BY_ORDERID_FAILURE,
+        payload: error.message,
+      });
+    }
+  };
+
 export const addUserOrders = (USERORDERS) => async (dispatch) => {
   dispatch({ type: ADD_USERORDERS_LOADING });
 
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3001/userOrders",
       USERORDERS
     );
@@ -60,7 +88,7 @@ export const updateUserOrders = (userId, updatedInfo) => async (dispatch) => {
   dispatch({ type: UPDATE_USERORDERS_LOADING });
 
   try {
-    const response = await axios.put(
+    const response = await api.put(
       `http://localhost:3001/userOrders/${userId}`,
       updatedInfo
     );
@@ -80,7 +108,7 @@ export const deleteUserOrders = (userId) => async (dispatch) => {
   dispatch({ type: DELETE_USERORDERS_LOADING });
 
   try {
-    await axios.delete(`http://localhost:3001/userOrders/${userId}`);
+    await api.delete(`http://localhost:3001/userOrders/${userId}`);
     dispatch({ type: DELETE_USERORDERS_SUCCESS });
   } catch (error) {
     dispatch({

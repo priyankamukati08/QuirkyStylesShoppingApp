@@ -13,7 +13,6 @@ import {
 import { getCartByUserId } from "../store/actions/userCartActions";
 import "react-toastify/dist/ReactToastify.css";
 import CustomToast from "./ToastMessage";
-import SizeColorQuantity from "./ProductQuantity";
 import { getProductSizeAndColor } from "../store/actions/productQuantityActions";
 import { useNavigate } from "react-router-dom";
 

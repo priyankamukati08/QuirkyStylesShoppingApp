@@ -14,6 +14,8 @@ import {
 } from "../store/actions/userAddressActions";
 import { getCartByUserId } from "../store/actions/userCartActions";
 import UpdateModal from "./ModalMessagToUpdateAddress";
+import { deleteCartByUserId } from "../store/actions/userCartActions";
+import { updateProductSizeAndColorQuantity } from "../store/actions/productQuantityActions";
 
 const Container = styled.div`
   display: flex;
@@ -275,6 +277,20 @@ const CheckoutPage = () => {
     setLoading(true);
     setError(null);
 
+    const totalPrice = cartItems.reduce(
+      (total, item) => total + item.product_price * item.product_quantity,
+      0
+    );
+    const calculateTax = (totalPrice) => {
+      // tax rate for Arizona (5.6%)
+      const taxRate = 0.056;
+      return totalPrice * taxRate;
+    };
+    const tax = calculateTax(totalPrice);
+    const shippingFee = 10.0;
+    const platformFee = 5.0;
+    const totalAmount = totalPrice + shippingFee + platformFee + tax;
+
     const orderDetails = {
       items: cartItems.map((item) => ({
         product_id: item.product_id,
@@ -285,17 +301,32 @@ const CheckoutPage = () => {
       billing_address: billingAddressFull,
       paymentMethod,
       user_id,
-      total_price: totalPrice.toFixed(2), // Add total price to order details
+
+      estimated_tax: tax.toFixed(2), // Add estimated tax to order details
+      order_price: totalPrice.toFixed(2), // Add total price to order details
+      total_order_price_with_tax: totalAmount.toFixed(2), // Add order price to order details
       status: "Pending", // Add status to order details
       order_payment_type: paymentMethod, // Add payment type to order details
       payment_status: "Paid", // Add payment status to order details
-      delivery_status: "Pending", // Add delivery status to order details
+      delivery_status: "Ordered", // Add delivery status to order details
       order_notes: orderNotes, // Add order notes if needed
       products: cartItems,
     };
-
+ 
     dispatch(addUserOrders(orderDetails))
       .then(() => {
+        if (cartItems.length > 0) {
+          cartItems.forEach((item) => {
+            dispatch(
+              updateProductSizeAndColorQuantity(
+                item.product_id,
+                item.product_size,
+                item.product_quantity
+              )
+            );
+          });
+          dispatch(deleteCartByUserId(user_id));
+        }
         navigate("/order-success");
       })
       .catch((error) => {
@@ -374,9 +405,15 @@ const CheckoutPage = () => {
     (total, item) => total + item.product_price * item.product_quantity,
     0
   );
+  const calculateTax = (totalPrice) => {
+    // tax rate for Arizona (5.6%)
+    const taxRate = 0.056;
+    return totalPrice * taxRate;
+  };
+  const tax = calculateTax(totalPrice);
   const shippingFee = 10.0;
   const platformFee = 5.0;
-  const totalAmount = totalPrice + shippingFee + platformFee;
+  const totalAmount = totalPrice + shippingFee + platformFee + tax;
 
   return (
     <>
@@ -548,6 +585,9 @@ const CheckoutPage = () => {
               </OrderSummaryItem>
               <OrderSummaryItem>
                 <span>Platform Fee</span> ${platformFee.toFixed(2)}
+              </OrderSummaryItem>
+              <OrderSummaryItem>
+                <span>Estimated tax to be collected</span> ${tax.toFixed(2)}
               </OrderSummaryItem>
               <hr />
               <OrderSummaryItem>

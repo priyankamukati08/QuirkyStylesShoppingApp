@@ -83,7 +83,7 @@ const PlaceOrderButton = styled.button`
 
 const PriceDetailsContainer = styled.div`
   position: fixed;
-  top: 210px;
+  top: 200px;
   right: 150px;
   width: 26%;
   box-shadow: 5px 10px 8px #888888;

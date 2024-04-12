@@ -1,53 +1,25 @@
 const pool = require("../db");
 
-// GET all wishlist items for a user
 const getWishlistItemsByUserId = async (req, res) => {
   const userId = req.params.userid;
-  let client;
   try {
-    client = await pool.connect();
+    const client = await pool.connect();
     const result = await client.query(
-      `SELECT w.*, p.product_brand_name, p.product_image_url, p.product_price,p.product_description
+      `SELECT w.*, p.product_brand_name, p.product_image_url, p.product_price, p.product_description
        FROM wishlist w
        JOIN products p ON w.product_id = p.id
        WHERE w.user_id = $1`,
       [userId]
     );
     const wishlistItems = result.rows;
-  
+    client.release();
     res.json(wishlistItems);
   } catch (err) {
     console.error("Error fetching wishlist items:", err);
     res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    if (client) {
-      client.release();
-    }
   }
 };
 
-// const getCartByUserId = async (req, res) => {
-//   const userId = req.params.userid;
-
-//   try {
-//     const client = await pool.connect();
-//     const result = await client.query(
-//       `SELECT c.*, p.product_brand_name, p.product_image_url, p.product_price,p.product_description
-//        FROM carts c
-//        JOIN products p ON c.product_id = p.id
-//        WHERE c.user_id = $1`,
-//       [userId]
-//     );
-//     const cartItems = result.rows;
-//     client.release();
-//     res.json(cartItems);
-//   } catch (err) {
-//     console.error("Error executing query", err);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
-// POST a new wishlist item
 const addToWishlist = async (req, res) => {
   const { product_id, user_id } = req.body;
   try {
@@ -65,10 +37,9 @@ const addToWishlist = async (req, res) => {
   }
 };
 
-// DELETE a wishlist item
 const removeFromWishlist = async (req, res) => {
   const user_id = req.params.userid;
-  const product_id = req.params.productid; // Assuming you pass product id as a URL parameter
+  const product_id = req.params.productid;
 
   try {
     const client = await pool.connect();

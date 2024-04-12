@@ -1,35 +1,32 @@
 import styled from "styled-components";
 
 export const ProductImage = styled.img`
-  width: 350px; /* Set a fixed width for all images */
-  height: 450px; /* Set a fixed height for all images */
+  width: 300px; /* Set a fixed width for all images */
+  height: 400px; /* Set a fixed height for all images */
   object-fit: contain;
-  margin-bottom: 15px;
   cursor: pointer; /* Add cursor pointer for better UX */
-
 `;
 
 export const Container = styled.div`
-  padding-top: 50px; /* Adjusted padding top */
+  padding-top: 50px;
   display: flex;
-  justify-content: center; /* Center align items horizontally */
-  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  justify-content: center;
+  flex-wrap: wrap;
   margin-left: 100px;
+  margin-top: 100px; /* Adjusted margin top to create space below the fixed container */
 `;
 
 export const ProductItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 100px;
+  margin-top: 50px;
   width: 300px; /* Adjust width to accommodate image width and text */
   margin-right: 10px; /* Add margin to create space between product items */
-  margin-bottom: 10px; /* Add margin to create space between rows */
 `;
 
 export const ProductItemContent = styled.div`
   text-align: left;
-
   margin-top: 15px; /* Add margin between image and text */
 `;
 
@@ -47,6 +44,7 @@ export const LeftSection = styled.div`
   margin-right: 20px;
   border-right: 1px solid #ccc; /* Add vertical line */
   padding-right: 20px; /* Add some padding to the right of the vertical line */
+  margin-top: -150px;
 `;
 
 export const RightSection = styled.div`
@@ -57,11 +55,9 @@ export const RightSection = styled.div`
 
 export const SortByContainer = styled.div`
   position: absolute;
-  top: 0;
-  right: 0;
-  margin-top: 150px;
- 
-  margin-right: 50px; /* Adjust margin as needed */
+  top: 170px; /* Adjust this value to set the vertical position */
+  right: 50px; /* Adjust this value to set the horizontal position */
+  z-index: 100; /* Ensure the z-index is higher than other elements */
 `;
 
 export const FilterTitle = styled.h3`
@@ -114,7 +110,7 @@ export const ProductPrice = styled(Text)`
 
 export const FilterContainer = styled.div`
   margin-right: 20px;
-  margin-top: 150px;
+  margin-top: 200px;
 `;
 
 export const ShadeEffect = styled.div`

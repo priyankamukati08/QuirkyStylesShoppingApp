@@ -9,6 +9,7 @@ const NavbarContainer = styled.nav`
   align-items: center;
   border: 1px solid #ccc;
   height: 10vh;
+  box-shadow: 1px 5px 8px #888888;
 `;
 
 const LogoContainer = styled.div`
@@ -61,16 +62,14 @@ export const NavigationBarforcheckoutpage = () => {
       </LogoContainer>
       <LinksContainer>
         <NavLink
-          active={location.pathname.includes("/usercart")}
-          href="/usercart"
+          active={location.pathname.includes("/userCart")}
+          href="/userCart"
         >
           BAG
         </NavLink>
         <Divider>-----------------</Divider>
-        {location.pathname.includes("/usercart") && (
-          <span>ADDRESS & PAYMENT</span>
-        )}
-        {location.pathname.includes("/checkout") && (
+        {location.pathname === "/userCart" && <span>ADDRESS & PAYMENT</span>}
+        {location.pathname === "/checkout" && (
           <span style={{ color: "green", marginRight: "20px" }}>
             ADDRESS & PAYMENT
           </span>

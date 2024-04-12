@@ -9,7 +9,7 @@ import { addProductToUserCart } from "../store/actions/userCartActions";
 import Cookies from "js-cookie";
 import Modal from "./Modal";
 import { getProductById } from "../store/actions/productActions";
-//import { useNavigate } from "react-router-dom";
+
 import {
   Container,
   WishlistHeading,
@@ -39,18 +39,17 @@ const WishlistPage = () => {
   const [toastMessage, setToastMessage] = useState("");
   const { product } = useSelector((state) => state.productbyid);
 
-
   const showToast = (message) => {
     setToastMessage(message); // Set the toast message
   };
 
-useEffect(() => {
-  // Check if selectedProduct is not null
-  if (selectedProduct) {
-    const parsedProductId = parseInt(selectedProduct.product_id, 10);
-    dispatch(getProductById(parsedProductId));
-  }
-}, [dispatch, selectedProduct, userID]);
+  useEffect(() => {
+    // Check if selectedProduct is not null
+    if (selectedProduct) {
+      const parsedProductId = parseInt(selectedProduct.product_id, 10);
+      dispatch(getProductById(parsedProductId));
+    }
+  }, [dispatch, selectedProduct, userID]);
 
   useEffect(() => {
     if (userID) {
@@ -130,7 +129,7 @@ useEffect(() => {
         <CustomToast
           message={toastMessage}
           productImage={
-            toastMessage === "Item successfully added to bag" 
+            toastMessage === "Item successfully added to bag"
               ? `${baseURL}${product.product_image_url}`
               : null
           }

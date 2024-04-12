@@ -1,11 +1,8 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import NavigationBar from "./NavigationBar";
-import { deleteCartByUserId } from "../store/actions/userCartActions";
 import Cookies from "js-cookie";
-import styled from "styled-components"; // Import styled-components
+import styled from "styled-components";
 
-const user_id = Cookies.get("userID");
 
 // Define styled components
 const Heading = styled.h1`
@@ -31,20 +28,13 @@ const Container = styled.div`
 `;
 
 const OrderSuccessPage = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(deleteCartByUserId(user_id)); // Make sure to define user_id
-  }, [dispatch]);
-
+ 
   return (
     <>
       <NavigationBar />
       <Container>
-        {/* Use the styled components */}
         <Heading>Order Placed Successfully!</Heading>
         <Paragraph>Thank you for shopping with us.</Paragraph>
-        {/* You can add more details or options here */}
       </Container>
     </>
   );

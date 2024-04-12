@@ -1,4 +1,6 @@
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
+import api from "../api";
+
 
 const ADD_USERADDRESS_LOADING = "ADD_USERADDRESS_LOADING";
 const ADD_USERADDRESS_SUCCESS = "ADD_USERADDRESS_SUCCESS";
@@ -20,7 +22,7 @@ export const addUserAddress = (userAddress, userId) => async (dispatch) => {
   dispatch({ type: ADD_USERADDRESS_LOADING });
 
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3001/useraddress",{
       ...userAddress,
       user_id: userId,
@@ -41,7 +43,7 @@ export const fetchUserAddress = (userId) => async (dispatch) => {
   dispatch({ type: FETCH_USERADDRESS_LOADING });
 
   try {
-    const response = await axios.get(
+    const response = await api.get(
       `http://localhost:3001/useraddress/${userId}`,
       userId
     );
@@ -62,7 +64,7 @@ export const updateUserAddress =
     dispatch({ type: UPDATE_USERADDRESS_LOADING });
 
     try {
-      const response = await axios.put(
+      const response = await api.put(
         `http://localhost:3001/useraddress/${userId}/${addressId}`,
         updatedAddressData // Pass updatedAddressData directly
       );
@@ -83,7 +85,7 @@ export const deleteUserAddress = (userId, addressId) => async (dispatch) => {
   dispatch({ type: DELETE_USERADDRESS_LOADING });
 
   try {
-    await axios.delete(
+    await api.delete(
       `http://localhost:3001/useraddress/${userId}/${addressId}`
     );
     // After successful deletion, you might want to fetch the updated user addresses

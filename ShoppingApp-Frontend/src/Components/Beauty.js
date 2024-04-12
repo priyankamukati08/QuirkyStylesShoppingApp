@@ -107,17 +107,21 @@ const ProductsGrid = () => {
       return 0;
     }
   });
+  filteredProducts.sort((a, b) => {
+    return a.id - b.id; // Sort by product IDs in ascending order
+  });
 
   const baseURL = "http://localhost:3001";
 
   return (
     <>
       <NavigationBar />
+
       <Container>
         <LeftSection>
           <FilterContainer>
-            <FilterTitle>Filters</FilterTitle>
-            <FilterTitle>Brand</FilterTitle>
+            <FilterTitle>FILTERS</FilterTitle>
+            <FilterTitle>BRAND</FilterTitle>
             {["Nike", "Adidas", "Puma", "Reebok"].map((brand) => (
               <CheckboxLabel key={brand}>
                 <input
@@ -130,7 +134,7 @@ const ProductsGrid = () => {
                 {brand}
               </CheckboxLabel>
             ))}
-            <FilterTitle>Color</FilterTitle>
+            <FilterTitle>COLOR</FilterTitle>
             {["Red", "Blue", "Green", "Yellow"].map((color) => (
               <CheckboxLabel key={color}>
                 <ColorCheckbox
@@ -145,7 +149,7 @@ const ProductsGrid = () => {
                 {color}
               </CheckboxLabel>
             ))}
-            <FilterTitle>Price Range</FilterTitle>
+            <FilterTitle>PRICE RANGE</FilterTitle>
             <input
               type="number"
               name="min"
@@ -172,6 +176,7 @@ const ProductsGrid = () => {
               <option value="priceHighToLow">Price: High to Low</option>
             </select>
           </SortByContainer>
+
           <div
             style={{
               display: "flex",

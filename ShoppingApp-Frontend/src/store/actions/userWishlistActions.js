@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "../api";
 
 const FETCH_USERWISHLIST_LOADING = "FETCH_USERWISHLIST_LOADING";
 const FETCH_USERWISHLIST_SUCCESS = "FETCH_USERWISHLIST_SUCCESS";
@@ -8,7 +9,6 @@ const ADD_USERWISHLIST_LOADING = "ADD_USERWISHLIST_LOADING";
 const ADD_USERWISHLIST_SUCCESS = "ADD_USERWISHLIST_SUCCESS";
 const ADD_USERWISHLIST_FAILURE = "ADD_USERWISHLIST_FAILURE";
 
-
 const DELETE_USERWISHLIST_LOADING = "DELETE_USERWISHLIST_LOADING";
 const DELETE_USERWISHLIST_SUCCESS = "DELETE_USERWISHLIST_SUCCESS";
 const DELETE_USERWISHLIST_FAILURE = "DELETE_USERWISHLIST_FAILURE";
@@ -17,9 +17,9 @@ export const fetchUserWishlist = (userID) => async (dispatch) => {
   dispatch({ type: FETCH_USERWISHLIST_LOADING });
 
   try {
-    const response = await axios.get(
+    const response = await api.get(
       `http://localhost:3001/userWishlist/${userID}`
-    );  
+    );
     dispatch({
       type: FETCH_USERWISHLIST_SUCCESS,
       payload: response.data,
@@ -33,12 +33,11 @@ export const fetchUserWishlist = (userID) => async (dispatch) => {
 };
 
 export const addProductsToUserWishlist =
-  (userId, productId) =>
-  async (dispatch) => {
+  (userId, productId) => async (dispatch) => {
     dispatch({ type: ADD_USERWISHLIST_LOADING });
 
     try {
-      const response = await axios.post("http://localhost:3001/userWishlist", {
+      const response = await api.post("http://localhost:3001/userWishlist", {
         user_id: userId,
         product_id: productId,
       });
@@ -54,13 +53,12 @@ export const addProductsToUserWishlist =
     }
   };
 
-
 export const deleteProductsFromUserWishlist =
   (userId, productId) => async (dispatch) => {
     dispatch({ type: DELETE_USERWISHLIST_LOADING });
 
     try {
-      await axios.delete(
+      await api.delete(
         `http://localhost:3001/userWishlist/${userId}/${productId}`
       );
       dispatch({ type: DELETE_USERWISHLIST_SUCCESS });

@@ -11,7 +11,7 @@ const NavbarContainer = styled.nav`
   align-items: center;
   border: 1px solid #ccc;
   height: 10vh;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 5px 5px #888888;
 `;
 
 const LogoContainer = styled.div`
@@ -19,12 +19,12 @@ const LogoContainer = styled.div`
   align-items: center;
   width: 150px;
   height: 60px;
-  margin-left: 80px;
+  margin-left: 35px; /* Adjusted margin-left */
 `;
 
 const LogoImage = styled.img`
-  width: 400%;
-  height: 180%;
+  max-width: 300%;
+  max-height: 180%;
 `;
 
 const NavMenu = styled.ul`

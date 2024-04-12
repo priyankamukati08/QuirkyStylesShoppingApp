@@ -4,7 +4,6 @@ import ReactDOM from "react-dom/client";
 import store from "./store/store";
 import { Provider } from "react-redux";
 import "./index.css";
-import App from "./App";
 import Landing from "./Components/Landing";
 import Homepage from "./Components/Homepage";
 import reportWebVitals from "./reportWebVitals";
@@ -23,6 +22,12 @@ import CheckoutPage from "./Components/CheckoutPage";
 import OrderSuccessPage from "./Components/OrderSuccessPage";
 import WishlistPage from "./Components/Wishlist";
 import UserOrdersPage from "./Components/UserOrdersPage";
+import OrderdetailsPage from "./Components/OrderDetailsPage";
+import TrackPackagePage from "./Components/TrackPackagePage";
+import App from "./App";
+import AdminPage from "./Components/AdminPage";
+import ProductManagement from "./Components/ProductManagement";
+import ProductQuantityManagement from "./Components/ProductQuantityManagement";
 
 Amplify.configure(awsconfig);
 
@@ -36,7 +41,6 @@ root.render(
           <Route path="/" element={<Landing />} />
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/app" element={<App />} />
-
           <Route
             path="/Mens/:brand/:productId"
             element={<ProductDetailsPage />}
@@ -51,7 +55,6 @@ root.render(
           />
           <Route path="/Mens" element={<Men />} />
           <Route path="/Women" element={<Women />} />
-
           <Route path="/Kids" element={<Kids />} />
           <Route path="/Home&Living" element={<HomeandLiving />} />
           <Route path="/Beauty" element={<Beauty />} />
@@ -60,14 +63,26 @@ root.render(
           <Route path="/Login" element={<Login />} />
           <Route path="/Checkout" element={<CheckoutPage />} />
           <Route path="/Order-Success" element={<OrderSuccessPage />} />
-          <Route path="/WishlistPage" element={<WishlistPage />} />
           <Route path="/Ordersdetails" element={<UserOrdersPage />} />
+          <Route
+            path="/Ordersdetailspage/:userId/:orderid"
+            element={<OrderdetailsPage />}
+          />
+          <Route
+            path="/TrackPackagePage/:userId/:orderid"
+            element={<TrackPackagePage />}
+          />
+          <Route path="/WishlistPage" element={<WishlistPage />} />
+          <Route path="/AdminPage" element={<AdminPage />} />
+          <Route path="/ProductManagement" element={<ProductManagement />} />
+          <Route
+            path="/ProductQuantityManagement"
+            element={<ProductQuantityManagement />}
+          />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
   </Provider>
 );
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+
 reportWebVitals();

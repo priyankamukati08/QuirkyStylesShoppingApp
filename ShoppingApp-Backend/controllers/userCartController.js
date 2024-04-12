@@ -1,7 +1,6 @@
 const pool = require("../db");
 
-// addToCart function in your backend API
-
+// Function to add a product to the cart
 const addToCart = async (req, res) => {
   const { user_id, product_id, product_quantity, product_size } = req.body;
 
@@ -16,9 +15,7 @@ const addToCart = async (req, res) => {
 
     if (existingProduct.rows.length > 0) {
       // If the product exists, update its quantity
-
       const updatedQuantity = parseFloat(product_quantity);
-
       const result = await client.query(
         "UPDATE carts SET product_quantity = $1 WHERE user_id = $2 AND product_id = $3 AND product_size = $4 RETURNING *",
         [updatedQuantity, user_id, product_id, product_size]
@@ -37,28 +34,28 @@ const addToCart = async (req, res) => {
 
     client.release();
   } catch (err) {
-    console.error("Error executing query", err);
+    console.error("Error adding product to cart:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+// Function to get cart items by user ID
 const getCartByUserId = async (req, res) => {
   const userId = req.params.userid;
   let client;
   try {
     client = await pool.connect();
     const result = await client.query(
-      `SELECT c.*, p.product_brand_name, p.product_image_url, p.product_price,p.product_description
+      `SELECT c.*, p.product_brand_name, p.product_image_url, p.product_price, p.product_description, c.product_size
        FROM carts c
        JOIN products p ON c.product_id = p.id
        WHERE c.user_id = $1`,
       [userId]
     );
     const cartItems = result.rows;
-
     res.json(cartItems);
   } catch (err) {
-    console.error("Error executing query", err);
+    console.error("Error fetching cart items:", err);
     res.status(500).json({ error: "Internal Server Error" });
   } finally {
     if (client) {
@@ -67,6 +64,8 @@ const getCartByUserId = async (req, res) => {
   }
 };
 
+
+// Function to delete cart items by user ID
 const deleteCartByUserId = async (req, res) => {
   const userId = req.params.userid;
 
@@ -76,7 +75,7 @@ const deleteCartByUserId = async (req, res) => {
     client.release();
     res.sendStatus(204); // No content response
   } catch (err) {
-    console.error("Error executing query", err);
+    console.error("Error deleting cart items:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

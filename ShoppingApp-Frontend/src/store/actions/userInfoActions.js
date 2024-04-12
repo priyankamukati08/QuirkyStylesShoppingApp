@@ -1,4 +1,6 @@
 import axios from "axios";
+import api from "../api";
+
 
 const FETCH_USERINFO_LOADING = "FETCH_USERINFO_LOADING";
 const FETCH_USERINFO_SUCCESS = "FETCH_USERINFO_SUCCESS";
@@ -25,7 +27,7 @@ export const fetchUserInfo = (userId) => async (dispatch) => {
   dispatch({ type: FETCH_USERINFO_LOADING }); 
 
   try {
-    const response = await axios.get(
+    const response = await api.get(
       `http://localhost:3001/userinfo/${userId}`
     );
     dispatch({
@@ -46,7 +48,7 @@ export const addUserInfo = (userInfo) => async (dispatch) => {
   dispatch({ type: ADD_USERINFO_LOADING }); 
 
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3001/userinfo",
       userInfo
     );
@@ -69,7 +71,7 @@ export const updateUserInfo = (userId, updatedInfo) => async (dispatch) => {
   dispatch({ type: UPDATE_USERINFO_LOADING }); 
 
   try {
-    const response = await axios.put(
+    const response = await api.put(
       `http://localhost:3001/userinfo/${userId}`,
       updatedInfo
     );
@@ -91,7 +93,7 @@ export const deleteUserInfo = (userId) => async (dispatch) => {
   dispatch({ type: DELETE_USERINFO_LOADING }); 
 
   try {
-    await axios.delete(`http://localhost:3001/userinfo/${userId}`);
+    await api.delete(`http://localhost:3001/userinfo/${userId}`);
     dispatch({ type: DELETE_USERINFO_SUCCESS }); 
   } catch (error) {
   
