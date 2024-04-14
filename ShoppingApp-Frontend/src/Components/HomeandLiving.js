@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../store/actions/productActions";
 import NavigationBar from "./NavigationBar";
@@ -21,7 +21,6 @@ import {
   ProductName,
   ProductDescription,
   ProductPrice,
-
 } from "./ProductDesign";
 
 const truncateDescription = (description, maxLength) => {
@@ -32,6 +31,46 @@ const truncateDescription = (description, maxLength) => {
   }
 };
 
+const Brands = [
+  "ArtisanAccents",
+  "LuxuryLamps",
+  "CozyThrows",
+  "ChicCushions",
+  "IlluminateInteriors",
+  "UrbanGlow",
+  "VintageVibes",
+  "CoastalChic",
+  "MinimalistModern",
+  "RusticElegance",
+  "DreamyComfort",
+  "PlushHaven",
+  "SerenityStyle",
+  "TranquilNest",
+  "CosyDreams",
+  "WarmWood",
+  "CosyCarpets",
+  "SleekStone",
+  "RoyalTiles",
+  "CoastalCharm",
+  "FloralFinesse",
+  "Other",
+];
+
+const Colors = [
+  "Red",
+  "Blue",
+  "Green",
+  "Yellow",
+  "Black",
+  "White",
+  "Gray",
+  "Purple",
+  "Orange",
+  "Pink",
+  "Brown",
+  "Other",
+];
+
 const ProductsGrid = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products);
@@ -39,6 +78,12 @@ const ProductsGrid = () => {
   const [selectedColors, setSelectedColors] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [sortBy, setSortBy] = useState("");
+  const [showAllBrands, setShowAllBrands] = useState(false);
+  const [showAllColors, setShowAllColors] = useState(false);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  //const [priceRangeClicked, setPriceRangeClicked] = useState(false); // Add priceRangeClicked state
 
   useEffect(() => {
     dispatch(getProducts());
@@ -52,6 +97,12 @@ const ProductsGrid = () => {
         selectedBrands.filter((selectedBrand) => selectedBrand !== brand)
       );
     }
+
+    const lastDisplayedBrand = showAllBrands
+      ? Brands[Brands.length - 1]
+      : Brands[9];
+
+    const isLastBrandSelected = selectedBrands.includes(lastDisplayedBrand);
   };
 
   const handleColorCheckboxChange = (color, isChecked) => {
@@ -64,53 +115,103 @@ const ProductsGrid = () => {
     }
   };
 
-  const handlePriceRangeChange = (e) => {
-    setPriceRange({ ...priceRange, [e.target.name]: e.target.value });
-  };
+  const handlePriceGoClick = useCallback(() => {
+    // Ensure minPrice is less than or equal to maxPrice before filtering
+    if (minPrice <= maxPrice) {
+      var fP = filteredProducts.filter((product) => {
+        return (
+          product.product_price >= minPrice && product.product_price <= maxPrice
+        );
+      });
+      setFilteredProducts(fP);
+    } else {
+      setMinPrice(0);
+      setMaxPrice(1000);
+    }
+  }, [filteredProducts, minPrice, maxPrice]);
 
   const handleProductClick = (brandName, productId) => {
     window.location.href = `http://localhost:3000/Mens/${brandName}/${productId}`;
   };
 
-  const filteredProducts = products.filter((product) => {
-    // Filter by product category (menCategory)
-    if (product.product_category !== "homeAndLivingCategory") {
-      return false;
-    }
+  const handleSeeMoreBrands = () => {
+    // Show more brands
+    setShowAllBrands(true);
+  };
 
-    // Apply other filters
-    if (
-      selectedBrands.length > 0 &&
-      !selectedBrands.includes(product.product_brand_name)
-    ) {
-      return false;
-    }
+  const handleSeeMoreColors = () => {
+    // Show more colors
+    setShowAllColors(true);
+  };
 
-    if (
-      selectedColors.length > 0 &&
-      !selectedColors.includes(product.product_color)
-    ) {
-      return false;
-    }
+  // useEffect to clear selected brands only if the last visible brand is not selected
+  useEffect(() => {
+    if (!showAllBrands) {
+      const lastDisplayedBrands = Brands.slice(0, 10); // Brands displayed without "See More"
+      const isAnySelectedBrandNotDisplayed = selectedBrands.some(
+        (selectedBrand) => !lastDisplayedBrands.includes(selectedBrand)
+      );
 
-    const price = product.product_price;
-    return price >= priceRange.min && price <= priceRange.max;
-  });
-
-  filteredProducts.sort((a, b) => {
-    if (sortBy === "customerRating") {
-      return b.product_rating - a.product_rating;
-    } else if (sortBy === "priceLowToHigh") {
-      return a.product_price - b.product_price;
-    } else if (sortBy === "priceHighToLow") {
-      return b.product_price - a.product_price;
-    } else {
-      return 0;
+      if (isAnySelectedBrandNotDisplayed && selectedBrands.length > 0) {
+        setSelectedBrands([]);
+      }
     }
-  });
-    filteredProducts.sort((a, b) => {
-      return a.id - b.id; // Sort by product IDs in ascending order
+  }, [selectedBrands, showAllBrands]);
+
+  // useEffect to clear selected colors only if the last visible color is not selected
+  useEffect(() => {
+    if (!showAllColors) {
+      const lastDisplayedColors = Colors.slice(0, 5); // Colors displayed without "See More"
+      const isAnySelectedColorNotDisplayed = selectedColors.some(
+        (selectedColor) => !lastDisplayedColors.includes(selectedColor)
+      );
+
+      if (isAnySelectedColorNotDisplayed && selectedColors.length > 0) {
+        setSelectedColors([]);
+      }
+    }
+  }, [selectedColors, showAllColors]);
+
+  useEffect(() => {
+    const filteredProducts = products.filter((product) => {
+      if (product.product_category !== "homeAndLivingCategory") {
+        return false;
+      }
+
+      if (
+        selectedBrands.length > 0 &&
+        !selectedBrands.includes(product.product_brand_name)
+      ) {
+        return false;
+      }
+
+      if (
+        selectedColors.length > 0 &&
+        !selectedColors.includes(product.product_color)
+      ) {
+        return false;
+      }
+
+      return true;
     });
+
+    //setPriceRangeClicked(false);
+    setFilteredProducts(filteredProducts);
+  }, [products, selectedBrands, selectedColors]);
+
+  let sortedProducts = [...filteredProducts];
+
+  if (sortBy === "customerRating") {
+    sortedProducts.sort((a, b) => b.product_rating - a.product_rating);
+  } else if (sortBy === "priceLowToHigh") {
+    sortedProducts.sort((a, b) => a.product_price - b.product_price);
+  } else if (sortBy === "priceHighToLow") {
+    sortedProducts.sort((a, b) => b.product_price - a.product_price);
+  }
+
+  if (!sortBy) {
+    sortedProducts.sort((a, b) => a.id - b.id);
+  }
 
   const baseURL = "http://localhost:3001";
 
@@ -123,48 +224,91 @@ const ProductsGrid = () => {
           <FilterContainer>
             <FilterTitle>FILTERS</FilterTitle>
             <FilterTitle>BRAND</FilterTitle>
-            {["Nike", "Adidas", "Puma", "Reebok"].map((brand) => (
-              <CheckboxLabel key={brand}>
-                <input
-                  type="checkbox"
-                  checked={selectedBrands.includes(brand)}
-                  onChange={(e) =>
-                    handleBrandCheckboxChange(brand, e.target.checked)
-                  }
-                />
-                {brand}
-              </CheckboxLabel>
-            ))}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {(showAllBrands ? Brands : Brands.slice(0, 10)).map((brand) => (
+                <CheckboxLabel key={brand}>
+                  <input
+                    type="checkbox"
+                    checked={selectedBrands.includes(brand)}
+                    onChange={(e) =>
+                      handleBrandCheckboxChange(brand, e.target.checked)
+                    }
+                  />
+                  {brand}
+                </CheckboxLabel>
+              ))}
+              {!showAllBrands && (
+                <span
+                  style={{
+                    color: "green",
+                    cursor: "pointer",
+                    marginTop: "10px",
+                  }}
+                  onClick={handleSeeMoreBrands}
+                >
+                  See More
+                </span>
+              )}
+            </div>
+
             <FilterTitle>COLOR</FilterTitle>
-            {["Red", "Blue", "Green", "Yellow"].map((color) => (
-              <CheckboxLabel key={color}>
-                <ColorCheckbox
-                  type="checkbox"
-                  color={color}
-                  checked={selectedColors.includes(color)}
-                  onChange={(e) =>
-                    handleColorCheckboxChange(color, e.target.checked)
-                  }
-                />
-                <ColorIndicator color={color} />
-                {color}
-              </CheckboxLabel>
-            ))}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {(showAllColors ? Colors : Colors.slice(0, 5)).map((color) => (
+                <CheckboxLabel key={color}>
+                  <ColorCheckbox
+                    type="checkbox"
+                    color={color}
+                    checked={selectedColors.includes(color)}
+                    onChange={(e) =>
+                      handleColorCheckboxChange(color, e.target.checked)
+                    }
+                  />
+                  <ColorIndicator color={color} />
+                  {color}
+                </CheckboxLabel>
+              ))}
+              {!showAllColors && (
+                <span
+                  style={{
+                    color: "green",
+                    cursor: "pointer",
+                    marginTop: "10px",
+                  }}
+                  onClick={handleSeeMoreColors}
+                >
+                  See More
+                </span>
+              )}
+            </div>
             <FilterTitle>PRICE RANGE</FilterTitle>
-            <input
-              type="number"
-              name="min"
-              value={priceRange.min}
-              onChange={handlePriceRangeChange}
-              placeholder="Min"
-            />
-            <input
-              type="number"
-              name="max"
-              value={priceRange.max}
-              onChange={handlePriceRangeChange}
-              placeholder="Max"
-            />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                maxWidth: "300px",
+              }}
+            >
+              <input
+                type="number"
+                value={minPrice}
+                onChange={(e) => setMinPrice(parseInt(e.target.value))}
+                placeholder="Min"
+                min={0}
+                style={{ marginRight: "10px", width: "80px" }} // Adjust width as needed
+              />
+              <input
+                type="number"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+                placeholder="Max"
+                min={minPrice}
+                style={{ marginRight: "10px", width: "80px" }} // Adjust width as needed
+              />
+              <button style={{ width: "50px" }} onClick={handlePriceGoClick}>
+                Go
+              </button>{" "}
+              {/* Adjust width as needed */}
+            </div>
           </FilterContainer>
         </LeftSection>
         <RightSection>
@@ -185,7 +329,7 @@ const ProductsGrid = () => {
               justifyContent: "space-between",
             }}
           >
-            {filteredProducts.map((product, index) => (
+            {sortedProducts.map((product, index) => (
               <ProductItemContainer
                 key={product.id}
                 className="product-item"
@@ -207,7 +351,6 @@ const ProductsGrid = () => {
                     {truncateDescription(product.product_description, 40)}
                   </ProductDescription>
                   <ProductPrice>${product.product_price}</ProductPrice>
-
                   <RatingText>
                     {product.product_rating}
                     <StarIcon>&#9733;</StarIcon>

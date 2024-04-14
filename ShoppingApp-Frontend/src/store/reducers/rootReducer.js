@@ -15,6 +15,7 @@
   import allProductSizeQuantityReducer from "./allProductQuantityReducer";
   import updateProductDetailsReducer from "./updateProductDetailsReducer";
   import addNewProductReducer from "./addNewProductReducer";
+  import userInfoReducer from "./userInfoReducer";
 
   const rootReducer = combineReducers({
     products: productReducer,
@@ -33,6 +34,7 @@
     ProductSizeQuantity: allProductSizeQuantityReducer,
     updateProductDetails: updateProductDetailsReducer,
     addNewProduct: addNewProductReducer,
+    userInfoDetail: userInfoReducer,
   });
 
   export default rootReducer;

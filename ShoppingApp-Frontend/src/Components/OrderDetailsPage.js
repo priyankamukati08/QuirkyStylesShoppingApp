@@ -236,9 +236,7 @@ const OrderDetailsPage = () => {
                         {order.product_description}
                       </ProductDescription>
                     </ProductDescriptionContainer>
-                    <ButtonContainer>
-                      <TrackPackageButton>Track Package</TrackPackageButton>
-                    </ButtonContainer>
+                 
                   </ProductContainer>
                 </div>
               ))}

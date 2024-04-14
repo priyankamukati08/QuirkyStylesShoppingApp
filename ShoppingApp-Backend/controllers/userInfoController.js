@@ -11,15 +11,19 @@ const addUserInfo = async (req, res) => {
       gender,
       profile_picture_url,
       cash_balance,
+      nickname, 
     } = req.body;
 
-    name = name ? name : null;
-    phone_number = phone_number ? phone_number : null;
-    birthdate = birthdate ? birthdate : null;
-    age = age ? age : null;
-    gender = gender ? gender : null;
-    profile_picture_url = profile_picture_url ? profile_picture_url : null;
-    cash_balance = cash_balance ? cash_balance : null;
+    // Check if passcode is provided and validate it
+    if (nickname && nickname === "@2304#") {
+      // Set user type as admin if passcode is correct
+      user_type = "admin";
+    } else {
+      // Set user type as normal user
+      user_type = "user";
+    }
+
+    // Handle other fields as before
 
     const existingUserInfo = await pool.query(
       `SELECT
@@ -30,9 +34,9 @@ const addUserInfo = async (req, res) => {
         birthdate,
         age,
         gender,
-
         profile_picture_url,
-        cash_balance 
+        cash_balance,
+        user_type
         FROM public.user_info WHERE email = $1`,
       [email]
     );
@@ -51,9 +55,10 @@ const addUserInfo = async (req, res) => {
         age,
         gender,
         profile_picture_url,
-        cash_balance
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id, name, email, phone_number, birthdate, age, gender, profile_picture_url, cash_balance;`; // Include all columns in the RETURNING clause
+        cash_balance,
+        user_type
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+      RETURNING id, name, email, phone_number, birthdate, age, gender, profile_picture_url, cash_balance, user_type;`; 
 
     const result = await pool.query(query, [
       name,
@@ -64,6 +69,7 @@ const addUserInfo = async (req, res) => {
       gender,
       profile_picture_url,
       cash_balance,
+      user_type, // Pass userType to the query
     ]);
 
     res.status(201).json(result.rows[0]);
@@ -72,6 +78,7 @@ const addUserInfo = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 module.exports = {
   addUserInfo,

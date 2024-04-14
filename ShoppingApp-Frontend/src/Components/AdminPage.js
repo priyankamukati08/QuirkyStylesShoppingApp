@@ -1,8 +1,11 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import ProductManagement from "./ProductManagement";
-import QuantityManagement from "./ProductQuantityManagement";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addUserInfo } from "../store/actions/userInfoActions";
+import { fetchUserInfo } from "../store/actions/userInfoActions"; // Import fetchUserInfo action
+import Cookies from "js-cookie";
+
 import NavigationBar from "./NavigationBar";
 
 const DashboardHeading = styled.h1`
@@ -31,23 +34,53 @@ const StyledButton = styled.button`
 `;
 
 const AdminPage = () => {
-  const navigateToProductManagement = () => {
-    window.location.href = "/ProductManagement";
-  };
+  const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const userInfo = useSelector((state) => state.userInfoDetail.userInfoDetails); // Assuming your user info slice is userInfoDetail
+  const dispatch = useDispatch();
+  const user_id = Cookies.get("userID");
 
-  const navigateToQuantityManagement = () => {
-    window.location.href = "/ProductQuantityManagement";
+  useEffect(() => {
+    console.log("Fetching user information...");
+    const fetchUserInformation = async () => {
+      try {
+        const response = await dispatch(fetchUserInfo(user_id));
+        console.log("User information:", response);
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    fetchUserInformation();
+  }, [dispatch, user_id]);
+
+  useEffect(() => {
+    if (userInfo) {
+      const { user_type } = userInfo;
+      console.log("User type:", user_type);
+      if (user_type === "admin") {
+        setIsAdmin(true);
+      } else {
+        navigate("/homepage");
+      }
+    }
+  }, [userInfo, navigate]);
+
+  const navigateToProductManagement = () => {
+    navigate("/ProductManagement");
   };
 
   return (
     <div>
       <NavigationBar />
       <DashboardHeading>Admin Dashboard</DashboardHeading>
-      <ButtonContainer>
-        <StyledButton onClick={navigateToProductManagement}>
-          Product Management
-        </StyledButton>
-      </ButtonContainer>
+      {isAdmin && (
+        <ButtonContainer>
+          <StyledButton onClick={navigateToProductManagement}>
+            Product Management
+          </StyledButton>
+        </ButtonContainer>
+      )}
     </div>
   );
 };

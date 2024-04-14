@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NavbarContainer = styled.nav`
   padding: 1.2rem;
@@ -54,11 +55,17 @@ const SecureText = styled.span`
 
 export const NavigationBarforcheckoutpage = () => {
   const location = useLocation();
+   let navigate = useNavigate();
+
+  const routeChange = () => {
+    let path = `/homepage`;
+    navigate(path);
+  };
 
   return (
     <NavbarContainer>
       <LogoContainer>
-        <LogoImage src="/Mainlogo.svg" alt="Logo" />
+        <LogoImage src="/Mainlogo.svg" alt="Logo" onClick={routeChange} />
       </LogoContainer>
       <LinksContainer>
         <NavLink

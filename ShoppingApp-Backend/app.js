@@ -10,6 +10,8 @@ const userInfoRouter = require("./routes/userInfo");
 const userOrdersRouter = require("./routes/userOrders");
 const userAddressRouter = require("./routes/userAddress");
 const productQuantitysRouter = require("./routes/productQuantity");
+const searchProductRouter = require("./routes/searchProduct");
+
 const jwt = require("jsonwebtoken");
 
 const app = express();
@@ -42,6 +44,8 @@ async function verifyIdToken(req, res, next) {
 
 const productImagesPath = path.join(__dirname, "productImages");
 app.use("/productImages", express.static(productImagesPath));
+app.use("/search", searchProductRouter);
+
 app.use("/", verifyIdToken);
 // Routes
 app.use("/products", productRouter);

@@ -12,7 +12,6 @@ import { addUserInfo } from "../store/actions/userInfoActions";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 
-
 Amplify.configure(awsconfig);
 
 const Container = styled.div`
@@ -28,7 +27,6 @@ function Login() {
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.addUserInfo);
 
-  
   const debounce = (func, delay) => {
     let timer;
     return function (...args) {
@@ -44,8 +42,6 @@ function Login() {
     try {
       const userAttributes = await fetchUserAttributes();
       dispatch(addUserInfo(userAttributes));
-
-     
     } catch (error) {
       console.error("Error handling login success:", error);
     }
@@ -63,8 +59,18 @@ function Login() {
     }
   }, [userInfo, navigate]);
 
- 
   const debouncedHandleLoginSuccess = debounce(handleLoginSuccess, 1000);
+
+  useEffect(() => {
+    if (userInfo.addUserInfo) {
+      const { user_type } = userInfo.addUserInfo;
+      if (user_type === "admin") {
+        navigate("/adminpage");
+      } else {
+        navigate("/homepage");
+      }
+    }
+  }, [userInfo.addUserInfo, navigate]);
 
   useEffect(() => {
     Hub.listen("auth", ({ payload: { event, data } }) => {
@@ -94,6 +100,7 @@ function Login() {
           "birthdate",
           "phone_number",
           "gender",
+          "nickname",
         ]}
       >
         {/* {({ signOut, user }) => (

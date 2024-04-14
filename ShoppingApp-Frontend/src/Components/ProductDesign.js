@@ -56,8 +56,9 @@ export const RightSection = styled.div`
 export const SortByContainer = styled.div`
   position: absolute;
   top: 170px; /* Adjust this value to set the vertical position */
-  right: 50px; /* Adjust this value to set the horizontal position */
+  right: 30px; /* Adjust this value to set the horizontal position */
   z-index: 100; /* Ensure the z-index is higher than other elements */
+  font-size: 17px;
 `;
 
 export const FilterTitle = styled.h3`
