@@ -9,7 +9,7 @@ import Homepage from "./Components/Homepage";
 import reportWebVitals from "./reportWebVitals";
 import { Amplify } from "aws-amplify";
 import awsconfig from "./aws-exports";
-import Men from "./Components/Men";
+import ProductCategory from "./Components/ProductCategory";
 import Women from "./Components/Women";
 import Kids from "./Components/Kids";
 import Beauty from "./Components/Beauty";
@@ -42,22 +42,21 @@ root.render(
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/app" element={<App />} />
           <Route
-            path="/Mens/:brand/:productId"
+            path="/:brand/:productId"
             element={<ProductDetailsPage />}
+          />
+      
+          <Route path="/Mens" element={<ProductCategory category="Men" />} />
+          <Route path="/Women" element={<ProductCategory category="Women" />} />
+          <Route path="/Kids" element={<ProductCategory category="Kids" />} />
+          <Route
+            path="/Home&Living"
+            element={<ProductCategory category="HomeAndLiving" />}
           />
           <Route
-            path="/Women/:brand/:productId"
-            element={<ProductDetailsPage />}
+            path="/Beauty"
+            element={<ProductCategory category="Beauty" />}
           />
-          <Route
-            path="/Kids/:brand/:productId"
-            element={<ProductDetailsPage />}
-          />
-          <Route path="/Mens" element={<Men />} />
-          <Route path="/Women" element={<Women />} />
-          <Route path="/Kids" element={<Kids />} />
-          <Route path="/Home&Living" element={<HomeandLiving />} />
-          <Route path="/Beauty" element={<Beauty />} />
           <Route path="/userCart" element={<CartPage />} />
           <Route path="/Profile" element={<Profile />} />
           <Route path="/Login" element={<Login />} />

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../store/actions/productActions";
 import NavigationBar from "./NavigationBar";
+import { getSearchProducts } from "../store/actions/searchProductActions";
 
 import {
   ProductImage,
@@ -31,7 +32,7 @@ const truncateDescription = (description, maxLength) => {
   }
 };
 
-const Brands = [
+const MenBrands = [
   "Nike",
   "Adidas",
   "Puma",
@@ -56,6 +57,107 @@ const Brands = [
   "Other",
 ];
 
+const WomenBrands = [
+  "H&M",
+  "BIBA",
+  "Kalini",
+  "Levi Strauss & Co.",
+  "Zara",
+  "Ralph Lauren",
+  "Steve Madden",
+  "ALDO",
+  "Michael Kors",
+  "Gucci",
+  "Jimmy Choo",
+  "Pandora",
+  "Tanishq",
+  "Tiffany & Co.",
+  "Cartier",
+  "Swarovski",
+  "Ray-Ban",
+  "Prada",
+  "Versace",
+  "Dolce & Gabbana",
+  "Rolex",
+  "Fossil",
+  "Other",
+];
+
+const KidsBrands = [
+  "TinyTots",
+  "KiddieKraft",
+  "PlayfulPals",
+  "TinyTrendsetters",
+  "KiddoChic",
+  "LittleAngels",
+  "TinyTrends",
+  "CuteCouture",
+  "KiddieChic",
+  "LittleSteps",
+  "TinyToes",
+  "MiniGlam",
+  "CuteKicks",
+  "SnuggleBuddies",
+  "BunnyBuddies",
+  "GiraffeGalore",
+  "BuildingBlocks",
+  "UnicornMagic",
+  "Other",
+];
+
+const HomeandLivingBrands = [
+  "ArtisanAccents",
+  "LuxuryLamps",
+  "CozyThrows",
+  "ChicCushions",
+  "IlluminateInteriors",
+  "UrbanGlow",
+  "VintageVibes",
+  "CoastalChic",
+  "MinimalistModern",
+  "RusticElegance",
+  "DreamyComfort",
+  "PlushHaven",
+  "SerenityStyle",
+  "TranquilNest",
+  "CosyDreams",
+  "WarmWood",
+  "CosyCarpets",
+  "SleekStone",
+  "RoyalTiles",
+  "CoastalCharm",
+  "FloralFinesse",
+  "Other",
+];
+
+const BeautyBrands = [
+  "Versace",
+  "Dior",
+  "Chanel",
+  "Frederic Malle",
+  "Necessarie",
+  "Olaplex",
+  "THE Hair SHOP",
+  "Laaor",
+  "Garnier",
+  "Sukin",
+  "NARS",
+  "Maybelline",
+  "Revlon",
+  "NYX",
+  "Lumene",
+  "Charlotte Tilbury",
+  "OPI",
+  "Essie",
+  "Curology",
+  "Completely Bare",
+  "CLINIQUE",
+  "Coppertone",
+  "CeraVe",
+  "Eucerin",
+  "Other",
+];
+
 const Colors = [
   "Red",
   "Blue",
@@ -71,38 +173,69 @@ const Colors = [
   "Other",
 ];
 
-const ProductsGrid = () => {
+const categoryBrandsMap = {
+  Men: MenBrands,
+  Women: WomenBrands,
+  Kids: KidsBrands,
+  HomeAndLiving: HomeandLivingBrands,
+  Beauty: BeautyBrands,
+};
+
+const ProductsGrid = (props) => {
+  //console.log("category : ", props.category);
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products);
+  const searchproducts = useSelector(
+    (state) => state.searchProduct.searchproducts
+  );
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [sortBy, setSortBy] = useState("");
   const [showAllBrands, setShowAllBrands] = useState(false);
   const [showAllColors, setShowAllColors] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  //const [priceRangeClicked, setPriceRangeClicked] = useState(false); // Add priceRangeClicked state
+  const { category } = props;
+  const Brands = categoryBrandsMap[category];
 
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
+  useEffect(() => {
+    setFilteredProducts(searchproducts.products);
+    console.log("searchproducts:", searchproducts);
+  }, [searchproducts]);
+
+  const searchButtonClicked = useCallback(
+    (searchQuery) => {
+      if (searchQuery.trim() !== "") {
+        dispatch(getSearchProducts(searchQuery));
+      } else {
+        dispatch(getProducts());
+      }
+    },
+    [dispatch]
+  );
+
+  const uiDBCategoryMapping = new Map([
+    ["Men", "menCategory"],
+    ["Women", "womenCategory"],
+    ["Kids", "kidsCategory"],
+    ["HomeAndLiving", "homeAndLivingCategory"],
+    ["Beauty", "beautyCategory"],
+  ]);
+
   const handleBrandCheckboxChange = (brand, isChecked) => {
+    console.log("Brand:", brand, "isChecked:", isChecked);
     if (isChecked) {
-      setSelectedBrands([...selectedBrands, brand]);
+      setSelectedBrands((prevSelectedBrands) => [...prevSelectedBrands, brand]);
     } else {
-      setSelectedBrands(
-        selectedBrands.filter((selectedBrand) => selectedBrand !== brand)
+      setSelectedBrands((prevSelectedBrands) =>
+        prevSelectedBrands.filter((selectedBrand) => selectedBrand !== brand)
       );
     }
-
-    const lastDisplayedBrand = showAllBrands
-      ? Brands[Brands.length - 1]
-      : Brands[9];
-
-    const isLastBrandSelected = selectedBrands.includes(lastDisplayedBrand);
   };
 
   const handleColorCheckboxChange = (color, isChecked) => {
@@ -131,18 +264,20 @@ const ProductsGrid = () => {
   }, [filteredProducts, minPrice, maxPrice]);
 
   const handleProductClick = (brandName, productId) => {
-    window.location.href = `http://localhost:3000/Mens/${brandName}/${productId}`;
+    window.location.href = `http://localhost:3000/${brandName}/${productId}`;
   };
 
   const handleSeeMoreBrands = () => {
-    // Show more brands
     setShowAllBrands(true);
   };
 
   const handleSeeMoreColors = () => {
-    // Show more colors
     setShowAllColors(true);
   };
+
+  useEffect(() => {
+    setSelectedBrands([]);
+  }, [category]);
 
   // useEffect to clear selected brands only if the last visible brand is not selected
   useEffect(() => {
@@ -174,7 +309,14 @@ const ProductsGrid = () => {
 
   useEffect(() => {
     const filteredProducts = products.filter((product) => {
-      if (product.product_category !== "menCategory") {
+      console.log(
+        "uiDBCategoryMapping.get(props.category) : ",
+        props?.category,
+        uiDBCategoryMapping.get(props?.category)
+      );
+      if (
+        product.product_category !== uiDBCategoryMapping.get(props?.category)
+      ) {
         return false;
       }
 
@@ -195,9 +337,8 @@ const ProductsGrid = () => {
       return true;
     });
 
-    //setPriceRangeClicked(false);
     setFilteredProducts(filteredProducts);
-  }, [products, selectedBrands, selectedColors]);
+  }, [products, selectedBrands, selectedColors, props]);
 
   let sortedProducts = [...filteredProducts];
 
@@ -217,7 +358,7 @@ const ProductsGrid = () => {
 
   return (
     <>
-      <NavigationBar />
+      <NavigationBar searchButtonClicked={searchButtonClicked} />
 
       <Container>
         <LeftSection>

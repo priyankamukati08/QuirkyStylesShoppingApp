@@ -1,5 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUserInfo } from "../store/actions/userInfoActions";
+import { updateUserInfo } from "../store/actions/userInfoActions";
+import Cookies from "js-cookie";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import NavigationBar from "./NavigationBar";
 
 const MainProfileEditContainer = styled.div`
   display: flex;
@@ -112,126 +119,175 @@ const ProfilePicture = styled.img`
 `;
 
 const ProfileEdit = () => {
+  const userInfo = useSelector((state) => state.userInfoDetail.userInfoDetails);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     mobileNumber: "",
-    gender: "Select",
+    gender: "",
     birthday: "",
-    alternateMobile: "+1|Mobile Number",
-    hintName: "",
+    age: "",
   });
+
+  const dispatch = useDispatch();
+  const user_id = Cookies.get("userID");
+
+  useEffect(() => {
+    const fetchUserInformation = async () => {
+      try {
+        await dispatch(fetchUserInfo(user_id));
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    fetchUserInformation();
+  }, [dispatch, user_id]);
+
+  useEffect(() => {
+    if (userInfo) {
+      const userData = {
+        fullName: userInfo.name,
+        email: userInfo.email,
+        mobileNumber: userInfo.phone_number.startsWith("+1")
+          ? userInfo.phone_number // Use the existing number if it already starts with +1
+          : "+1" + userInfo.phone_number, // Add +1 if it doesn't start with it
+        gender: userInfo.gender,
+        birthday: userInfo.birthdate,
+      };
+      setFormData(userData);
+    }
+  }, [userInfo]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
+
+  const calculateAge = (birthdate) => {
+    const birthDate = new Date(birthdate);
+    const currentDate = new Date();
+    let age = currentDate.getFullYear() - birthDate.getFullYear();
+    const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
+  const handleDateChange = (date) => {
+    const age = calculateAge(date); // Calculate age from selected date
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      birthday: date,
+      age: age, // Update age field in formData state
+    }));
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic to submit the edited profile data
-    console.log("Edited profile data:", formData);
+    // Check if the mobile number starts with +1, if not, add it
+    const mobileNumber = formData.mobileNumber.startsWith("+1")
+      ? formData.mobileNumber
+      : "+1" + formData.mobileNumber;
+    const updatedFormData = {
+      ...formData,
+      mobileNumber: mobileNumber,
+    };
+    dispatch(updateUserInfo(user_id, updatedFormData));
   };
 
+
+
+  if (!userInfo) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <MainProfileEditContainer>
-      <ProfilePictureContainer>
-        <ProfilePictureWrapper>
-          <ProfilePicture src="profilepic.jpeg" alt="Profile" />
-        </ProfilePictureWrapper>
-        <ProfileEditButtonWrapper>
-          <Button2 type="submit">Edit Profile Picture</Button2>
-        </ProfileEditButtonWrapper>
-      </ProfilePictureContainer>
-      <ProfileEditContainer>
-        <ProfileEditHeading>Edit Details</ProfileEditHeading>
-        <ProfileDetailsBox>
-          <form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="mobileNumber">Mobile Number</Label>
-              <div style={{ display: "flex", alignItems: "center" }}>
+    <>
+      <NavigationBar />
+      <MainProfileEditContainer>
+        <ProfilePictureContainer>
+          <ProfilePictureWrapper>
+            <ProfilePicture src="profilepic.jpeg" alt="Profile" />
+          </ProfilePictureWrapper>
+          <ProfileEditButtonWrapper>
+            <Button2 type="submit">Edit Profile Picture</Button2>
+          </ProfileEditButtonWrapper>
+        </ProfilePictureContainer>
+        <ProfileEditContainer>
+          <ProfileEditHeading>Edit Details</ProfileEditHeading>
+          <ProfileDetailsBox>
+            <form onSubmit={handleSubmit}>
+              <FormGroup>
+                <Label htmlFor="fullName">Full Name</Label>
+                <Input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="mobileNumber">Mobile Number</Label>
                 <Input
                   type="text"
                   id="mobileNumber"
                   name="mobileNumber"
                   value={formData.mobileNumber}
                   onChange={handleChange}
-                  disabled
                 />
-                <Button type="button">Change</Button>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="gender">Gender</Label>
+                <Select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                >
+                  <option value=""></option>
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                  <option value="other">Other</option>
+                </Select>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="birthday">Birthday</Label>
+                <DatePicker
+                  id="birthday"
+                  name="birthday"
+                  selected={formData.birthday}
+                  onChange={handleDateChange}
+                  dateFormat="MM/dd/yyyy"
+                />
+              </FormGroup>
+              <div style={{ textAlign: "center" }}>
+                <Button1 type="submit">Save Details</Button1>
               </div>
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="gender">Gender</Label>
-              <Select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-              >
-                <option value=""></option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-                <option value="other">Other</option>
-              </Select>
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="birthday">Birthday (dd/mm/yyyy)</Label>
-              <Input
-                type="text"
-                id="birthday"
-                name="birthday"
-                value={formData.birthday}
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="alternateMobile">Alternate mobile details</Label>
-              <Input
-                type="text"
-                id="alternateMobile"
-                name="alternateMobile"
-                value={formData.alternateMobile}
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="hintName">Hint name</Label>
-              <Input
-                type="text"
-                id="hintName"
-                name="hintName"
-                value={formData.hintName}
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <div style={{ textAlign: "center" }}>
-              <Button1 type="submit">Save Details</Button1>
-            </div>
-          </form>
-        </ProfileDetailsBox>
-      </ProfileEditContainer>
-    </MainProfileEditContainer>
+            </form>
+          </ProfileDetailsBox>
+        </ProfileEditContainer>
+      </MainProfileEditContainer>
+    </>
   );
 };
 

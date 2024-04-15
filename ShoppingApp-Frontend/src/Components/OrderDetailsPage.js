@@ -59,7 +59,6 @@ const OrderDetailsBox = styled.div`
 const ProductContainer = styled.div`
   display: flex;
   align-items: center;
-  
 `;
 
 const ProductImageDeliveryContainer = styled.div`
@@ -98,30 +97,6 @@ const ProductDescription = styled.div`
   display: flex;
   white-space: pre-wrap; /* Allow the text to wrap */
   margin-left: 10px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-`;
-
-const TrackPackageButton = styled.button`
-  display: flex;
-  justify-content: center; /* Align text horizontally in the center */
-  align-items: center; /* Align content vertically in the center */
-  background-color: white;
-  color: black;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  width: 300px;
-  height: 40px;
-  margin: 10px;
-  cursor: pointer;
-  transform: translateY(-50%);
-  font-size: 17px;
-  box-shadow: 1px 5px 5px #888888;
-  margin-top: -170px;
 `;
 
 const DeliveryStatus = styled.div`
@@ -236,7 +211,6 @@ const OrderDetailsPage = () => {
                         {order.product_description}
                       </ProductDescription>
                     </ProductDescriptionContainer>
-                 
                   </ProductContainer>
                 </div>
               ))}

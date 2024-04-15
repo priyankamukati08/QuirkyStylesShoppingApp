@@ -28,7 +28,7 @@ export const fetchUserInfo = (userId) => async (dispatch) => {
 
   try {
     const response = await api.get(
-      `http://localhost:3001/userinfo/${userId}`
+      `http://localhost:3001/userInfo/${userId}`
     );
     dispatch({
       type: FETCH_USERINFO_SUCCESS,
@@ -68,7 +68,7 @@ export const addUserInfo = (userInfo) => async (dispatch) => {
 
 
 export const updateUserInfo = (userId, updatedInfo) => async (dispatch) => {
-  dispatch({ type: UPDATE_USERINFO_LOADING }); 
+  dispatch({ type: UPDATE_USERINFO_LOADING });
 
   try {
     const response = await api.put(
@@ -80,7 +80,6 @@ export const updateUserInfo = (userId, updatedInfo) => async (dispatch) => {
       payload: response.data,
     });
   } catch (error) {
- 
     dispatch({
       type: UPDATE_USERINFO_FAILURE,
       payload: error.message,

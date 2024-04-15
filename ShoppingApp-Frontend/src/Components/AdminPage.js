@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addUserInfo } from "../store/actions/userInfoActions";
-import { fetchUserInfo } from "../store/actions/userInfoActions"; // Import fetchUserInfo action
+import { fetchUserInfo } from "../store/actions/userInfoActions";
 import Cookies from "js-cookie";
-
 import NavigationBar from "./NavigationBar";
 
 const DashboardHeading = styled.h1`
@@ -36,18 +34,21 @@ const StyledButton = styled.button`
 const AdminPage = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
-  const userInfo = useSelector((state) => state.userInfoDetail.userInfoDetails); // Assuming your user info slice is userInfoDetail
+  const userInfo = useSelector((state) => state.userInfoDetail.userInfoDetails);
   const dispatch = useDispatch();
   const user_id = Cookies.get("userID");
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    console.log("Fetching user information...");
     const fetchUserInformation = async () => {
       try {
         const response = await dispatch(fetchUserInfo(user_id));
         console.log("User information:", response);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching user information:", error);
+        setLoading(false);
       }
     };
 
@@ -55,7 +56,7 @@ const AdminPage = () => {
   }, [dispatch, user_id]);
 
   useEffect(() => {
-    if (userInfo) {
+    if (!loading && userInfo) {
       const { user_type } = userInfo;
       console.log("User type:", user_type);
       if (user_type === "admin") {
@@ -64,15 +65,19 @@ const AdminPage = () => {
         navigate("/homepage");
       }
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, loading, navigate]);
 
   const navigateToProductManagement = () => {
     navigate("/ProductManagement");
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
-      <NavigationBar />
+      <NavigationBar/>
       <DashboardHeading>Admin Dashboard</DashboardHeading>
       {isAdmin && (
         <ButtonContainer>

@@ -182,6 +182,8 @@ const IconImage = styled.img`
 const BagContent = styled(WishlistContent)`
   cursor: ${(props) => (props.authenticated ? "pointer" : "not-allowed")};
 `;
+
+
 const ProfilePopupText = styled.div`
   font-size: 16px;
   margin-bottom: 10px;
@@ -243,8 +245,9 @@ export const NavigationBar = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const userName = Cookies.get("userName");
   const userPhoneNumber = Cookies.get("userPhoneNumber");
-
+  const [searchQuery, setSearchQuery] = useState("");
   let navigate = useNavigate();
+   
 
   const routeChange = () => {
     let path = `/homepage`;
@@ -265,8 +268,7 @@ export const NavigationBar = (props) => {
 
   useEffect(() => {
     if (userAuthRequired && isAuthenticated === false) {
-      let path = `/Login`;
-      navigate(path);
+      navigate("/login", { replace: true });
     }
   }, [isAuthenticated, navigate, userAuthRequired]);
 
@@ -279,11 +281,25 @@ export const NavigationBar = (props) => {
     }
   };
 
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value; // Get the current value of the input field
+    setSearchQuery(query); // Update the searchQuery state
+
+    // Trigger the search action only when the Enter key is pressed
+    if (e.key === "Enter") {
+      props.searchButtonClicked(query); // Pass the current query value to the searchButtonClicked function
+    }
+    if (query.trim() === "") {
+      props.searchButtonClicked(query); // Pass the current query value to the searchButtonClicked function
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await signOut();
       setIsAuthenticated(false);
-      console.log("logout");
+      navigate("/homepage", { replace: true }); // Redirect to login page after logout
+      window.location.reload(); // Reload the page after logout
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -293,6 +309,15 @@ export const NavigationBar = (props) => {
     event.preventDefault();
     handleLogout();
   };
+
+  const handleWishlistClick = () => {
+    if (!isAuthenticated) {
+      navigate("/login"); // Redirect to login page if not authenticated
+    } else {
+      navigate("/WishlistPage"); // Redirect to WishlistPage if authenticated
+    }
+  };
+
 
   const renderProfileDropdown = () => {
     if (isAuthenticated) {
@@ -408,9 +433,18 @@ export const NavigationBar = (props) => {
         <SearchIconContainer>
           <SearchIconImage src="/searchicon.png"></SearchIconImage>
         </SearchIconContainer>
-        <SearchInput placeholder="Search for products, brands, and more"></SearchInput>
+        <SearchInput
+          type="text"
+          placeholder="Search for products, brands, and more"
+          onChange={handleSearchInputChange}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              props.searchButtonClicked(searchQuery); // Use the current input value directly
+            }
+          }}
+        />
       </SearchBarContainer>
-
+      {/* <ProductsGrid searchQuery={searchQuery} setSearchQuery={setSearchQuery} /> */}
       <NavMenu>
         <NavItem
           onMouseEnter={() => setProfilePopupVisible(true)}
@@ -425,18 +459,10 @@ export const NavigationBar = (props) => {
         <NavItem>
           <WishlistContent
             authenticated={isAuthenticated}
-            onClick={() => {
-              if (!isAuthenticated) {
-                navigate("/login");
-              }
-            }}
+            onClick={handleWishlistClick}
           >
             <IconImage src="/wishlisticonimg.png"></IconImage>
-            {isAuthenticated ? (
-              <BiggerNavLinks to="/WishlistPage">Wishlist</BiggerNavLinks>
-            ) : (
-              <BiggerNavLinks>Wishlist</BiggerNavLinks>
-            )}
+            <BiggerNavLinks>Wishlist</BiggerNavLinks>
           </WishlistContent>
         </NavItem>
         <NavItem>
@@ -445,15 +471,14 @@ export const NavigationBar = (props) => {
             onClick={() => {
               if (!isAuthenticated) {
                 navigate("/login");
+              } else {
+                navigate("/userCart"); // Redirect to userCart if authenticated
               }
             }}
           >
             <IconImage src="/bagiconimg.png"></IconImage>
-            {isAuthenticated ? (
-              <BiggerNavLinks to="/userCart">Bag</BiggerNavLinks>
-            ) : (
-              <BiggerNavLinks>Bag</BiggerNavLinks>
-            )}
+            <BiggerNavLinks>Bag</BiggerNavLinks>
+    
           </BagContent>
         </NavItem>
       </NavMenu>

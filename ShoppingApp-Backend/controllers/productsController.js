@@ -14,7 +14,7 @@ const getAllProducts = async (req, res) => {
 };
 
 const addNewProduct = async (req, res) => {
-  try {
+  try { 
     const {
       product_brand_name,
       product_description,

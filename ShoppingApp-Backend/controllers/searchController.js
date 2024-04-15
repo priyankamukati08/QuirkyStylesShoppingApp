@@ -2,7 +2,7 @@ const { OpenAI } = require("openai");
 const pool = require("../db");
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: "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",
 });
 
 async function generateResponse(messages) {
@@ -52,12 +52,33 @@ async function findYellowShirt(prompt) {
 
 const searchProducts = async (req, res) => {
   try {
-    const queryParam = req.query.search_query;
+    const queryParam = req.query.search;
     const prompt =
-      "get me just the product id and description and nothing else. closest to " +
-      queryParam;
+      "get me just the product id and nothing else. closest to " + queryParam;
     const generatedAnswers = await findYellowShirt(prompt);
-    res.json({ answer: generatedAnswers });
+
+    // Extract the product IDs from the OpenAI response
+    const productIds = generatedAnswers.choices[0].message.content
+      .split("\n")
+      .map((line) => {
+        const match = line.match(/\d+/);
+        return match ? match[0] : null;
+      })
+      .filter((productId) => productId !== null);
+
+    // Query the database for product details using the extracted IDs
+    const client = await pool.connect();
+    const productDetails = await Promise.all(
+      productIds.map(async (productId) => {
+        const query = "SELECT * FROM products WHERE id = $1";
+        const result = await client.query(query, [productId]);
+        return result.rows[0];
+      })
+    );
+    client.release();
+
+    // Send the product details in the response
+    res.json({ products: productDetails });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });

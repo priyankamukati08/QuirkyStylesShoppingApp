@@ -16,6 +16,7 @@
   import updateProductDetailsReducer from "./updateProductDetailsReducer";
   import addNewProductReducer from "./addNewProductReducer";
   import userInfoReducer from "./userInfoReducer";
+  import searchProductReducer from "./searchReducer";
 
   const rootReducer = combineReducers({
     products: productReducer,
@@ -35,6 +36,7 @@
     updateProductDetails: updateProductDetailsReducer,
     addNewProduct: addNewProductReducer,
     userInfoDetail: userInfoReducer,
+    searchProduct: searchProductReducer,
   });
 
   export default rootReducer;

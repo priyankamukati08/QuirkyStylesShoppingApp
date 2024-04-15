@@ -55,7 +55,7 @@ const SecureText = styled.span`
 
 export const NavigationBarforcheckoutpage = () => {
   const location = useLocation();
-   let navigate = useNavigate();
+  let navigate = useNavigate();
 
   const routeChange = () => {
     let path = `/homepage`;

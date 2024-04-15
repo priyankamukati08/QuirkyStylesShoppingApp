@@ -8,10 +8,12 @@ import {
 import { updateProduct } from "../store/actions/productActions";
 import styled from "styled-components";
 import AddProductForm from "./AddProductForm";
+import { fetchUserInfo } from "../store/actions/userInfoActions";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import NavigationBar from "./NavigationBar";
 
 const ProductManagement = () => {
-  const dispatch = useDispatch();
-
   // Fetch loading states for products and productSizeColor
   const { products } = useSelector((state) => state.products);
   const { allProductSizeQuantity } = useSelector(
@@ -21,10 +23,43 @@ const ProductManagement = () => {
   // Define state variables to store edited description and price for each product
   const [editedDescriptions, setEditedDescriptions] = useState({});
   const [editedPrices, setEditedPrices] = useState({});
-
   const [editingCell, setEditingCell] = useState(null);
   const [updatedQuantityMap, setUpdatedQuantityMap] = useState({});
   const [showAddProductForm, setShowAddProductForm] = useState(false);
+  const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const userInfo = useSelector((state) => state.userInfoDetail.userInfoDetails);
+  const dispatch = useDispatch();
+  const user_id = Cookies.get("userID");
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserInformation = async () => {
+      try {
+        const response = await dispatch(fetchUserInfo(user_id));
+        console.log("User information:", response);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchUserInformation();
+  }, [dispatch, user_id]);
+
+  useEffect(() => {
+    if (!loading && userInfo) {
+      const { user_type } = userInfo;
+      console.log("User type:", user_type);
+      if (user_type === "admin") {
+        setIsAdmin(true);
+      } else {
+        navigate("/homepage");
+      }
+    }
+  }, [userInfo, loading, navigate]);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -311,7 +346,6 @@ const ProductManagement = () => {
             Update
           </Button>
         </TableCell>
-     
       </TableRow>
     ));
   };
@@ -319,45 +353,47 @@ const ProductManagement = () => {
   const baseURL = "http://localhost:3001";
 
   return (
-    <Container>
-      <Heading>Inventory Store</Heading>
-      {showAddProductForm && <AddProductForm />}
+    <>
+      <NavigationBar />
 
-      <AddProductButton onClick={toggleAddProductForm}>
-        {showAddProductForm ? "Cancel" : "Add New Product"}
-      </AddProductButton>
-     
+      <Container>
+        <Heading>Inventory Store</Heading>
+        {showAddProductForm && <AddProductForm />}
 
-      <StyledTable>
-        <thead>
-          <TableRow>
-            <TableHeader>Product ID</TableHeader>
-            <TableHeader>Product Brand Name</TableHeader>
-            <TableHeader>Product Description</TableHeader>
-            <TableHeader>Product Image</TableHeader>
-            <TableHeader>Product Price (in $)</TableHeader>
-            <TableHeader>Size</TableHeader>
-            <TableHeader>Quantity</TableHeader>
-            <TableHeader>Action</TableHeader>
-          
-          </TableRow>
-        </thead>
-        <tbody>
-          {products
-            .slice() // Make a copy of the array to avoid mutating the original array
-            .sort((a, b) => a.id - b.id) // Sort the products based on their IDs
-            .map((product) => (
-              <React.Fragment key={product.id}>
-                {renderSizeAndQuantity(
-                  product.id,
-                  allProductSizeQuantity,
-                  product
-                )}
-              </React.Fragment>
-            ))}
-        </tbody>
-      </StyledTable>
-    </Container>
+        <AddProductButton onClick={toggleAddProductForm}>
+          {showAddProductForm ? "Cancel" : "Add New Product"}
+        </AddProductButton>
+
+        <StyledTable>
+          <thead>
+            <TableRow>
+              <TableHeader>Product ID</TableHeader>
+              <TableHeader>Product Brand Name</TableHeader>
+              <TableHeader>Product Description</TableHeader>
+              <TableHeader>Product Image</TableHeader>
+              <TableHeader>Product Price (in $)</TableHeader>
+              <TableHeader>Size</TableHeader>
+              <TableHeader>Quantity</TableHeader>
+              <TableHeader>Action</TableHeader>
+            </TableRow>
+          </thead>
+          <tbody>
+            {products
+              .slice() // Make a copy of the array to avoid mutating the original array
+              .sort((a, b) => a.id - b.id) // Sort the products based on their IDs
+              .map((product) => (
+                <React.Fragment key={product.id}>
+                  {renderSizeAndQuantity(
+                    product.id,
+                    allProductSizeQuantity,
+                    product
+                  )}
+                </React.Fragment>
+              ))}
+          </tbody>
+        </StyledTable>
+      </Container>
+    </>
   );
 };
 
@@ -412,8 +448,6 @@ const AddProductButton = styled.button`
     background-color: #45a049;
   }
 `;
-
-
 
 const Button = styled.button`
   background-color: #4caf50;
