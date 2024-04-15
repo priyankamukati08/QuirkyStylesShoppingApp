@@ -274,6 +274,22 @@ const CheckoutPage = () => {
   }, [dispatch, user_id]);
 
   const handlePlaceOrder = () => {
+    if (!selectedAddressId) {
+      alert("Please select a shipping address.");
+      return;
+    }
+
+    // Payment method validation
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    // Billing address validation
+    if (!billingAddressFull) {
+      alert("Please select a billing address.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -312,7 +328,7 @@ const CheckoutPage = () => {
       order_notes: orderNotes, // Add order notes if needed
       products: cartItems,
     };
- 
+
     dispatch(addUserOrders(orderDetails))
       .then(() => {
         if (cartItems.length > 0) {
@@ -367,7 +383,11 @@ const CheckoutPage = () => {
       setShippingAddressFull(fullAddress);
     }
   };
-
+  const calculateEstimatedDelivery = () => {
+    const today = new Date();
+    const deliveryDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000); // Add 5 days to today's date
+    return deliveryDate.toLocaleDateString(); // Format the date as a string
+  };
   const handleUseAsBilling = (addressId) => {
     const selectedAddress = userAddress.find(
       (address) => address.id === addressId
@@ -566,7 +586,9 @@ const CheckoutPage = () => {
                     src={`${baseURL}${item.product_image_url}`}
                     alt={item.product_name}
                   />
-                  <ItemDescription1>Estimated delivery by</ItemDescription1>
+                  <ItemDescription1>
+                    Estimated delivery by: {calculateEstimatedDelivery()}
+                  </ItemDescription1>
                 </div>
               ))}
             </ItemContainer>
