@@ -31,6 +31,37 @@ const ProductManagement = () => {
   const user_id = Cookies.get("userID");
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchUserInformation = async () => {
+      try {
+        const response = await dispatch(fetchUserInfo(user_id));
+        console.log("User information:", response);
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserInformation();
+  }, [dispatch, user_id]);
+
+ useEffect(() => {
+   if (!loading) {
+     if (userInfo) {
+       const { user_type } = userInfo;
+       console.log("User type:", user_type);
+       if (user_type === "admin") {
+         setIsAdmin(true);
+       } else {
+         navigate("/homepage");
+       }
+     } else {
+       navigate("/homepage");
+     }
+   }
+ }, [userInfo, loading, navigate]);
+
   const handleQuantityChange = useCallback(
     async (productId, size, action) => {
       try {
@@ -70,34 +101,6 @@ const ProductManagement = () => {
     },
     [dispatch]
   );
-
-
-  useEffect(() => {
-    const fetchUserInformation = async () => {
-      try {
-        const response = await dispatch(fetchUserInfo(user_id));
-        console.log("User information:", response);
-      } catch (error) {
-        console.error("Error fetching user information:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserInformation();
-  }, [dispatch, user_id]);
-
-  useEffect(() => {
-    if (!loading && userInfo) {
-      const { user_type } = userInfo;
-      console.log("User type:", user_type);
-      if (user_type === "admin") {
-        setIsAdmin(true);
-      } else {
-        navigate("/homepage");
-      }
-    }
-  }, [userInfo, loading, navigate]);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -319,7 +322,7 @@ const ProductManagement = () => {
                 undefined
                   ? updatedQuantityMap[`${productId}-${sizeAndQuantity.size}`]
                   : quantity; // If not, use the current quantity from the state
-                   alert("Changes have been updated successfully!");
+              alert("Changes have been updated successfully!");
 
               // Dispatch action to update the product quantity
               dispatch(

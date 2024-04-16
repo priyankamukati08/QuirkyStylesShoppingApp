@@ -41,11 +41,8 @@ root.render(
           <Route path="/" element={<Landing />} />
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/app" element={<App />} />
-          <Route
-            path="/:brand/:productId"
-            element={<ProductDetailsPage />}
-          />
-      
+          <Route path="/:brand/:productId" element={<ProductDetailsPage />} />
+
           <Route path="/Mens" element={<ProductCategory category="Men" />} />
           <Route path="/Women" element={<ProductCategory category="Women" />} />
           <Route path="/Kids" element={<ProductCategory category="Kids" />} />
@@ -73,7 +70,10 @@ root.render(
           />
           <Route path="/WishlistPage" element={<WishlistPage />} />
           <Route path="/AdminPage" element={<AdminPage />} />
-          <Route path="/ProductManagement" element={<ProductManagement />} />
+          <Route
+            path="/ProductQuantityByAdmin"
+            element={<ProductManagement />}
+          />
           <Route
             path="/ProductQuantityManagement"
             element={<ProductQuantityManagement />}

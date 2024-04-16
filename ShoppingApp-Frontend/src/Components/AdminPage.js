@@ -56,11 +56,15 @@ const AdminPage = () => {
   }, [dispatch, user_id]);
 
   useEffect(() => {
-    if (!loading && userInfo) {
-      const { user_type } = userInfo;
-      console.log("User type:", user_type);
-      if (user_type === "admin") {
-        setIsAdmin(true);
+    if (!loading) {
+      if (userInfo) {
+        const { user_type } = userInfo;
+        console.log("User type:", user_type);
+        if (user_type === "admin") {
+          setIsAdmin(true);
+        } else {
+          navigate("/homepage");
+        }
       } else {
         navigate("/homepage");
       }
@@ -68,7 +72,7 @@ const AdminPage = () => {
   }, [userInfo, loading, navigate]);
 
   const navigateToProductManagement = () => {
-    navigate("/ProductManagement");
+    navigate("/productQuantityByAdmin");
   };
 
   if (loading) {
@@ -77,7 +81,7 @@ const AdminPage = () => {
 
   return (
     <div>
-      <NavigationBar/>
+      <NavigationBar />
       <DashboardHeading>Admin Dashboard</DashboardHeading>
       {isAdmin && (
         <ButtonContainer>

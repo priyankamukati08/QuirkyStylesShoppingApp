@@ -34,7 +34,6 @@ async function verifyIdToken(req, res, next) {
     req.user = decodedToken;
   } else {
     // Token decoding failed
-    console.error("Failed to decode token");
     return res.status(401).json({ error: "Unauthorized" }); // Add return statement here
   }
 
@@ -46,16 +45,16 @@ async function verifyIdToken(req, res, next) {
 const productImagesPath = path.join(__dirname, "productImages");
 app.use("/productImages", express.static(productImagesPath));
 app.use("/search", searchProductRouter);
+app.use("/products", productRouter);
+app.use("/productQuantity", productQuantitysRouter);
 
 app.use("/", verifyIdToken);
-// Routes
-app.use("/products", productRouter);
+
 app.use("/cart", userCartRouter);
 app.use("/userWishlist", userWishlistRouter);
 app.use("/userInfo", userInfoRouter);
 app.use("/userAddress", userAddressRouter);
 app.use("/userOrders", userOrdersRouter);
-app.use("/productQuantity", productQuantitysRouter);
 app.use("/productQuantityByAdmin", productQuantityByAdminRouter);
 
 module.exports = app;
