@@ -43,7 +43,7 @@ const Badge = styled.span`
 
 const BagItemsBar = () => {
   const navigate = useNavigate();
-  const { bagItemCount } = useSelector((state) => state.userCart); 
+  const { bagItemCount } = useSelector((state) => state.userCart);
 
   const handleBagClick = () => {
     navigate(`/userCart/:userId`);

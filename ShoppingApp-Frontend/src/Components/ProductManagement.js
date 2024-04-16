@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../store/actions/productActions";
 import {
@@ -14,13 +14,11 @@ import { useNavigate } from "react-router-dom";
 import NavigationBar from "./NavigationBar";
 
 const ProductManagement = () => {
-  // Fetch loading states for products and productSizeColor
   const { products } = useSelector((state) => state.products);
   const { allProductSizeQuantity } = useSelector(
     (state) => state.ProductSizeQuantity
   );
 
-  // Define state variables to store edited description and price for each product
   const [editedDescriptions, setEditedDescriptions] = useState({});
   const [editedPrices, setEditedPrices] = useState({});
   const [editingCell, setEditingCell] = useState(null);
@@ -31,17 +29,57 @@ const ProductManagement = () => {
   const userInfo = useSelector((state) => state.userInfoDetail.userInfoDetails);
   const dispatch = useDispatch();
   const user_id = Cookies.get("userID");
-
   const [loading, setLoading] = useState(true);
+
+  const handleQuantityChange = useCallback(
+    async (productId, size, action) => {
+      try {
+        console.log("Updating quantity:", productId, size, action);
+
+        setUpdatedQuantityMap((prevUpdatedQuantityMap) => {
+          const key = `${productId}-${size}`;
+          const currentQuantity = prevUpdatedQuantityMap[key] || 0;
+          const updatedQuantity =
+            action === "increment" ? currentQuantity + 1 : currentQuantity - 1;
+
+          const newQuantityMap = {
+            ...prevUpdatedQuantityMap,
+            [key]: updatedQuantity >= 0 ? updatedQuantity : 0,
+          };
+
+          dispatch(
+            updateProductSizeAndColorQuantityByAdmin(
+              productId,
+              size,
+              updatedQuantity
+            )
+          )
+            .then(() => {
+              // After updating the product quantity, dispatch a separate action
+              dispatch(getAllProductSizesAndQuantities());
+            })
+            .catch((error) => {
+              console.error("Error updating product quantity:", error);
+            });
+
+          return newQuantityMap;
+        });
+      } catch (error) {
+        console.error("Error updating product quantity:", error);
+      }
+    },
+    [dispatch]
+  );
+
 
   useEffect(() => {
     const fetchUserInformation = async () => {
       try {
         const response = await dispatch(fetchUserInfo(user_id));
         console.log("User information:", response);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching user information:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -64,8 +102,9 @@ const ProductManagement = () => {
   useEffect(() => {
     dispatch(getProducts());
     dispatch(getAllProductSizesAndQuantities());
+  }, [dispatch]);
 
-    // Initialize updatedQuantityMap with existing quantities
+  useEffect(() => {
     const initialUpdatedQuantityMap = {};
     for (const productId in allProductSizeQuantity) {
       const sizesAndQuantities = allProductSizeQuantity[productId];
@@ -78,26 +117,6 @@ const ProductManagement = () => {
     }
     setUpdatedQuantityMap(initialUpdatedQuantityMap);
   }, [dispatch, allProductSizeQuantity]);
-
-  const handleDeleteProduct = (productId) => {
-    // Clear edited description and price for the deleted product
-    setEditedDescriptions((prevDescriptions) => {
-      const newDescriptions = { ...prevDescriptions };
-      delete newDescriptions[productId];
-      return newDescriptions;
-    });
-    setEditedPrices((prevPrices) => {
-      const newPrices = { ...prevPrices };
-      delete newPrices[productId];
-      return newPrices;
-    });
-
-    console.log("Deleting product with ID:", productId);
-  };
-
-  const handleAddProduct = () => {
-    console.log("Adding new product");
-  };
 
   const handleCellEdit = (productId, size, columnName) => {
     setEditingCell({ productId, size, columnName });
@@ -147,47 +166,25 @@ const ProductManagement = () => {
     }
 
     if (Object.keys(updatedFields).length > 0) {
-      dispatch(updateProduct(productId, updatedFields));
+      dispatch(updateProduct(productId, updatedFields))
+        .then(() => {
+          alert("Changes have been updated successfully"); // Alert message
+          setEditedDescriptions((prevDescriptions) => {
+            const newDescriptions = { ...prevDescriptions };
+            delete newDescriptions[productId];
+            return newDescriptions;
+          });
+          setEditedPrices((prevPrices) => {
+            const newPrices = { ...prevPrices };
+            delete newPrices[productId];
+            return newPrices;
+          });
+        })
+        .catch((error) => {
+          console.error("Error updating product:", error);
+          // Handle error if necessary
+        });
     }
-
-    setEditedDescriptions((prevDescriptions) => {
-      const newDescriptions = { ...prevDescriptions };
-      delete newDescriptions[productId];
-      return newDescriptions;
-    });
-    setEditedPrices((prevPrices) => {
-      const newPrices = { ...prevPrices };
-      delete newPrices[productId];
-      return newPrices;
-    });
-  };
-
-  const handleQuantityChange = async (productId, size, action) => {
-    const currentQuantity =
-      updatedQuantityMap[`${productId}-${size}`] !== undefined
-        ? updatedQuantityMap[`${productId}-${size}`]
-        : allProductSizeQuantity[productId]?.[size]?.quantity || 0;
-
-    let updatedQuantity;
-    if (action === "increment") {
-      updatedQuantity = currentQuantity + 1;
-    } else if (action === "decrement") {
-      updatedQuantity = currentQuantity > 0 ? currentQuantity - 1 : 0;
-    }
-
-    // Dispatch action to update product quantity
-    await dispatch(
-      updateProductSizeAndColorQuantityByAdmin(productId, size, updatedQuantity)
-    );
-
-    // Fetch updated product data
-    await dispatch(getAllProductSizesAndQuantities());
-
-    // Update component state with new quantity
-    setUpdatedQuantityMap((prevUpdatedQuantityMap) => ({
-      ...prevUpdatedQuantityMap,
-      [`${productId}-${size}`]: updatedQuantity,
-    }));
   };
 
   const toggleAddProductForm = () => {
@@ -322,6 +319,7 @@ const ProductManagement = () => {
                 undefined
                   ? updatedQuantityMap[`${productId}-${sizeAndQuantity.size}`]
                   : quantity; // If not, use the current quantity from the state
+                   alert("Changes have been updated successfully!");
 
               // Dispatch action to update the product quantity
               dispatch(

@@ -59,7 +59,7 @@ export const addProductSizeAndColor =
     dispatch({ type: ADD_PRODUCT_SIZE_COLOR_LOADING });
     try {
       const response = await api.post(
-        `http://localhost:3001/productQuantity/`,
+        `http://localhost:3001/productQuantityByAdmin/`,
         { productId, size, color, quantity }
       );
       dispatch({
@@ -100,7 +100,7 @@ export const updateProductSizeAndColorQuantityByAdmin =
     dispatch({ type: UPDATE_PRODUCT_SIZE_COLOR_ADMIN_LOADING });
     try {
       const response = await api.put(
-        `http://localhost:3001/productQuantity/${productId}/${size}`,
+        `http://localhost:3001/productQuantityByAdmin/${productId}/${size}`,
         { productId, size, quantity }
       );
       // Assuming response.data is an object containing product size and quantity data

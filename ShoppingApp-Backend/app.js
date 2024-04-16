@@ -11,6 +11,7 @@ const userOrdersRouter = require("./routes/userOrders");
 const userAddressRouter = require("./routes/userAddress");
 const productQuantitysRouter = require("./routes/productQuantity");
 const searchProductRouter = require("./routes/searchProduct");
+const productQuantityByAdminRouter = require("./routes/admin");
 
 const jwt = require("jsonwebtoken");
 
@@ -55,5 +56,6 @@ app.use("/userInfo", userInfoRouter);
 app.use("/userAddress", userAddressRouter);
 app.use("/userOrders", userOrdersRouter);
 app.use("/productQuantity", productQuantitysRouter);
+app.use("/productQuantityByAdmin", productQuantityByAdminRouter);
 
 module.exports = app;

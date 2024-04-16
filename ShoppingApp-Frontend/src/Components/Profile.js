@@ -191,18 +191,26 @@ const ProfileEdit = () => {
   };
 
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Check if the mobile number starts with +1, if not, add it
-    const mobileNumber = formData.mobileNumber.startsWith("+1")
-      ? formData.mobileNumber
-      : "+1" + formData.mobileNumber;
-    const updatedFormData = {
-      ...formData,
-      mobileNumber: mobileNumber,
-    };
-    dispatch(updateUserInfo(user_id, updatedFormData));
-  };
+ const handleSubmit = (e) => {
+   e.preventDefault();
+   // Check if any information has been changed
+   const isInfoChanged = Object.keys(formData).some(
+     (key) => formData[key] !== userInfo[key]
+   );
+   if (isInfoChanged) {
+     // Display an alert message indicating that the information has been saved
+     alert("Information saved successfully!");
+   }
+   // Check if the mobile number starts with +1, if not, add it
+   const mobileNumber = formData.mobileNumber.startsWith("+1")
+     ? formData.mobileNumber
+     : "+1" + formData.mobileNumber;
+   const updatedFormData = {
+     ...formData,
+     mobileNumber: mobileNumber,
+   };
+   dispatch(updateUserInfo(user_id, updatedFormData));
+ };
 
 
 
