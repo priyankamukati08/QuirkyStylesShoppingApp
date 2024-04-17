@@ -20,7 +20,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://ec2-18-206-126-242.compute-1.amazonaws.com:3006/",
+    origin: "http://ec2-18-206-126-242.compute-1.amazonaws.com:3006",
   })
 );
 
