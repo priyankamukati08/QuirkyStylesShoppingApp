@@ -25,7 +25,7 @@ const DELETE_PRODUCT_FAILURE = "DELETE_PRODUCT_FAILURE";
 export const getProducts = () => async (dispatch) => {
   dispatch({ type: GET_PRODUCT_LOADING });
   try {
-    const response = await api.get("/products");
+    const response = await api.get(`${backendUrl}/products`);
     dispatch({ type: GET_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: GET_PRODUCT_FAILURE, payload: error.message });
