@@ -160,7 +160,7 @@ const TrackPackagePage = () => {
     }
     return null;
   };
-  const baseURL = "http://localhost:3001";
+    const baseURL = "http://ec2-18-206-126-242.compute-1.amazonaws.com:3001";
 
   return (
     <>
