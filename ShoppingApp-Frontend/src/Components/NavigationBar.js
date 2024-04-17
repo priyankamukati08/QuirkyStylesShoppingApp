@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { fetchAuthSession, signOut } from "aws-amplify/auth";
 import Cookies from "js-cookie";
 
@@ -60,18 +60,6 @@ const BiggerNavLinks = styled(NavLinks)`
   font-size: 14px;
 `;
 
-const DropdownContent = styled.div`
-  display: ${(props) => (props.visible ? "block" : "none")};
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  z-index: 1;
-  font-size: 16px;
-  text-transform: capitalize;
-  font-weight: bold;
-`;
 const DropdownContent1 = styled.div`
   display: ${(props) => (props.visible ? "block" : "none")};
   position: absolute;
@@ -101,31 +89,6 @@ const DropdownContent2 = styled.div`
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.9);
   transition: opacity 0.3s ease-in-out; /* Add transition effect */
   opacity: ${(props) => (props.visible ? "1" : "0")}; /* Set initial opacity */
-`;
-
-const DropdownLink = styled(Link)`
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  pointer-events: auto;
-  cursor: pointer;
-  color: ${(props) => {
-    switch (props.category) {
-      case "men":
-        return "#FF4500";
-      case "women":
-        return "#FF1493";
-      case "kids":
-        return "#FF8C00";
-      case "home&living":
-        return "#BA55D3";
-      case "beauty":
-        return "#008080";
-      default:
-        return "#000000";
-    }
-  }};
 `;
 
 const SearchBarContainer = styled.div`
@@ -182,7 +145,6 @@ const IconImage = styled.img`
 const BagContent = styled(WishlistContent)`
   cursor: ${(props) => (props.authenticated ? "pointer" : "not-allowed")};
 `;
-
 
 const ProfilePopupText = styled.div`
   font-size: 16px;
@@ -247,7 +209,6 @@ export const NavigationBar = (props) => {
   const userPhoneNumber = Cookies.get("userPhoneNumber");
   const [searchQuery, setSearchQuery] = useState("");
   let navigate = useNavigate();
-   
 
   const routeChange = () => {
     let path = `/homepage`;
@@ -318,7 +279,6 @@ export const NavigationBar = (props) => {
     }
   };
 
-
   const renderProfileDropdown = () => {
     if (isAuthenticated) {
       return (
@@ -366,12 +326,6 @@ export const NavigationBar = (props) => {
           onMouseLeave={() => setMenDropdownVisible(false)}
         >
           <NavLinks to="/Mens">MEN</NavLinks>
-          <DropdownContent visible={menDropdownVisible}>
-            <DropdownLink category="men">Clothes</DropdownLink>
-            <DropdownLink category="men">Footwear</DropdownLink>
-            <DropdownLink category="men">Watches & Sunglasses</DropdownLink>
-            <DropdownLink category="men">Fashion Accessories</DropdownLink>
-          </DropdownContent>
         </NavItem>
 
         <NavItem
@@ -379,14 +333,6 @@ export const NavigationBar = (props) => {
           onMouseLeave={() => setWomenDropdownVisible(false)}
         >
           <NavLinks to="/Women">WOMEN</NavLinks>
-          <DropdownContent visible={womenDropdownVisible}>
-            <DropdownLink to="/Womens" category="women">
-              Clothes
-            </DropdownLink>
-            <DropdownLink category="women">Footwear</DropdownLink>
-            <DropdownLink category="women">Watches & Sunglasses</DropdownLink>
-            <DropdownLink category="women">Jewellery</DropdownLink>
-          </DropdownContent>
         </NavItem>
 
         <NavItem
@@ -394,38 +340,18 @@ export const NavigationBar = (props) => {
           onMouseLeave={() => setKidsDropdownVisible(false)}
         >
           <NavLinks to="/Kids">KIDS</NavLinks>
-          <DropdownContent visible={kidsDropdownVisible}>
-            <DropdownLink category="kids">Boys Clothing</DropdownLink>
-            <DropdownLink category="kids">Girls Clothing</DropdownLink>
-            <DropdownLink category="kids">Footwear</DropdownLink>
-            <DropdownLink category="kids">Toys & Games</DropdownLink>
-          </DropdownContent>
         </NavItem>
         <NavItem
           onMouseEnter={() => setHomeAndLivingsDropdownVisible(true)}
           onMouseLeave={() => setHomeAndLivingsDropdownVisible(false)}
         >
           <NavLinks to="/Home&Living">HOME & LIVING</NavLinks>
-          <DropdownContent visible={homeAndLivingsDropdownVisible}>
-            <DropdownLink category="home&living">
-              Bed Linen & Furnishing
-            </DropdownLink>
-            <DropdownLink category="home&living">Flooring</DropdownLink>
-            <DropdownLink category="home&living">Lamps & Lighting</DropdownLink>
-            <DropdownLink category="home&living">Home Decor</DropdownLink>
-          </DropdownContent>
         </NavItem>
         <NavItem
           onMouseEnter={() => setBeautyDropdownVisible(true)}
           onMouseLeave={() => setBeautyDropdownVisible(false)}
         >
           <NavLinks to="/Beauty">BEAUTY</NavLinks>
-          <DropdownContent visible={beautyDropdownVisible}>
-            <DropdownLink category="beauty">Makeup</DropdownLink>
-            <DropdownLink category="beauty">Skincare,Bath & Body</DropdownLink>
-            <DropdownLink category="beauty">Haircare</DropdownLink>
-            <DropdownLink category="beauty">Fragrances</DropdownLink>
-          </DropdownContent>
         </NavItem>
       </NavMenu>
 
@@ -478,7 +404,6 @@ export const NavigationBar = (props) => {
           >
             <IconImage src="/bagiconimg.png"></IconImage>
             <BiggerNavLinks>Bag</BiggerNavLinks>
-    
           </BagContent>
         </NavItem>
       </NavMenu>

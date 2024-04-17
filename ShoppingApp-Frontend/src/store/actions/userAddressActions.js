@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from "axios";
+
 import api from "../api";
 import { backendUrl } from "../../config";
 
