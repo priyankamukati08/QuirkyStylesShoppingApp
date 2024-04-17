@@ -39,12 +39,12 @@ const AddProductForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Concatenate sizes and quantities into the desired format
+   
     const formattedSizes = Object.entries(formData.sizes)
       .map(([size, quantity]) => `${size}: ${quantity}`)
       .join(", ");
 
-    // Create the final product data to be dispatched
+
     const productData = {
       ...formData,
       sizes: formattedSizes,
