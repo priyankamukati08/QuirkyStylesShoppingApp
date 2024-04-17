@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import { backendUrl } from "../../config";
 
 
 const FETCH_USERINFO_LOADING = "FETCH_USERINFO_LOADING";
@@ -28,7 +29,7 @@ export const fetchUserInfo = (userId) => async (dispatch) => {
 
   try {
     const response = await api.get(
-      `http://localhost:3001/userInfo/${userId}`
+      `${backendUrl}/userInfo/${userId}`
     );
     dispatch({
       type: FETCH_USERINFO_SUCCESS,
@@ -49,7 +50,7 @@ export const addUserInfo = (userInfo) => async (dispatch) => {
 
   try {
     const response = await api.post(
-      "http://localhost:3001/userinfo",
+      `${backendUrl}/userinfo`,
       userInfo
     );
     dispatch({
@@ -72,7 +73,7 @@ export const updateUserInfo = (userId, updatedInfo) => async (dispatch) => {
 
   try {
     const response = await api.put(
-      `http://localhost:3001/userinfo/${userId}`,
+      `${backendUrl}/userinfo/${userId}`,
       updatedInfo
     );
     dispatch({
@@ -92,7 +93,7 @@ export const deleteUserInfo = (userId) => async (dispatch) => {
   dispatch({ type: DELETE_USERINFO_LOADING }); 
 
   try {
-    await api.delete(`http://localhost:3001/userinfo/${userId}`);
+    await api.delete(`${backendUrl}/userinfo/${userId}`);
     dispatch({ type: DELETE_USERINFO_SUCCESS }); 
   } catch (error) {
   

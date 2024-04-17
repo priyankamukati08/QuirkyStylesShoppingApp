@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import { backendUrl } from "../../config";
 
 
 const FETCH_USERORDERS_LOADING = "FETCH_USERORDERS_LOADING";
@@ -30,7 +31,7 @@ export const fetchUserOrders = (userId) => async (dispatch) => {
 
   try {
     const response = await api.get(
-      `http://localhost:3001/userOrders/${userId}`
+      `${backendUrl}/userOrders/${userId}`
     );
     dispatch({
       type: FETCH_USERORDERS_SUCCESS,
@@ -50,7 +51,7 @@ export const fetchUserOrdersByOrderId =
 
     try {
       const response = await api.get(
-        `http://localhost:3001/userOrders/${userId}/${orderId}`
+        `${backendUrl}/userOrders/${userId}/${orderId}`
       );
       dispatch({
         type: FETCH_USERORDERS_BY_ORDERID_SUCCESS,
@@ -69,7 +70,7 @@ export const addUserOrders = (USERORDERS) => async (dispatch) => {
 
   try {
     const response = await api.post(
-      "http://localhost:3001/userOrders",
+      `${backendUrl}/userOrders`,
       USERORDERS
     );
     dispatch({
@@ -89,7 +90,7 @@ export const updateUserOrders = (userId, updatedInfo) => async (dispatch) => {
 
   try {
     const response = await api.put(
-      `http://localhost:3001/userOrders/${userId}`,
+      `${backendUrl}/userOrders/${userId}`,
       updatedInfo
     );
     dispatch({
@@ -108,7 +109,7 @@ export const deleteUserOrders = (userId) => async (dispatch) => {
   dispatch({ type: DELETE_USERORDERS_LOADING });
 
   try {
-    await api.delete(`http://localhost:3001/userOrders/${userId}`);
+    await api.delete(`${backendUrl}/userOrders/${userId}`);
     dispatch({ type: DELETE_USERORDERS_SUCCESS });
   } catch (error) {
     dispatch({

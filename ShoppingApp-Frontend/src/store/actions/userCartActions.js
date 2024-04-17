@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import { backendUrl } from "../../config";
 
 const GET_USERCART_LOADING = "GET_USERCART_LOADING";
 const GET_USERCART_SUCCESS = "GET_USERCART_SUCCESS";
@@ -14,7 +15,7 @@ const CLEAR_CART = "CLEAR_CART";
 export const getCartByUserId = (userID) => async (dispatch) => {
   dispatch({ type: GET_USERCART_LOADING });
   try {
-    const response = await api.get(`http://localhost:3001/cart/${userID}`);
+    const response = await api.get(`${backendUrl}/cart/${userID}`);
     dispatch({ type: GET_USERCART_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: GET_USERCART_FAILURE, payload: error.message });
@@ -26,7 +27,7 @@ export const addProductToUserCart =
   async (dispatch) => {
     dispatch({ type: ADDPRODUCT_TO_USERCART_LOADING });
     try {
-      const response = await api.post("http://localhost:3001/cart", {
+      const response = await api.post(`${backendUrl}/cart`, {
         user_id: userId,
         product_id: productId,
         product_quantity: quantity,
@@ -52,7 +53,7 @@ export const addProductToUserCart =
 // New action creator for deleting the cart items associated with a user ID
 export const deleteCartByUserId = (userID) => async (dispatch) => {
   try {
-    await api.delete(`http://localhost:3001/cart/${userID}`);
+    await api.delete(`${backendUrl}/cart/${userID}`);
     dispatch(clearCart()); // After successfully deleting the cart, clear the cart in Redux store
   } catch (error) {
     console.error("Error deleting cart items", error);

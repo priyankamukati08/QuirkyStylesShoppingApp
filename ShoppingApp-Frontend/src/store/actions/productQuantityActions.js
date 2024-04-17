@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import { backendUrl } from "../../config";
 
 const GET_PRODUCT_SIZE_COLOR_LOADING = "GET_PRODUCT_SIZE_COLOR_LOADING";
 const GET_PRODUCT_SIZE_COLOR_SUCCESS = "GET_PRODUCT_SIZE_COLOR_SUCCESS";
@@ -30,7 +31,7 @@ export const getProductSizeAndColor = (productId) => async (dispatch) => {
   dispatch({ type: GET_PRODUCT_SIZE_COLOR_LOADING });
   try {
     const response = await api.get(
-      `http://localhost:3001/productQuantity/${productId}`
+      `${backendUrl}/productQuantity/${productId}`
     );
     dispatch({ type: GET_PRODUCT_SIZE_COLOR_SUCCESS, payload: response.data });
   } catch (error) {
@@ -41,7 +42,7 @@ export const getProductSizeAndColor = (productId) => async (dispatch) => {
 export const getAllProductSizesAndQuantities = () => async (dispatch) => {
   dispatch({ type: GET_ALL_PRODUCT_SIZES_AND_QUANTITIES_LOADING });
   try {
-    const response = await api.get(`http://localhost:3001/productQuantity/`);
+    const response = await api.get(`${backendUrl}/productQuantity/`);
     dispatch({
       type: GET_ALL_PRODUCT_SIZES_AND_QUANTITIES_SUCCESS,
       payload: response.data,
@@ -59,7 +60,7 @@ export const addProductSizeAndColor =
     dispatch({ type: ADD_PRODUCT_SIZE_COLOR_LOADING });
     try {
       const response = await api.post(
-        `http://localhost:3001/productQuantityByAdmin/`,
+        `${backendUrl}/productQuantityByAdmin/`,
         { productId, size, color, quantity }
       );
       dispatch({
@@ -79,7 +80,7 @@ export const updateProductSizeAndColorQuantity =
     dispatch({ type: UPDATE_PRODUCT_SIZE_COLOR_LOADING });
     try {
       const response = await api.put(
-        `http://localhost:3001/productQuantity/${productId}/${size}`,
+        `${backendUrl}/productQuantity/${productId}/${size}`,
         { productId, size, quantity }
       );
       dispatch({
@@ -100,7 +101,7 @@ export const updateProductSizeAndColorQuantityByAdmin =
     dispatch({ type: UPDATE_PRODUCT_SIZE_COLOR_ADMIN_LOADING });
     try {
       const response = await api.put(
-        `http://localhost:3001/productQuantityByAdmin/${productId}/${size}`,
+        `${backendUrl}/productQuantityByAdmin/${productId}/${size}`,
         { productId, size, quantity }
       );
       // Assuming response.data is an object containing product size and quantity data

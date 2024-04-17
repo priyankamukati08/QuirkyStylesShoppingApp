@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import { backendUrl } from "../../config";
 
 const SEARCH_PRODUCT_LOADING = "SEARCH_PRODUCT_LOADING";
 const SEARCH_PRODUCT_SUCCESS = "SEARCH_PRODUCT_SUCCESS";
@@ -9,7 +10,7 @@ export const getSearchProducts = (searchQuery) => async (dispatch) => {
   dispatch({ type: SEARCH_PRODUCT_LOADING });
   try {
     const response = await api.get(
-      `http://localhost:3001/search?search=${searchQuery}`
+      `${backendUrl}/search?search=${searchQuery}`
     );
     dispatch({ type: SEARCH_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {

@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import { backendUrl } from "../../config";
 
 const GET_PRODUCT_LOADING = "GET_PRODUCT_LOADING";
 const GET_PRODUCT_SUCCESS = "GET_PRODUCT_SUCCESS";
@@ -24,7 +25,7 @@ const DELETE_PRODUCT_FAILURE = "DELETE_PRODUCT_FAILURE";
 export const getProducts = () => async (dispatch) => {
   dispatch({ type: GET_PRODUCT_LOADING });
   try {
-    const response = await api.get("http://localhost:3001/products");
+    const response = await api.get("/products");
     dispatch({ type: GET_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: GET_PRODUCT_FAILURE, payload: error.message });
@@ -39,9 +40,7 @@ export const getProducts = () => async (dispatch) => {
 export const getProductById = (productId) => async (dispatch) => {
   dispatch({ type: GET_PRODUCT_BY_ID_LOADING });
   try {
-    const response = await api.get(
-      `http://localhost:3001/products/${productId}`
-    );
+    const response = await api.get(`${backendUrl}/products/${productId}`);
     dispatch({ type: GET_PRODUCT_BY_ID_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: GET_PRODUCT_BY_ID_FAILURE, payload: error.message });
@@ -51,10 +50,7 @@ export const getProductById = (productId) => async (dispatch) => {
 export const addProduct = (productData) => async (dispatch) => {
   dispatch({ type: ADD_PRODUCT_LOADING });
   try {
-    const response = await api.post(
-      "http://localhost:3001/products",
-      productData
-    );
+    const response = await api.post(`${backendUrl}/products`, productData);
     dispatch({ type: ADD_PRODUCT_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({ type: ADD_PRODUCT_FAILURE, payload: error.message });
@@ -65,7 +61,7 @@ export const updateProduct = (productId, productData) => async (dispatch) => {
   dispatch({ type: UPDATE_PRODUCT_LOADING });
   try {
     const response = await api.put(
-      `http://localhost:3001/products/${productId}`,
+      `${backendUrl}/products/${productId}`,
       productData
     );
     dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data });
@@ -77,13 +73,9 @@ export const updateProduct = (productId, productData) => async (dispatch) => {
 export const deleteProduct = (productId) => async (dispatch) => {
   dispatch({ type: DELETE_PRODUCT_LOADING });
   try {
-    await api.delete(`http://localhost:3001/products/${productId}`);
+    await api.delete(`${backendUrl}/products/${productId}`);
     dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
   } catch (error) {
     dispatch({ type: DELETE_PRODUCT_FAILURE, payload: error.message });
   }
 };
-
-
-
-

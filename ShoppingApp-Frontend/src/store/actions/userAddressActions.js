@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders } from "axios";
 import api from "../api";
-
+import { backendUrl } from "../../config";
 
 const ADD_USERADDRESS_LOADING = "ADD_USERADDRESS_LOADING";
 const ADD_USERADDRESS_SUCCESS = "ADD_USERADDRESS_SUCCESS";
@@ -22,11 +22,10 @@ export const addUserAddress = (userAddress, userId) => async (dispatch) => {
   dispatch({ type: ADD_USERADDRESS_LOADING });
 
   try {
-    const response = await api.post(
-      "http://localhost:3001/useraddress",{
+    const response = await api.post(`${backendUrl}/useraddress`, {
       ...userAddress,
       user_id: userId,
-  });
+    });
     dispatch({
       type: ADD_USERADDRESS_SUCCESS,
       payload: response.data,
@@ -44,7 +43,7 @@ export const fetchUserAddress = (userId) => async (dispatch) => {
 
   try {
     const response = await api.get(
-      `http://localhost:3001/useraddress/${userId}`,
+      `${backendUrl}/useraddress/${userId}`,
       userId
     );
     dispatch({
@@ -65,7 +64,7 @@ export const updateUserAddress =
 
     try {
       const response = await api.put(
-        `http://localhost:3001/useraddress/${userId}/${addressId}`,
+        `${backendUrl}/useraddress/${userId}/${addressId}`,
         updatedAddressData // Pass updatedAddressData directly
       );
       dispatch({
@@ -80,14 +79,11 @@ export const updateUserAddress =
     }
   };
 
-
 export const deleteUserAddress = (userId, addressId) => async (dispatch) => {
   dispatch({ type: DELETE_USERADDRESS_LOADING });
 
   try {
-    await api.delete(
-      `http://localhost:3001/useraddress/${userId}/${addressId}`
-    );
+    await api.delete(`${backendUrl}/useraddress/${userId}/${addressId}`);
     // After successful deletion, you might want to fetch the updated user addresses
     //dispatch(updateUserAddress(userId));
   } catch (error) {
@@ -97,4 +93,3 @@ export const deleteUserAddress = (userId, addressId) => async (dispatch) => {
     });
   }
 };
-

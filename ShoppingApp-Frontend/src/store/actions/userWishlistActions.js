@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import { backendUrl } from "../../config";
 
 const FETCH_USERWISHLIST_LOADING = "FETCH_USERWISHLIST_LOADING";
 const FETCH_USERWISHLIST_SUCCESS = "FETCH_USERWISHLIST_SUCCESS";
@@ -18,7 +19,7 @@ export const fetchUserWishlist = (userID) => async (dispatch) => {
 
   try {
     const response = await api.get(
-      `http://localhost:3001/userWishlist/${userID}`
+      `${backendUrl}/userWishlist/${userID}`
     );
     dispatch({
       type: FETCH_USERWISHLIST_SUCCESS,
@@ -37,7 +38,7 @@ export const addProductsToUserWishlist =
     dispatch({ type: ADD_USERWISHLIST_LOADING });
 
     try {
-      const response = await api.post("http://localhost:3001/userWishlist", {
+      const response = await api.post(`${backendUrl}/userWishlist`, {
         user_id: userId,
         product_id: productId,
       });
@@ -59,7 +60,7 @@ export const deleteProductsFromUserWishlist =
 
     try {
       await api.delete(
-        `http://localhost:3001/userWishlist/${userId}/${productId}`
+        `${backendUrl}/userWishlist/${userId}/${productId}`
       );
       dispatch({ type: DELETE_USERWISHLIST_SUCCESS });
     } catch (error) {
