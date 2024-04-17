@@ -1,0 +1,70 @@
+version: "3"
+
+services:
+  back-end:
+    build:
+      context: ./ShoppingApp-Backend # Updated context path
+    container_name: back-end
+    working_dir: /usr/src/app
+    networks:
+      - node-network
+    volumes:
+      - ./ShoppingApp-Backend:/usr/src/app # Updated volume path
+      - /usr/src/app/node_modules
+    tty: true
+    ports:
+      - "3001:3001"
+    command: node server.js
+    depends_on:
+      - "db"
+    
+
+  front-end:
+    build:
+      context: ./ShoppingApp-Frontend # Updated context path
+    container_name: front-end
+    working_dir: /usr/src/app
+    networks:
+      - node-network
+    volumes:
+      - ./ShoppingApp-Frontend:/usr/src/app # Updated volume path
+      - /usr/src/app/node_modules
+    tty: true
+    ports:
+      - "3006:3000"
+    command: npm run start
+    
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./Database/data:/var/lib/postgresql/data
+      - ./Database/sql/init.sql:/docker-entrypoint-initdb.d/A.sql
+      - ./Database/sql/update_delivery_status.sql:/docker-entrypoint-initdb.d/B.sql
+    networks:
+      - node-network
+
+  nginx:
+    image: nginx:latest
+    build:
+      context: ./nginx # Updated context path
+    container_name: nginx
+    restart: always
+    tty: true
+    ports:
+      - "8000:80"
+    networks:
+      - node-network
+    depends_on:
+      - back-end
+      - front-end
+
+networks:
+  node-network:
+    driver: bridge

@@ -2,7 +2,7 @@ const { OpenAI } = require("openai");
 const pool = require("../db");
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: "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",
 });
 
 async function generateResponse(messages) {

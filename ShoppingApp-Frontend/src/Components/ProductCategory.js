@@ -264,7 +264,7 @@ const ProductsGrid = (props) => {
   }, [filteredProducts, minPrice, maxPrice]);
 
   const handleProductClick = (brandName, productId) => {
-    window.location.href = `http://localhost:3000/${brandName}/${productId}`;
+    window.location.href = `http://localhost:3006/${brandName}/${productId}`;
   };
 
   const handleSeeMoreBrands = () => {
