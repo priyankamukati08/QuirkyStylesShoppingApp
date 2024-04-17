@@ -264,7 +264,7 @@ const ProductsGrid = (props) => {
   }, [filteredProducts, minPrice, maxPrice]);
 
   const handleProductClick = (brandName, productId) => {
-    window.location.href = `http://localhost:3006/${brandName}/${productId}`;
+    window.location.href = `http://ec2-18-206-126-242.compute-1.amazonaws.com:3006/${brandName}/${productId}`;
   };
 
   const handleSeeMoreBrands = () => {
@@ -354,7 +354,7 @@ const ProductsGrid = (props) => {
     sortedProducts.sort((a, b) => a.id - b.id);
   }
 
-  const baseURL = "http://ec2-18-206-126-242.compute-1.amazonaws.com:3006";
+  const baseURL = "http://ec2-18-206-126-242.compute-1.amazonaws.com:3001";
 
   return (
     <>
