@@ -17,7 +17,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3001",
+        url: "http://ec2-18-206-126-242.compute-1.amazonaws.com:3001",
       },
     ],
   },
