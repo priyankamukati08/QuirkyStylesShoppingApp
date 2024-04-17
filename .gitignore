@@ -20,4 +20,6 @@ ShoppingApp-Frontend/amplify-gradle-config.json
 ShoppingApp-Frontend/amplifytools.xcconfig
 ShoppingApp-Frontend/.secret-*
 ShoppingApp-Frontend/**.sample
+
+Database/data
 #amplify-do-not-edit-end
