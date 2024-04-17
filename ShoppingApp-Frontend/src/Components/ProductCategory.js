@@ -354,7 +354,7 @@ const ProductsGrid = (props) => {
     sortedProducts.sort((a, b) => a.id - b.id);
   }
 
-  const baseURL = "http://localhost:3001";
+  const baseURL = "http://ec2-18-206-126-242.compute-1.amazonaws.com:3006";
 
   return (
     <>
