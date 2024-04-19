@@ -1,0 +1,35 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Cart API - DELETE"
+  description: "API for deleting user carts"
+
+paths:
+  /cart/{userid}:
+    delete:
+      summary: Delete user's cart by user ID
+      tags:
+        - User Carts
+      parameters:
+        - name: userid
+          in: path
+          description: ID of the user whose cart to delete
+          required: true
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: Cart items deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Cart items deleted successfully"
+        404:
+          description: Cart items not found or user ID not found
+        500:
+          description: Internal server error. Please try again later or contact support.

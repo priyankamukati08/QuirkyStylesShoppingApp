@@ -24,13 +24,13 @@ const getProductSizesAndQuantities = async (req, res) => {
 
 const addProductSizeAndColor = async (req, res) => {
   const { productId, size, quantity } = req.body;
+  let client;
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
     await client.query(
       "INSERT INTO PRODUCTS_QUANTITY (product_id, PRODUCT_SIZE, PRODUCT_SIZE_QUANTITY) VALUES ($1, $2, $3)",
       [productId, size, quantity]
     );
-    client.release();
     res.status(201).json({ message: "Size and color added successfully" });
   } catch (err) {
     console.error("Error executing query", err);

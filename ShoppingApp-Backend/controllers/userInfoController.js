@@ -2,17 +2,8 @@ const pool = require("../db");
 
 const addUserInfo = async (req, res) => {
   try {
-    let {
-      name,
-      email,
-      phone_number,
-      birthdate,
-      age,
-      gender,
-      profile_picture_url,
-      cash_balance,
-      nickname,
-    } = req.body;
+    let { name, email, phone_number, birthdate, age, gender, nickname } =
+      req.body;
 
     // Check if passcode is provided and validate it
     if (nickname && nickname === "@2304#") {
@@ -34,8 +25,6 @@ const addUserInfo = async (req, res) => {
         birthdate,
         age,
         gender,
-        profile_picture_url,
-        cash_balance,
         user_type
         FROM public.user_info WHERE email = $1`,
       [email]
@@ -54,11 +43,9 @@ const addUserInfo = async (req, res) => {
         birthdate,
         age,
         gender,
-        profile_picture_url,
-        cash_balance,
         user_type
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
-      RETURNING id, name, email, phone_number, birthdate, age, gender, profile_picture_url, cash_balance, user_type;`;
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      RETURNING id, name, email, phone_number, birthdate, age, gender, user_type;`;
 
     const result = await pool.query(query, [
       name,
@@ -67,8 +54,6 @@ const addUserInfo = async (req, res) => {
       birthdate,
       age,
       gender,
-      profile_picture_url,
-      cash_balance,
       user_type, // Pass userType to the query
     ]);
 
@@ -92,8 +77,6 @@ const getUserInfo = async (req, res) => {
         birthdate,
         age,
         gender,
-        profile_picture_url,
-        cash_balance,
         user_type
         FROM public.user_info WHERE id = $1`,
       [userId]
@@ -113,9 +96,8 @@ const getUserInfo = async (req, res) => {
 const updateUserInfo = async (req, res) => {
   try {
     const userId = req.params.userid;
-    const { fullName, email, mobileNumber, birthday, gender, nickname,age } =
+    const { fullName, email, mobileNumber, birthday, gender, age } =
       req.body;
-
 
     const query = `
       UPDATE public.user_info

@@ -244,7 +244,7 @@ const OrderPage = () => {
     setSelectedOrderId(orderId);
   };
 
-    const baseURL = "http://ec2-18-206-126-242.compute-1.amazonaws.com:3001";
+    const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
 
   // Group orders by their order ID
   const groupedOrders = userOrders.reduce((acc, order) => {

@@ -73,11 +73,12 @@ const deleteCartByUserId = async (req, res) => {
     const client = await pool.connect();
     await client.query("DELETE FROM carts WHERE user_id = $1", [userId]);
     client.release();
-    res.sendStatus(204); // No content response
+    res.status(204).json({ message: "Cart items deleted successfully" }); // Send a JSON response with a message
   } catch (err) {
     console.error("Error deleting cart items:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 module.exports = { getCartByUserId, addToCart, deleteCartByUserId };

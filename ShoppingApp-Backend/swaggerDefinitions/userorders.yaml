@@ -4,25 +4,7 @@ info:
   title: "Order API"
   description: "API for managing user orders"
 paths:
-  /userOrders/{user_id}:
-    get:
-      summary: Get all user orders
-      tags:
-        - User Orders
-      parameters:
-        - name: user_id
-          in: path
-          description: ID of the user whose cart to retrieve
-          required: true
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: A list of user orders
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/UserOrder"
+  /userOrders:
     post:
       summary: Create a new user order
       tags:
@@ -38,44 +20,55 @@ paths:
           description: User order created successfully
         400:
           description: Bad request
-    put:
-      summary: Update an existing user order
+        500:
+          description: Internal Server Error
+  /userOrders/{user_id}:
+    get:
+      summary: Get all user orders
       tags:
         - User Orders
       parameters:
-        - in: path
-          name: id
-          description: ID of the user order to be updated
+        - name: user_id
+          in: path
+          description: ID of the user whose orders to retrieve
           required: true
           type: integer
-        - in: body
-          name: body
-          description: Updated user order object
-          required: true
-          schema:
-            $ref: "#/definitions/UpdateUserOrderInput"
+          format: int64
       responses:
         200:
-          description: User order updated successfully
-        400:
-          description: Bad request
+          description: A list of user orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/UserOrder"
+          example:
+            - order_id: 206
+              user_id: 21
+              status: "pending"
+              order_payment_type: "credit_card"
+              shipping_address: "123 Main St, City, Country"
+              billing_address: "456 Secondary St, City, Country"
+              payment_status: "paid"
+              delivery_status: "shipped"
+              order_notes: "Please deliver between 9 am and 5 pm"
+              estimated_tax: 5.00
+              order_price: 100.00
+              total_order_price_with_tax: 105.00
+              create_date: "2024-04-19T02:49:03.017Z"
+              product_id: 1
+              product_price: 50.00
+              product_quantity: 2
+              product_size: "large"
+              product_image_url: "/productImages/menCategory/mendress1.jpeg"
+              product_brand_name: "Nike"
+              product_description: "Updated product description"
         404:
-          description: User order not found
-    delete:
-      summary: Delete a user order
-      tags:
-        - User Orders
-      parameters:
-        - in: path
-          name: id
-          description: ID of the user order to be deleted
-          required: true
-          type: integer
-      responses:
-        204:
-          description: User order deleted successfully
-        404:
-          description: User order not found
+          description: User not found
+        500:
+          description: Internal Server Error
+
 definitions:
   UserOrder:
     type: object
@@ -86,17 +79,14 @@ definitions:
         example: 1
       user_id:
         type: integer
-        example: 456
+        format: int64
+        example: 21
       status:
         type: string
         example: "pending"
       order_payment_type:
         type: string
         example: "credit_card"
-      total_price:
-        type: number
-        format: float
-        example: 100.00
       shipping_address:
         type: string
         example: "123 Main St, City, Country"
@@ -112,22 +102,65 @@ definitions:
       order_notes:
         type: string
         example: "Please deliver between 9 am and 5 pm"
+      estimated_tax:
+        type: number
+        format: float
+        example: 5.00
+      order_price:
+        type: number
+        format: float
+        example: 100.00
+      total_order_price_with_tax:
+        type: number
+        format: float
+        example: 105.00
+      create_date:
+        type: string
+        format: date-time
+      product_id:
+        type: integer
+        example: 1
+      product_price:
+        type: number
+        format: float
+        example: 50.00
+      product_quantity:
+        type: integer
+        example: 2
+      product_size:
+        type: string
+        example: "large"
+      product_image_url:
+        type: string
+        example: "/productImages/menCategory/mendress1.jpeg"
+      product_brand_name:
+        type: string
+        example: "Nike"
+      product_description:
+        type: string
+        example: "Updated product description"
+
   CreateUserOrderInput:
     type: object
+    required:
+      - user_id
+      - status
+      - order_payment_type
+      - shipping_address
+      - billing_address
+      - payment_status
+      - delivery_status
+      - products
     properties:
       user_id:
         type: integer
-        example: 456
+        example: 21
       status:
         type: string
         example: "pending"
       order_payment_type:
         type: string
         example: "credit_card"
-      total_price:
-        type: number
-        format: float
-        example: 100.00
       shipping_address:
         type: string
         example: "123 Main St, City, Country"
@@ -143,6 +176,18 @@ definitions:
       order_notes:
         type: string
         example: "Please deliver between 9 am and 5 pm"
+      estimated_tax:
+        type: number
+        format: float
+        example: 5.00
+      order_price:
+        type: number
+        format: float
+        example: 100.00
+      total_order_price_with_tax:
+        type: number
+        format: float
+        example: 105.00
       products:
         type: array
         items:
@@ -184,7 +229,7 @@ definitions:
     properties:
       product_id:
         type: integer
-        example: 123
+        example: 1
       product_price:
         type: number
         format: float
@@ -192,3 +237,6 @@ definitions:
       product_quantity:
         type: integer
         example: 2
+      product_size:
+        type: string
+        example: "large"

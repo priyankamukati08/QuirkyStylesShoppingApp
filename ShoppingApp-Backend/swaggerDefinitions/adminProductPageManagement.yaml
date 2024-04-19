@@ -1,0 +1,41 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Product API"
+  description: "API for managing products"
+paths:
+  /products/{id}:
+    put:
+      summary: Update a product by ID
+      tags:
+        - Products Management by Admin
+      parameters:
+        - name: id
+          in: path
+          description: ID of the product to update
+          required: true  
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_description:
+                  type: string
+                  example: "Updated product description"
+                product_price:
+                  type: number
+                  format: float
+                  example: 129.99
+      responses:
+        200:
+          description: Product updated successfully
+        400:
+          description: Bad request. Check your request body for any errors or missing fields.
+        404:
+          description: Product not found
+        500:
+          description: Internal server error. Please try again later or contact support.

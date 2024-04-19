@@ -5,19 +5,6 @@ info:
   description: "API for managing user information"
 paths:
   /userInfo:
-    get:
-      summary: Get all user information
-      tags:
-        - User's Info
-      responses:
-        200:
-          description: User information retrieved successfully
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/UserInfo"
-        500:
-          description: Internal Server Error
     post:
       summary: Create a new user information
       tags:
@@ -27,12 +14,83 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/UserInfo"
+              $ref: "#/definitions/UserInfoInput"
       responses:
         201:
           description: User's information created successfully
         400:
           description: Bad request - Invalid input
+        500:
+          description: Internal Server Error
+
+  /userInfo/{userId}:
+    get:
+      summary: Get user information by ID
+      tags:
+        - User's Info
+      parameters:
+        - in: path
+          name: userId
+          description: ID of the user to retrieve information for
+          required: true
+          type: integer
+      responses:
+        200:
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/UserInfo"
+              example:
+                id: 1
+                name: John Doe
+                email: john@example.com
+                phone_number: "1234567890"
+                age: 30
+                gender: male
+                birthdate: "1990-01-01"
+                user_type: user
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+
+    put:
+      summary: Update user information by ID
+      tags:
+        - User's Info
+      parameters:
+        - in: path
+          name: userId
+          description: ID of the user to update information for
+          required: true
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UserInfoInput"
+      responses:
+        200:
+          description: User information updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/UserInfo"
+              example:
+                id: 1
+                name: John Doe
+                email: john@example.com
+                phone_number: "1234567890"
+                age: 30
+                gender: male
+                birthdate: "1990-01-01"
+                user_type: user
+        400:
+          description: Bad request - Invalid input
+        404:
+          description: User not found
         500:
           description: Internal Server Error
 
@@ -44,39 +102,51 @@ definitions:
         type: integer
         format: int64
         example: 1
-      user_full_name:
+      fullName:
         type: string
-        example: "John Doe"
-      user_email:
+        example: John Doe
+      email:
         type: string
-        example: "john@example.com"
-      user_phone_number:
+        example: john@example.com
+      mobileNumber:
         type: string
-        example: "1234567890"
-      user_age:
+        example: 1234567890
+      age:
         type: integer
         example: 30
-      user_gender:
+      gender:
         type: string
-        example: "male"
-      user_shipping_address:
+        example: male
+      birthday:
         type: string
-        example: "123 Main St, City, Country"
-      user_billing_address:
+        format: date
+        example: "1990-01-01"
+      user_type:
         type: string
-        example: "456 Secondary St, City, Country"
-      user_profile_picture_url:
+        example: user
+
+  UserInfoInput:
+    type: object
+    properties:
+      fullName:
         type: string
-        example: "https://example.com/profile.jpg"
-      cash_balance:
-        type: number
-        format: float
-        example: 100.00
-      create_date:
+        example: John Doe
+      email:
         type: string
-        format: date-time
-        example: "2023-07-25T05:36:24.983Z"
-      update_date:
+        example: john@example.com
+      mobileNumber:
         type: string
-        format: date-time
-        example: "2023-08-15T10:20:30.456Z"
+        example: 1234567890
+      age:
+        type: integer
+        example: 30
+      gender:
+        type: string
+        example: male
+      birthday:
+        type: string
+        format: date
+        example: "1990-01-01"
+      user_type:
+        type: string
+        example: user

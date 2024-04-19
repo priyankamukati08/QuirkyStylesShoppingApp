@@ -1,0 +1,112 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Product Quantity API"
+  description: "API for managing product sizes and quantities"
+paths:
+  /productQuantity/{product_id}:
+    get:
+      summary: "Get product sizes and quantities by product ID"
+      tags:
+        - Product Sizes and Quantities
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of the product to retrieve sizes and quantities for"
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: "A list of product sizes and quantities"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/definitions/ProductSizeAndQuantity"
+              example:
+                - productId: 1
+                  productSize: "L"
+                  totalQuantity: 1
+                - productId: 1
+                  productSize: "M"
+                  totalQuantity: 2
+                - productId: 1
+                  productSize: "S"
+                  totalQuantity: 100
+                - productId: 1
+                  productSize: "XL"
+                  totalQuantity: 8
+                - productId: 1
+                  productSize: "XXL"
+                  totalQuantity: 0
+        500:
+          description: "Internal Server Error. Please try again later or contact support."
+
+  /productQuantity/{product_id}/{size}:
+    put:
+      summary: "Update product size and color quantity for user order"
+      tags:
+        - Product Sizes and Quantities
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of the product to update size and color quantity for"
+          required: true
+          type: integer
+          format: int64
+        - name: size
+          in: path
+          description: "Size of the product to update quantity for"
+          required: true
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UpdateProductSizeAndColorQuantityInput"
+      responses:
+        200:
+          description: "Product quantity reduced for order"
+        400:
+          description: "Product is out of stock or insufficient quantity"
+        500:
+          description: "Internal Server Error. Please try again later or contact support."
+
+definitions:
+  ProductSizeAndQuantity:
+    type: "object"
+    properties:
+      productId:
+        type: "integer"
+        format: "int64"
+      productSize:
+        type: "string"
+      totalQuantity:
+        type: "integer"
+        format: "int64"
+
+
+
+  UpdateProductSizeAndColorQuantityInput:
+    type: "object"
+    required:
+      - productId
+      - size
+      - quantity
+    properties:
+      productId:
+        type: "integer"
+        format: "int64"
+        example: 1
+      size:
+        type: "string"
+        example: "S"
+      quantity:
+        type: "integer"
+        format: "int32"
+        example: 1
+
+

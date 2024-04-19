@@ -1,0 +1,166 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Product Quantity API"
+  description: "API for managing product sizes and quantities"
+paths:
+  /productQuantityByAdmin/{product_id}/{size}:
+    post:
+      summary: "Add product size and color"
+      tags:
+        - Product Sizes and Quantities Management by Admin
+      parameters:
+        - name: product_id
+          in: path
+          description: ID of the product
+          required: true
+          type: integer
+        - name: size
+          in: path
+          description: Size of the product (S, M, L, XL, XXL)
+          required: true
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/AddProductSizeAndColorInput"
+            example:
+              productId: 123
+              size: "M"
+              quantity: 50
+      responses:
+        201:
+          description: "Size and color added successfully"
+        500:
+          description: "Internal Server Error. Please try again later or contact support."
+    put:
+      summary: "Update product size and color quantity for user order"
+      tags:
+        - Product Sizes and Quantities Management by Admin
+      parameters:
+        - name: product_id
+          in: path
+          description: ID of the product
+          required: true
+          type: integer
+        - name: size
+          in: path
+          description: Size of the product (S, M, L, XL, XXL)
+          required: true
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UpdateProductSizeAndColorQuantitybyAdminInput"
+            example:
+              productId: 123
+              size: "M"
+              quantity: 10
+      responses:
+        200:
+          description: "Product quantity reduced for order"
+        400:
+          description: "Product is out of stock or insufficient quantity"
+        500:
+          description: "Internal Server Error. Please try again later or contact support."
+  /productQuantity:
+    get:
+      summary: "Get all product sizes and quantities"
+      tags:
+        - Product Sizes and Quantities Management by Admin
+      responses:
+        200:
+          description: "A list of all product sizes and quantities"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/definitions/ProductSizeAndQuantity"
+              example:
+                - product_id: 67
+                  product_size: "M"
+                  total_quantity: 5
+                - product_id: 69
+                  product_size: "XL"
+                  total_quantity: 5
+                - product_id: 90
+                  product_size: "S"
+                  total_quantity: 5
+                - product_id: 76
+                  product_size: "XXL"
+                  total_quantity: 5
+                - product_id: 90
+                  product_size: "XL"
+                  total_quantity: 5
+                - product_id: 18
+                  product_size: "M"
+                  total_quantity: 5
+                - product_id: 14
+                  product_size: "M"
+                  total_quantity: 5
+                - product_id: 185
+                  product_size: "S"
+                  total_quantity: 10
+                - product_id: 34
+                  product_size: "XXL"
+                  total_quantity: 5
+                - product_id: 18
+                  product_size: "XXL"
+                  total_quantity: 5
+                - product_id: 86
+                  product_size: "XL"
+                  total_quantity: 5
+        500:
+          description: "Internal Server Error. Please try again later or contact support."
+  
+definitions:
+  ProductSizeAndQuantity:
+    type: "object"
+    properties:
+      productId:
+        type: "integer"
+        format: "int64"
+      productSize:
+        type: "string"
+      totalQuantity:
+        type: "integer"
+        format: "int64"
+
+  AddProductSizeAndColorInput:
+    type: "object"
+    required:
+      - productId
+      - size
+      - quantity
+    properties:
+      productId:
+        type: "integer"
+        format: "int64"
+      size:
+        type: "string"
+        enum: ["S", "M", "L", "XL", "XXL"]
+      quantity:
+        type: "integer"
+        format: "int32"
+
+  UpdateProductSizeAndColorQuantitybyAdminInput:
+    type: "object"
+    required:
+      - productId
+      - size
+      - quantity
+    properties:
+      productId:
+        type: "integer"
+        format: "int64"
+      size:
+        type: "string"
+        enum: ["S", "M", "L", "XL", "XXL"]
+      quantity:
+        type: "integer"
+        format: "int32"

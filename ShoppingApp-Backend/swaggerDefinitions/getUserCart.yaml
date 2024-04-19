@@ -1,0 +1,74 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Cart API - GET"
+  description: "API for retrieving user carts"
+
+paths:
+  /cart/{user_id}:
+    get:
+      summary: Get the user's cart by user ID
+      tags:
+        - User Carts
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of the user whose cart to retrieve
+          required: true
+          type: integer
+          format: int64
+          example: 21
+      responses:
+        200:
+          description: User's cart retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/CartItem"
+        404:
+          description: User's cart not found or user ID not found
+
+definitions:
+  CartItem:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 503
+      product_id:
+        type: integer
+        format: int64
+        example: 1
+      user_id:
+        type: integer
+        format: int64
+        example: 21
+      product_quantity:
+        type: string
+        example: "2"
+      product_size:
+        type: string
+        example: "M"
+      create_date:
+        type: string
+        format: date-time
+        example: "2024-04-19T05:52:47.384Z"
+      update_date:
+        type: string
+        format: date-time
+        example: "2024-04-19T05:52:47.384Z"
+      product_brand_name:
+        type: string
+        example: "Nike"
+      product_image_url:
+        type: string
+        example: "/productImages/menCategory/mendress1.jpeg"
+      product_price:
+        type: string
+        example: "129.99"
+      product_description:
+        type: string
+        example: "Men blue jacket"
