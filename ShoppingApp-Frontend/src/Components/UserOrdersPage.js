@@ -272,6 +272,7 @@ const OrderPage = () => {
               new Date(b.orderDetails.create_date) -
               new Date(a.orderDetails.create_date)
           )
+          .reverse()
           .map(({ orderDetails, products }) => (
             <OrderItem key={orderDetails.order_id}>
               <OrderHeader>
