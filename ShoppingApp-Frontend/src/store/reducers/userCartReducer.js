@@ -9,7 +9,12 @@ const userCartReducer = (state = initialState, action) => {
     case "GET_USERCART_LOADING":
       return { ...state, loading: true };
     case "GET_USERCART_SUCCESS":
-      return { ...state, loading: false, cartItems: action.payload };
+      return {
+        ...state,
+        loading: false,
+        cartItems: action.payload,
+        error: null,
+      };
     case "GET_USERCART_FAILURE":
       return { ...state, loading: false, error: action.payload };
     case "UPDATE_USERCART":

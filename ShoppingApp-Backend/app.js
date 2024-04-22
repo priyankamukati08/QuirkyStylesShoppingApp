@@ -48,7 +48,7 @@ app.use("/search", searchProductRouter);
 app.use("/products", productRouter);
 app.use("/productQuantity", productQuantitysRouter);
 
-app.use("/", verifyIdToken);
+//app.use("/", verifyIdToken);
 
 app.use("/api-docs", express.static(path.join(__dirname, "api-docs")));
 app.use("/cart", userCartRouter);
