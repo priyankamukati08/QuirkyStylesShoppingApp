@@ -7,36 +7,19 @@ import Cookies from "js-cookie";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import NavigationBar from "./NavigationBar";
+import FooterContainer from "./Footer";
 
 const MainProfileEditContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  max-width: 2500px;
+
   margin: 0 auto;
   padding: 20px;
+  margin-left: 800px;
 `;
 
 const ProfileEditContainer = styled.div`
   width: 40%;
-  margin-right: 500px;
-`;
-
-const ProfilePictureContainer = styled.div`
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: left;
-  margin-top: 80px;
-  margin-left: 10px;
-`;
-
-const ProfilePictureWrapper = styled.div`
-  margin-bottom: 20px;
-`;
-
-const ProfileEditButtonWrapper = styled.div`
-  text-align: center;
 `;
 
 const ProfileEditHeading = styled.h1`
@@ -72,21 +55,8 @@ const Select = styled.select`
   font-size: 16px;
 `;
 
-const Button = styled.button`
-  padding: 10px 80px;
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-  border-radius: 5px;
-  font-size: 20px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-`;
-
 const Button1 = styled.button`
-  padding: 15px 320px;
+  padding: 15px 100px;
   background-color: #ff1493;
   color: white;
   border: none;
@@ -95,27 +65,6 @@ const Button1 = styled.button`
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-`;
-
-const Button2 = styled.button`
-  padding: 10px 50px;
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-  border-radius: 5px;
-  font-size: 20px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-`;
-
-const ProfilePicture = styled.img`
-  width: 300px; /* Adjust the width to your desired size */
-  height: 300px;
-  border-radius: 50%;
-  border: 2px solid black;
-  object-fit: cover;
 `;
 
 const ProfileEdit = () => {
@@ -190,29 +139,26 @@ const ProfileEdit = () => {
     }));
   };
 
-
- const handleSubmit = (e) => {
-   e.preventDefault();
-   // Check if any information has been changed
-   const isInfoChanged = Object.keys(formData).some(
-     (key) => formData[key] !== userInfo[key]
-   );
-   if (isInfoChanged) {
-     // Display an alert message indicating that the information has been saved
-     alert("Information saved successfully!");
-   }
-   // Check if the mobile number starts with +1, if not, add it
-   const mobileNumber = formData.mobileNumber.startsWith("+1")
-     ? formData.mobileNumber
-     : "+1" + formData.mobileNumber;
-   const updatedFormData = {
-     ...formData,
-     mobileNumber: mobileNumber,
-   };
-   dispatch(updateUserInfo(user_id, updatedFormData));
- };
-
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Check if any information has been changed
+    const isInfoChanged = Object.keys(formData).some(
+      (key) => formData[key] !== userInfo[key]
+    );
+    if (isInfoChanged) {
+      // Display an alert message indicating that the information has been saved
+      alert("Information saved successfully!");
+    }
+    // Check if the mobile number starts with +1, if not, add it
+    const mobileNumber = formData.mobileNumber.startsWith("+1")
+      ? formData.mobileNumber
+      : "+1" + formData.mobileNumber;
+    const updatedFormData = {
+      ...formData,
+      mobileNumber: mobileNumber,
+    };
+    dispatch(updateUserInfo(user_id, updatedFormData));
+  };
 
   if (!userInfo) {
     return <div>Loading...</div>;
@@ -222,14 +168,6 @@ const ProfileEdit = () => {
     <>
       <NavigationBar />
       <MainProfileEditContainer>
-        <ProfilePictureContainer>
-          <ProfilePictureWrapper>
-            <ProfilePicture src="profilepic.jpeg" alt="Profile" />
-          </ProfilePictureWrapper>
-          <ProfileEditButtonWrapper>
-            <Button2 type="submit">Edit Profile Picture</Button2>
-          </ProfileEditButtonWrapper>
-        </ProfilePictureContainer>
         <ProfileEditContainer>
           <ProfileEditHeading>Edit Details</ProfileEditHeading>
           <ProfileDetailsBox>

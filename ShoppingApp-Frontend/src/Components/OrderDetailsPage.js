@@ -5,6 +5,7 @@ import NavigationBar from "./NavigationBar";
 import styled from "styled-components";
 import { fetchUserOrdersByOrderId } from "../store/actions/userOrdersActions";
 
+
 const ShippingAddressContainer = styled.div`
   white-space: pre-line;
 `;
@@ -141,7 +142,7 @@ const OrderDetailsPage = () => {
     );
   }
 
-  const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
+  const baseURL = "http://localhost:3001";
 
   return (
     <>
@@ -218,6 +219,7 @@ const OrderDetailsPage = () => {
           </>
         )}
       </OrderDetailsPageContainer>
+
     </>
   );
 };

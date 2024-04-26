@@ -8,6 +8,7 @@ import {
   fetchUserOrdersByOrderId,
 } from "../store/actions/userOrdersActions";
 import { Link } from "react-router-dom";
+import FooterContainer from "./Footer";
 
 const OrderPageContainer = styled.div`
   padding: 20px;
@@ -244,7 +245,7 @@ const OrderPage = () => {
     setSelectedOrderId(orderId);
   };
 
-    const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
+    const baseURL = "http://localhost:3001";
 
   // Group orders by their order ID
   const groupedOrders = userOrders.reduce((acc, order) => {
@@ -272,7 +273,7 @@ const OrderPage = () => {
               new Date(b.orderDetails.create_date) -
               new Date(a.orderDetails.create_date)
           )
-          .reverse()
+
           .map(({ orderDetails, products }) => (
             <OrderItem key={orderDetails.order_id}>
               <OrderHeader>

@@ -2,6 +2,7 @@ import React from "react";
 import NavigationBar from "./NavigationBar";
 import Cookies from "js-cookie";
 import styled from "styled-components";
+import FooterContainer from "./Footer";
 
 
 // Define styled components
@@ -36,6 +37,7 @@ const OrderSuccessPage = () => {
         <Heading>Order Placed Successfully!</Heading>
         <Paragraph>Thank you for shopping with us.</Paragraph>
       </Container>
+     
     </>
   );
 };

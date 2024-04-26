@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import FooterContainer from "./Footer";
 import { addUserOrders } from "../store/actions/userOrdersActions";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
@@ -359,7 +360,7 @@ const CheckoutPage = () => {
     }
   }, [dispatch, user_id]);
 
-    const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
+  const baseURL = "http://localhost:3001";
 
   const handleAddAddress = (formData) => {
     dispatch(addUserAddress(formData, user_id))
@@ -658,6 +659,7 @@ const CheckoutPage = () => {
           {error && <p>Error: {error}</p>}
         </RightSection>
       </Container>
+      <FooterContainer></FooterContainer>
 
       <Modal
         isOpen={showAddressModal}

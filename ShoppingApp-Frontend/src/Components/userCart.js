@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import NavigationBarforcheckoutpage from "./Navigationbarforcheckout";
 
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -177,7 +178,7 @@ const CartPage = () => {
     navigate("/checkout", { state: { cartItems: cartItems } });
   };
 
-    const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
+  const baseURL = "http://localhost:3001";
 
   return (
     <>
@@ -227,6 +228,7 @@ const CartPage = () => {
           </PriceDetails>
         </PriceDetailsContainer>
       </Container>
+   
     </>
   );
 };

@@ -9,6 +9,7 @@ import { addProductToUserCart } from "../store/actions/userCartActions";
 import Cookies from "js-cookie";
 import Modal from "./Modal";
 import { getProductById } from "../store/actions/productActions";
+import FooterContainer from "./Footer";
 
 import {
   Container,
@@ -116,7 +117,7 @@ const WishlistPage = () => {
     );
   }
 
-    const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
+    const baseURL = "http://localhost:3001";
 
   return (
     <>

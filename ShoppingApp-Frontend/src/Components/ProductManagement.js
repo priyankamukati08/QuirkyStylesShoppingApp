@@ -46,61 +46,56 @@ const ProductManagement = () => {
     fetchUserInformation();
   }, [dispatch, user_id]);
 
- useEffect(() => {
-   if (!loading) {
-     if (userInfo) {
-       const { user_type } = userInfo;
-       console.log("User type:", user_type);
-       if (user_type === "admin") {
-         setIsAdmin(true);
-       } else {
-         navigate("/homepage");
-       }
-     } else {
-       navigate("/homepage");
-     }
-   }
- }, [userInfo, loading, navigate]);
-
-  const handleQuantityChange = useCallback(
-    async (productId, size, action) => {
-      try {
-        console.log("Updating quantity:", productId, size, action);
-
-        setUpdatedQuantityMap((prevUpdatedQuantityMap) => {
-          const key = `${productId}-${size}`;
-          const currentQuantity = prevUpdatedQuantityMap[key] || 0;
-          const updatedQuantity =
-            action === "increment" ? currentQuantity + 1 : currentQuantity - 1;
-
-          const newQuantityMap = {
-            ...prevUpdatedQuantityMap,
-            [key]: updatedQuantity >= 0 ? updatedQuantity : 0,
-          };
-
-          dispatch(
-            updateProductSizeAndColorQuantityByAdmin(
-              productId,
-              size,
-              updatedQuantity
-            )
-          )
-            .then(() => {
-              // After updating the product quantity, dispatch a separate action
-              dispatch(getAllProductSizesAndQuantities());
-            })
-            .catch((error) => {
-              console.error("Error updating product quantity:", error);
-            });
-
-          return newQuantityMap;
-        });
-      } catch (error) {
-        console.error("Error updating product quantity:", error);
+  useEffect(() => {
+    if (!loading) {
+      if (userInfo) {
+        const { user_type } = userInfo;
+        console.log("User type:", user_type);
+        if (user_type === "admin") {
+          setIsAdmin(true);
+        } else {
+          navigate("/homepage");
+        }
+      } else {
+        navigate("/homepage");
       }
-    },
-    [dispatch]
-  );
+    }
+  }, [userInfo, loading, navigate]);
+
+const handleQuantityChange = useCallback(
+  async (productId, size, action) => {
+    try {
+      console.log("Updating quantity:", productId, size, action);
+
+      const key = `${productId}-${size}`;
+      const currentQuantity = updatedQuantityMap[key] || 0;
+      const updatedQuantity =
+        action === "increment" ? currentQuantity + 1 : currentQuantity - 1;
+
+      setUpdatedQuantityMap((prevUpdatedQuantityMap) => ({
+        ...prevUpdatedQuantityMap,
+        [key]: updatedQuantity >= 0 ? updatedQuantity : 0,
+      }));
+
+      // Dispatch the updateProductSizeAndColorQuantityByAdmin action
+      await dispatch(
+        updateProductSizeAndColorQuantityByAdmin(
+          productId,
+          size,
+          updatedQuantity
+        )
+      ).then(() => {
+        // Dispatch the getAllProductSizesAndQuantities action after the above action is completed
+        dispatch(getAllProductSizesAndQuantities());
+      });
+    } catch (error) {
+      console.error("Error updating product quantity:", error);
+    }
+  },
+  [dispatch, updatedQuantityMap]
+);
+
+
 
   useEffect(() => {
     dispatch(getProducts());
@@ -351,7 +346,7 @@ const ProductManagement = () => {
     ));
   };
 
-    const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
+  const baseURL = "http://localhost:3001";
 
   return (
     <>
@@ -380,7 +375,7 @@ const ProductManagement = () => {
           </thead>
           <tbody>
             {products
-              .slice() // Make a copy of the array to avoid mutating the original array
+              .slice() 
               .sort((a, b) => a.id - b.id) // Sort the products based on their IDs
               .map((product) => (
                 <React.Fragment key={product.id}>

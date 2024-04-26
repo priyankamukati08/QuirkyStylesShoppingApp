@@ -63,37 +63,7 @@ const Footer = () => {
             offering a wide range of clothing, accessories, and more.
           </p>
         </Section>
-        <Section>
-          <SectionTitle>Customer Service</SectionTitle>
-          <LinkList>
-            <ListItem>
-              <a href="/faq">FAQ</a>
-            </ListItem>
-            <ListItem>
-              <a href="/shipping">Shipping Information</a>
-            </ListItem>
-            <ListItem>
-              <a href="/returns">Returns & Exchanges</a>
-            </ListItem>
-            <ListItem>
-              <a href="/contact">Contact Us</a>
-            </ListItem>
-          </LinkList>
-        </Section>
-        <Section>
-          <SectionTitle>Quick Links</SectionTitle>
-          <LinkList>
-            <ListItem>
-              <a href="/shop">Shop</a>
-            </ListItem>
-            <ListItem>
-              <a href="/wishlist">Wishlist</a>
-            </ListItem>
-            <ListItem>
-              <a href="/account">My Account</a>
-            </ListItem>
-          </LinkList>
-        </Section>
+
         <Section>
           <SectionTitle>Contact Us</SectionTitle>
           <p>123 Quirkstyles Avenue</p>

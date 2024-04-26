@@ -20,7 +20,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://ec2-44-202-87-215.compute-1.amazonaws.com:3006",
+    origin: "http://localhost:3000",
   })
 );
 
@@ -50,7 +50,6 @@ app.use("/productQuantity", productQuantitysRouter);
 
 //app.use("/", verifyIdToken);
 
-app.use("/api-docs", express.static(path.join(__dirname, "api-docs")));
 app.use("/cart", userCartRouter);
 app.use("/userWishlist", userWishlistRouter);
 app.use("/userInfo", userInfoRouter);

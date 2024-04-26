@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../store/actions/productActions";
 import NavigationBar from "./NavigationBar";
 import { getSearchProducts } from "../store/actions/searchProductActions";
+import FooterContainer from "./Footer";
 
 import {
   ProductImage,
@@ -264,7 +265,7 @@ const ProductsGrid = (props) => {
   }, [filteredProducts, minPrice, maxPrice]);
 
   const handleProductClick = (brandName, productId) => {
-    window.location.href = `http://ec2-44-202-87-215.compute-1.amazonaws.com:3006/${brandName}/${productId}`;
+    window.location.href = `http://localhost:3000/${brandName}/${productId}`;
   };
 
   const handleSeeMoreBrands = () => {
@@ -354,11 +355,14 @@ const ProductsGrid = (props) => {
     sortedProducts.sort((a, b) => a.id - b.id);
   }
 
-  const baseURL = "http://ec2-44-202-87-215.compute-1.amazonaws.com:3001";
+  const baseURL = "http://localhost:3001";
 
   return (
     <>
-      <NavigationBar searchButtonClicked={searchButtonClicked} />
+      <NavigationBar
+        searchButtonClicked={searchButtonClicked}
+        showSearchBar={true}
+      />
 
       <Container>
         <LeftSection>
@@ -502,6 +506,7 @@ const ProductsGrid = (props) => {
           </div>
         </RightSection>
       </Container>
+     
     </>
   );
 };

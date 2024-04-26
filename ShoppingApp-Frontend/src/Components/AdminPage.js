@@ -6,6 +6,7 @@ import { fetchUserInfo } from "../store/actions/userInfoActions";
 import Cookies from "js-cookie";
 import NavigationBar from "./NavigationBar";
 
+
 const DashboardHeading = styled.h1`
   text-align: center;
 `;
@@ -90,6 +91,7 @@ const AdminPage = () => {
           </StyledButton>
         </ButtonContainer>
       )}
+
     </div>
   );
 };

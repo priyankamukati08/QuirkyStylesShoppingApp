@@ -196,7 +196,8 @@ const ProfilePopupLink1 = styled.a`
 `;
 
 export const NavigationBar = (props) => {
-  const { userAuthRequired } = props;
+
+   const { userAuthRequired, showSearchBar } = props;
   const [menDropdownVisible, setMenDropdownVisible] = useState(false);
   const [womenDropdownVisible, setWomenDropdownVisible] = useState(false);
   const [kidsDropdownVisible, setKidsDropdownVisible] = useState(false);
@@ -279,6 +280,9 @@ export const NavigationBar = (props) => {
     }
   };
 
+  
+  
+
   const renderProfileDropdown = () => {
     if (isAuthenticated) {
       return (
@@ -288,7 +292,7 @@ export const NavigationBar = (props) => {
           <hr />
           <ProfilePopupLink1 href="/Ordersdetails">Orders</ProfilePopupLink1>
           <ProfilePopupLink1 href="/WishlistPage">Wishlist</ProfilePopupLink1>
-          <ProfilePopupLink1 href="/contact-us">Contact Us</ProfilePopupLink1>
+
           <hr />
           <ProfilePopupLink1 href="/profile">Edit Profile</ProfilePopupLink1>
           <ProfilePopupLink1 href="/homepage" onClick={handleLogoutClick}>
@@ -307,9 +311,6 @@ export const NavigationBar = (props) => {
             LOGIN / SIGNUP
           </ProfilePopupLink>
           <hr />
-          <ProfilePopupLink1 href="/Ordersdetails">Orders</ProfilePopupLink1>
-          <ProfilePopupLink1 href="/WishlistPage">Wishlist</ProfilePopupLink1>
-          <ProfilePopupLink1 href="/contact-us">Contact Us</ProfilePopupLink1>
         </DropdownContent1>
       );
     }
@@ -355,7 +356,7 @@ export const NavigationBar = (props) => {
         </NavItem>
       </NavMenu>
 
-      <SearchBarContainer>
+       {showSearchBar && (<SearchBarContainer>
         <SearchIconContainer>
           <SearchIconImage src="/searchicon.png"></SearchIconImage>
         </SearchIconContainer>
@@ -365,11 +366,11 @@ export const NavigationBar = (props) => {
           onChange={handleSearchInputChange}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
-              props.searchButtonClicked(searchQuery); // Use the current input value directly
+              props.searchButtonClicked(searchQuery); 
             }
           }}
         />
-      </SearchBarContainer>
+      </SearchBarContainer>)}
       {/* <ProductsGrid searchQuery={searchQuery} setSearchQuery={setSearchQuery} /> */}
       <NavMenu>
         <NavItem
