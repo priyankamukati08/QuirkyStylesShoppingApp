@@ -35,7 +35,7 @@ This application is build for high resolution big monitors (preferred).
 
 # Following describes the 3 major components of this application in detail and their individual setup.
 
-![QuirkyStyles- Arch Diagram]( https://github.com/priyankamukati08/QuirkyStylesShoppingApp/blob/main/QuirkyStyles%20Shopping%20App.png)
+![QuirkyStyles- Arch Diagram](https://github.com/priyankamukati08/QuirkyStylesShoppingApp/blob/main/QuirkyStyles%20Shopping%20App.png)
 
 
 # QuirkyStyles DB setup
