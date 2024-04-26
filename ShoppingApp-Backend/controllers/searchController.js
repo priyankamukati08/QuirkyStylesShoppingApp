@@ -1,8 +1,9 @@
 const { OpenAI } = require("openai");
 const pool = require("../db");
+require("dotenv").config();
 
 const openai = new OpenAI({
-
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 async function generateResponse(messages) {
