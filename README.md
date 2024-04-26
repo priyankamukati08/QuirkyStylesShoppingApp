@@ -18,7 +18,7 @@ Install docker, make sure the docker agent is running.
     docker-compose up --build
 ```
 
-3. Run the following script that execute stored functions periodically and updates stock price and executes pending orders every 2secs.
+3. Run the following script that execute stored functions periodically and updates delivery status in track package page every 60secs.
 
 ```bash
     chmod +x ./Database/run_dbfuncs.sh
