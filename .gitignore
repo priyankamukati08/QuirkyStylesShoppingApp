@@ -1,5 +1,5 @@
 */node_modules/
-*/.env
+ShoppingApp-Backend/config.env
 
 
 #amplify-do-not-edit-begin
