@@ -1,4 +1,4 @@
-const { OpenAI } = require("openai");
+//const { OpenAI } = require("openai");
 const pool = require("../db");
 
 //const openai = new OpenAI({
