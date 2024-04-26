@@ -2,8 +2,8 @@ const { OpenAI } = require("openai");
 const pool = require("../db");
 
 const openai = new OpenAI({
-  apiKey:
-    "",
+  //apiKey:
+  //  "",
 });
 
 async function generateResponse(messages) {
