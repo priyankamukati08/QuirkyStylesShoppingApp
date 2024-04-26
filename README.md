@@ -111,3 +111,23 @@ npm run start
 3. Integrate social media sharing options for products
 5. Replace Nickname with custom attribute Passcode
 
+# QuirkyStyles Web Application
+
+QuirkyStyles is a fashion e-commerce platform that offers a unique and stylish shopping experience.
+
+## API Key
+
+To use the application's features, including the search functionality, you'll need to obtain an API key from the administrator. Once you have the API key, follow these steps to insert it into the `searchController.js` file:
+
+1. Open the `searchController.js` file in the root directory of the project.
+2. Locate the `apiKey` variable.
+3. Replace the empty string `""` with your actual API key.
+
+Here's an example of how the `searchController.js` file should look after inserting the API key:
+
+```javascript
+module.exports = {
+  apiKey: "YOUR_API_KEY_HERE"
+};
+
+
