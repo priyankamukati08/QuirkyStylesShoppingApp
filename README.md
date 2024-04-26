@@ -35,11 +35,10 @@ This application is build for high resolution big monitors (preferred).
 
 # Following describes the 3 major components of this application in detail and their individual setup.
 
-![QuirkyStyles- Arch Diagram](https://user-images.githubusercontent.com/112794721/227240799-34ad1311-daea-47c0-a48a-e5ebbf289ebf.svg)
+![QuirkyStyles- Arch Diagram]( https://github.com/priyankamukati08/QuirkyStylesShoppingApp/blob/main/QuirkyStyles%20Shopping%20App.png)
 
-# QuirkyStyles
 
-DB setup
+# QuirkyStyles DB setup
 
 DB scripts to manage Track Package after Order.
 
@@ -58,9 +57,7 @@ DB scripts to manage Track Package after Order.
 ./run_dbfuns.sh
 ```
 
-# QuirkyStyles
-
-APIs (Backend)
+# QuirkyStyles APIs (Backend)
 
 Shop with QuirkyStyles by connecting to our easy to use APIs.
 
@@ -113,5 +110,4 @@ npm run start
 2. Disable placing orders during certain promotions
 3. Integrate social media sharing options for products
 5. Replace Nickname with custom attribute Passcode
-
 
